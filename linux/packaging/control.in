@@ -1,0 +1,7 @@
+Package: river-music
+Version: VERSION
+Section: sound
+Priority: optional
+Architecture: amd64
+Maintainer: River Music <noreply@river.music>
+Description: River Music Desktop - Music player
