@@ -1,98 +1,182 @@
 <div align="center">
 
-# CODAH MUSIC
+<img src="icons/Codah_nobg.png" alt="CODAH MUSIC Logo" width="120" />
 
-**A feature-rich Flutter music player for Windows**
+<br>
 
-[![Platform](https://img.shields.io/badge/platform-Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white)](https://codahmusic.onrender.com)
-[![Built with Flutter](https://img.shields.io/badge/built%20with-Flutter-02569B?style=for-the-badge&logo=flutter&logoColor=white)](https://flutter.dev)
+# <b>CODAH</b> MUSIC
+
+<p>
+  <i>Your all-in-one desktop music experience</i>
+</p>
+
+<br>
+
+[![Version](https://img.shields.io/badge/version-1.0.0-blue?style=for-the-badge)](https://github.com/coder-nishanth/codah-music/releases)
+[![Flutter](https://img.shields.io/badge/Flutter-02569B?style=for-the-badge&logo=flutter&logoColor=white)](https://flutter.dev)
+[![Windows](https://img.shields.io/badge/Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white)](https://codahmusic.onrender.com)
 [![License](https://img.shields.io/badge/license-MIT-green?style=for-the-badge)](LICENSE)
 
-### [Official Website](https://codahmusic.onrender.com)
+<br>
+
+[![Download](https://img.shields.io/badge/DOWNLOAD-NOW-ff4444?style=for-the-badge&logo=download&logoColor=white)](https://codahmusic.onrender.com)
+[![Buy Me a Coffee](https://img.shields.io/badge/Buy_Me_a_Coffee-FFDD00?style=for-the-badge&logo=buy-me-a-coffee&logoColor=black)](https://buymeacoffee.com/coder.nishanth)
 
 </div>
 
 ---
 
-## Features
+<br>
 
-- **YouTube Music Streaming** - Search and stream any song from YouTube Music
-- **Lyrics** - Real-time synced lyrics with multiple provider support (LRCLib, Lyrica)
-- **Spotify Import** - Import your Spotify playlists directly
-- **Billboard Charts** - Browse Billboard Hot 100, Billboard 200, and genre charts
-- **Spotify Charts** - View trending charts from Spotify
-- **Local Library** - Play and manage your local audio files
-- **Audio Streaming Server** - Built-in HTTP server for efficient audio streaming
-- **Auto Updates** - Stay up to date with automatic update notifications
-- **Beautiful UI** - Modern Material 3 design with dynamic theming and blur effects
+<table align="center">
+<tr>
+<td align="center" width="9999" valign="top">
+
+## :headphones: What is CODAH MUSIC?
+
+**CODAH MUSIC** is a desktop music player built with Flutter that brings together
+streaming, local playback, lyrics, and chart discovery — all in one beautiful app.
+
+</td>
+</tr>
+</table>
+
+<br>
 
 ---
 
-## Screenshots
+## :sparkles: Features
 
-> Screenshots coming soon
+<table>
+<tr>
+<td width="50%" valign="top">
+
+### :musical_note: Streaming
+- Search & stream from **YouTube Music**
+- **Spotify** playlist import
+- Built-in audio streaming server
+
+### :books: Lyrics
+- Real-time synced lyrics
+- **LRCLib** & **Lyrica** providers
+- Auto-detect language
+
+</td>
+<td width="50%" valign="top">
+
+### :bar_chart: Charts
+- **Billboard** Hot 100 & 200
+- Genre-specific charts
+- **Spotify** trending charts
+
+### :library_music: Library
+- Local audio file playback
+- Queue management
+- Shuffle & repeat modes
+
+</td>
+</tr>
+</table>
+
+<br>
+
+<table>
+<tr>
+<td align="center">
+
+### :art: Design
+Material 3 dynamic theming, blur effects, and a clean modern UI
+
+</td>
+<td align="center">
+
+### :arrow_up: Auto Updates
+Stay up to date with built-in update notifications
+
+</td>
+</tr>
+</table>
+
+<br>
 
 ---
 
-## Getting Started
-
-### Prerequisites
-
-- [Flutter SDK](https://flutter.dev/docs/get-started/install) (>= 3.4.1)
-- Windows desktop support enabled
-
-### Build from Source
+## :rocket: Quick Start
 
 ```bash
-# Clone the repository
+# Clone
 git clone https://github.com/coder-nishanth/codah-music.git
 cd codah-music
 
-# Install dependencies
+# Install & Run
 flutter pub get
+flutter run
+```
 
-# Build the release executable
+### Build Release
+
+```bash
 flutter build windows --release
 ```
 
-The compiled app will be available under `build/windows/x64/runner/Release/`.
+Output: `build/windows/x64/runner/Release/codah-music.exe`
 
-### Create Installer
-
-The project includes an Inno Setup script (`windows/installer.iss`) for building a Windows installer:
-
-1. Build the release executable first
-2. Open `windows/installer.iss` in [Inno Setup](https://jrsoftware.org/isinfo.php)
-3. Click Build > Compile
+<br>
 
 ---
 
-## Download
+## :package: Creating an Installer
 
-Prefer not to build it yourself? Grab the latest release:
+The project includes an [Inno Setup](https://jrsoftware.org/isinfo.php) script:
 
-**[Download CODAH MUSIC](https://codahmusic.onrender.com)**
+1. Build the release first (`flutter build windows --release`)
+2. Open `windows/installer.iss` in Inno Setup
+3. **Build > Compile**
 
----
+The installer will be created in the `installers/` directory.
 
-## Support
-
-If you enjoy CODAH MUSIC, consider supporting development:
-
-[![Buy Me a Coffee](https://img.shields.io/badge/Buy%20Me%20a%20Coffee-FFDD00?style=for-the-badge&logo=buy-me-a-coffee&logoColor=black)](https://buymeacoffee.com/coder.nishanth)
-
-**UPI ID:** `coder-nishanth@airtel`
+<br>
 
 ---
 
-## License
+## :globe_with_meridians: Links
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+<table>
+<tr>
+<td align="center"><a href="https://codahmusic.onrender.com"><b>Official Website</b></a></td>
+<td align="center"><a href="https://github.com/coder-nishanth"><b>Developer</b></a></td>
+<td align="center"><a href="https://buymeacoffee.com/coder.nishanth"><b>Support</b></a></td>
+</tr>
+</table>
+
+<br>
+
+---
+
+## :hammer_and_wrench: Tech Stack
+
+<table>
+<tr>
+<td><img src="https://img.shields.io/badge/Flutter-02569B?logo=flutter&logoColor=white" alt="Flutter"></td>
+<td><img src="https://img.shields.io/badge/Dart-0175C5?logo=dart&logoColor=white" alt="Dart"></td>
+<td><img src="https://img.shields.io/badge/Windows-0078D6?logo=windows&logoColor=white" alt="Windows"></td>
+</tr>
+</table>
+
+<br>
+
+---
+
+## :page_facing_up: License
+
+Distributed under the **MIT License**. See [LICENSE](LICENSE) for more information.
+
+<br>
 
 ---
 
 <div align="center">
 
-Made with Flutter
+**Made with :blue_heart: and Flutter**
 
 </div>
