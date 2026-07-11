@@ -49,48 +49,54 @@ streaming, local playback, lyrics, and chart discovery — all in one beautiful 
 
 <table>
 <tr>
-<td width="50%" valign="top">
+<td width="33%" valign="top">
 
-### :musical_note: Streaming
-- Search & stream from **YouTube Music**
+### :musical_note: Stream
+- Search & play from **YouTube Music**
 - Built-in audio streaming server
+- Queue management
+
+</td>
+<td width="33%" valign="top">
 
 ### :books: Lyrics
 - Real-time synced lyrics
 - **LRCLib** & **Lyrica** providers
-- Auto-detect language
+- Auto language detection
 
 </td>
-<td width="50%" valign="top">
+<td width="33%" valign="top">
 
 ### :bar_chart: Charts
 - **Billboard** Hot 100 & 200
 - Genre-specific charts
 - **Spotify** trending charts
 
-### :library_music: Library
-- Local audio file playback
-- Queue management
-- Shuffle & repeat modes
-
 </td>
 </tr>
-</table>
-
-<br>
-
-<table>
 <tr>
-<td align="center">
+<td valign="top">
 
-### :art: Design
-Material 3 dynamic theming, blur effects, and a clean modern UI
+### :library_music: Library
+- Local audio file playback
+- Shuffle & repeat modes
+- Download management
 
 </td>
-<td align="center">
+<td valign="top">
 
-### :arrow_up: Auto Updates
-Stay up to date with built-in update notifications
+### :art: Design
+- **Material 3** dynamic theming
+- Blur effects & acrylic windows
+- Adaptive layout
+
+</td>
+<td valign="top">
+
+### :wrench: More
+- **Auto updates** built-in
+- Cross-platform ready
+- Open source (**MIT**)
 
 </td>
 </tr>
