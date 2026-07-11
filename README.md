@@ -45,67 +45,6 @@ streaming, local playback, lyrics, and chart discovery — all in one beautiful 
 
 ---
 
-## :sparkles: Features
-
-<table>
-<tr>
-<td width="33%" valign="top">
-
-### :musical_note: Stream
-- Search & play from **YouTube Music**
-- Built-in audio streaming server
-- Queue management
-
-</td>
-<td width="33%" valign="top">
-
-### :books: Lyrics
-- Real-time synced lyrics
-- **LRCLib** & **Lyrica** providers
-- Auto language detection
-
-</td>
-<td width="33%" valign="top">
-
-### :bar_chart: Charts
-- **Billboard** Hot 100 & 200
-- Genre-specific charts
-- **Spotify** trending charts
-
-</td>
-</tr>
-<tr>
-<td valign="top">
-
-### :library_music: Library
-- Local audio file playback
-- Shuffle & repeat modes
-- Download management
-
-</td>
-<td valign="top">
-
-### :art: Design
-- **Material 3** dynamic theming
-- Blur effects & acrylic windows
-- Adaptive layout
-
-</td>
-<td valign="top">
-
-### :wrench: More
-- **Auto updates** built-in
-- Cross-platform ready
-- Open source (**MIT**)
-
-</td>
-</tr>
-</table>
-
-<br>
-
----
-
 ## :rocket: Quick Start
 
 ```bash
@@ -125,34 +64,6 @@ flutter build windows --release
 ```
 
 Output: `build/windows/x64/runner/Release/codah-music.exe`
-
-<br>
-
----
-
-## :package: Creating an Installer
-
-The project includes an [Inno Setup](https://jrsoftware.org/isinfo.php) script:
-
-1. Build the release first (`flutter build windows --release`)
-2. Open `windows/installer.iss` in Inno Setup
-3. **Build > Compile**
-
-The installer will be created in the `installers/` directory.
-
-<br>
-
----
-
-## :globe_with_meridians: Links
-
-<table>
-<tr>
-<td align="center"><a href="https://codahmusic.onrender.com"><b>Official Website</b></a></td>
-<td align="center"><a href="https://github.com/coder-nishanth"><b>Developer</b></a></td>
-<td align="center"><a href="https://buymeacoffee.com/coder.nishanth"><b>Support</b></a></td>
-</tr>
-</table>
 
 <br>
 
