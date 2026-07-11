@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:http/http.dart';
 
@@ -49,6 +50,7 @@ class SpotifyService {
         },
       );
     } catch (e) {
+      debugPrint('Failed to get Spotify access token: $e');
     }
 
     if (response != null && response.statusCode == 200) {
@@ -108,6 +110,7 @@ class SpotifyService {
         description = result["description"];
       }
     } catch (e) {
+      debugPrint('Failed to fetch playlist metadata: $e');
     }
 
     if (data.containsKey('total')) {
@@ -164,6 +167,7 @@ class SpotifyService {
         return {'tracks': tracks, 'total': total};
       }
     } catch (e) {
+      debugPrint('Failed to fetch playlist tracks: $e');
     }
     return {};
   }

@@ -1,7 +1,7 @@
 [Setup]
 AppName=CODAH MUSIC
-AppVersion=1.1.0
-AppVerName=CODAH MUSIC 1.1.0
+AppVersion=1.0.0
+AppVerName=CODAH MUSIC 1.0.0
 AppPublisher=coder-nishanth
 AppPublisherURL=https://github.com/coder-nishanth/codah-music
 DefaultDirName={autopf}\CODAH MUSIC
@@ -11,13 +11,13 @@ UninstallDisplayName=CODAH MUSIC
 Compression=lzma2
 SolidCompression=yes
 OutputDir=..\installers
-OutputBaseFilename=CodahMusic-Setup-1.1.0
+OutputBaseFilename=CodahMusic-Setup-1.0.0
 SetupIconFile=runner\resources\app_icon.ico
-VersionInfoVersion=1.1.0.0
+VersionInfoVersion=1.0.0.0
 VersionInfoCompany=coder-nishanth
 VersionInfoDescription=CODAH MUSIC Installer
 VersionInfoProductName=CODAH MUSIC
-VersionInfoProductVersion=1.1.0
+VersionInfoProductVersion=1.0.0
 PrivilegesRequired=admin
 PrivilegesRequiredOverridesAllowed=dialog
 

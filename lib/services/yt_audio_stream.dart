@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:collection';
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 
@@ -243,6 +244,7 @@ Future<void> handleAudioRequest(HttpRequest request) async {
         response.add(chunk);
       }
     } catch (streamError) {
+      debugPrint('Stream chunk read error: $streamError');
     }
 
     await response.close();
@@ -251,7 +253,9 @@ Future<void> handleAudioRequest(HttpRequest request) async {
       response.statusCode = HttpStatus.internalServerError;
       response.write('Error: $e');
       await response.close();
-    } catch (_) {}
+    } catch (_) {
+      debugPrint('Failed to write error response: $_');
+    }
   }
 }
 

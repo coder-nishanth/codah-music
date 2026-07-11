@@ -251,6 +251,7 @@ class MediaPlayer extends ChangeNotifier {
         await _restoreOriginalQueueOrder();
       }
     } catch (e) {
+      debugPrint('Failed to toggle shuffle: $e');
     }
   }
 
@@ -329,6 +330,7 @@ class MediaPlayer extends ChangeNotifier {
       await _player.clearAudioSources();
       if (_lastPlayRequestId != requestId) return;
     } catch (e) {
+      debugPrint('Failed to stop/clear player: $e');
     }
 
     _buttonState.value = ButtonState.loading;
@@ -474,6 +476,7 @@ class MediaPlayer extends ChangeNotifier {
         await _player.addAudioSources(validSources);
       }
     } catch (e) {
+      debugPrint('Failed to add queue sources: $e');
     }
   }
 
@@ -683,6 +686,7 @@ class MediaPlayer extends ChangeNotifier {
         initialPosition: currentPosition,
       );
     } catch (e) {
+      debugPrint('Failed to shuffle queue: $e');
     }
   }
 
@@ -731,6 +735,7 @@ class MediaPlayer extends ChangeNotifier {
         initialPosition: currentPosition,
       );
     } catch (e) {
+      debugPrint('Failed to restore queue order: $e');
     }
   }
 }

@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:html/parser.dart' show parse;
 import 'package:html/dom.dart';
@@ -61,6 +62,7 @@ class ChartsService {
                  chart.coverArt = model.chartItems!.first.imageUrl;
              }
          } catch (e) {
+           debugPrint('Failed to fetch chart preview: $e');
          }
       }));
       

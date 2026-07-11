@@ -45,7 +45,7 @@ class UpdateService {
         }
       }
 
-      if (remoteVersion != currentVersion) {
+      if (remoteVersion > currentVersion) {
         return UpdateInfo(
           version: remoteVersion,
           name: 'New Update Available',
