@@ -83,14 +83,6 @@ Output: `build/windows/x64/runner/Release/codah-music.exe`
 
 ---
 
-## :page_facing_up: License
-
-Distributed under the **MIT License**. See [LICENSE](LICENSE) for more information.
-
-<br>
-
----
-
 <div align="center">
 
 **Made with :blue_heart: and Flutter**
