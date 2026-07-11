@@ -71,7 +71,7 @@ Output: `build/windows/x64/runner/Release/codah-music.exe`
 
 ## :shield: Windows SmartScreen Notice
 
-When running the app for the first time, Windows SmartScreen may show a warning. This is normal for apps without a verified code signing certificate.
+When running the app for the first time, Windows SmartScreen may show a warning.
 
 **To bypass:**
 1. Click **"More info"**
