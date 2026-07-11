@@ -12,15 +12,15 @@
 
 <br>
 
-[![Version](https://img.shields.io/badge/version-1.0.0-blue?style=for-the-badge)](https://github.com/coder-nishanth/codah-music/releases)
-[![Flutter](https://img.shields.io/badge/Flutter-02569B?style=for-the-badge&logo=flutter&logoColor=white)](https://flutter.dev)
-[![Windows](https://img.shields.io/badge/Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white)](https://codahmusic.onrender.com)
-[![License](https://img.shields.io/badge/license-MIT-green?style=for-the-badge)](LICENSE)
+<a href="https://github.com/coder-nishanth/codah-music/releases" target="_blank"><img src="https://img.shields.io/badge/version-1.0.0-blue?style=for-the-badge" alt="Version"></a>
+<a href="https://flutter.dev" target="_blank"><img src="https://img.shields.io/badge/Flutter-02569B?style=for-the-badge&logo=flutter&logoColor=white" alt="Flutter"></a>
+<a href="https://codahmusic.onrender.com" target="_blank"><img src="https://img.shields.io/badge/Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white" alt="Windows"></a>
+<a href="https://github.com/coder-nishanth/codah-music/blob/main/LICENSE" target="_blank"><img src="https://img.shields.io/badge/license-MIT-green?style=for-the-badge" alt="License"></a>
 
 <br>
 
-[![Download](https://img.shields.io/badge/DOWNLOAD-NOW-ff4444?style=for-the-badge&logo=download&logoColor=white)](https://codahmusic.onrender.com)
-[![Buy Me a Coffee](https://img.shields.io/badge/Buy_Me_a_Coffee-FFDD00?style=for-the-badge&logo=buy-me-a-coffee&logoColor=black)](https://buymeacoffee.com/coder.nishanth)
+<a href="https://codahmusic.onrender.com" target="_blank"><img src="https://img.shields.io/badge/DOWNLOAD-NOW-ff4444?style=for-the-badge&logo=download&logoColor=white" alt="Download"></a>
+<a href="https://buymeacoffee.com/coder.nishanth" target="_blank"><img src="https://img.shields.io/badge/Buy_Me_a_Coffee-FFDD00?style=for-the-badge&logo=buy-me-a-coffee&logoColor=black" alt="Buy Me a Coffee"></a>
 
 </div>
 
