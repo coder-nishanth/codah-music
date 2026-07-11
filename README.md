@@ -53,7 +53,6 @@ streaming, local playback, lyrics, and chart discovery — all in one beautiful 
 
 ### :musical_note: Streaming
 - Search & stream from **YouTube Music**
-- **Spotify** playlist import
 - Built-in audio streaming server
 
 ### :books: Lyrics
