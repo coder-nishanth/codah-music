@@ -26,3 +26,6 @@ installers/*.exe
 *.g.dart
 *.freezed.dart
 *.mocks.dart
+
+# Signing
+*.pfx

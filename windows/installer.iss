@@ -20,6 +20,7 @@ VersionInfoProductName=CODAH MUSIC
 VersionInfoProductVersion=1.0.0
 PrivilegesRequired=admin
 PrivilegesRequiredOverridesAllowed=dialog
+SignTool=signtool
 
 [Files]
 Source: "..\build\windows\x64\runner\Release\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs

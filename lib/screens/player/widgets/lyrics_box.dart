@@ -208,8 +208,6 @@ class _SyncedLyricsWidgetState extends State<SyncedLyricsWidget> {
   bool _initialScrollDone = false;
   
   bool _isUserScrolling = false;
-  Timer? _userScrollTimer;
-  final Duration _userScrollCooldown = const Duration(milliseconds: 1500);
 
   @override
   void initState() {
@@ -242,7 +240,6 @@ class _SyncedLyricsWidgetState extends State<SyncedLyricsWidget> {
 
   @override
   void dispose() {
-    _userScrollTimer?.cancel();
     _streamSubscription?.cancel();
     super.dispose();
   }
@@ -255,6 +252,25 @@ class _SyncedLyricsWidgetState extends State<SyncedLyricsWidget> {
         curve: Curves.easeOutCubic,
         alignment: 0.44,
       );
+    }
+  }
+
+  void _resyncToCurrentLyric() {
+    setState(() {
+      _isUserScrolling = false;
+    });
+    _scrollToCurrentLyric(_currentLyricIndex);
+  }
+
+  void _checkIfNearCurrentLyric() {
+    if (!_isUserScrolling) return;
+    final positions = _itemPositionsListener.itemPositions.value;
+    if (positions.isEmpty) return;
+    final visibleIndices = positions.map((p) => p.index).toList();
+    if (visibleIndices.contains(_currentLyricIndex)) {
+      setState(() {
+        _isUserScrolling = false;
+      });
     }
   }
 
@@ -285,83 +301,125 @@ class _SyncedLyricsWidgetState extends State<SyncedLyricsWidget> {
   Widget build(BuildContext context) {
     if (widget.lyrics.parsedLyrics == null) return const SizedBox();
 
-    return ShaderMask(
-      shaderCallback: (Rect bounds) {
-        return const LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [
-            Colors.transparent,
-            Colors.white,
-            Colors.white,
-            Colors.transparent
-          ],
-          stops: [0.0, 0.15, 0.85, 1.0],
-        ).createShader(bounds);
-      },
-      blendMode: BlendMode.dstIn,
-      child: NotificationListener<UserScrollNotification>(
-        onNotification: (notification) {
-           if (notification.direction != ScrollDirection.idle) {
-            setState(() {
-              _isUserScrolling = true;
-            });
-            _userScrollTimer?.cancel();
-          } else {
-             _userScrollTimer?.cancel();
-             _userScrollTimer = Timer(_userScrollCooldown, () {
-               if (mounted) {
-                 setState(() {
-                   _isUserScrolling = false;
-                 });
-                 _scrollToCurrentLyric(_currentLyricIndex);
-               }
-             });
-          }
-          return false;
-        },
-        child: ScrollConfiguration(
-          behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
-          child: ScrollablePositionedList.builder(
-            itemScrollController: _itemScrollController,
-            itemPositionsListener: _itemPositionsListener,
-            itemCount: widget.lyrics.parsedLyrics!.lyrics.length,
-            padding: EdgeInsets.symmetric(
-                vertical: MediaQuery.of(context).size.height / 2.5),
-            itemBuilder: (context, index) {
-              final isCurrent = isCurrentLyric(index);
-              final displayText = widget.lyrics.parsedLyrics!.lyrics[index].text;
-
-              final textStyle = AnimatedDefaultTextStyle(
-                duration: const Duration(milliseconds: 400),
-                curve: Curves.easeOutCubic,
-                style: TextStyle(
-                  fontSize: 32,
-                  fontWeight: FontWeight.w900,
-                  color: isCurrent
-                      ? Colors.white
-                      : Colors.white.withValues(alpha: 0.35),
-                  height: 1.4,
-                ),
-                child: Text(
-                  displayText,
-                  textAlign: TextAlign.center,
-                ),
-              );
-
-              return GestureDetector(
-                onTap: () => _seekToLyric(index),
-                behavior: HitTestBehavior.opaque,
-                child: Padding(
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 16.0, horizontal: 32),
-                  child: textStyle,
-                ),
-              );
+    return Stack(
+      children: [
+        ShaderMask(
+          shaderCallback: (Rect bounds) {
+            return const LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [
+                Colors.transparent,
+                Colors.white,
+                Colors.white,
+                Colors.transparent
+              ],
+              stops: [0.0, 0.15, 0.85, 1.0],
+            ).createShader(bounds);
+          },
+          blendMode: BlendMode.dstIn,
+          child: NotificationListener<UserScrollNotification>(
+            onNotification: (notification) {
+               if (notification.direction != ScrollDirection.idle) {
+                if (!_isUserScrolling) {
+                  setState(() {
+                    _isUserScrolling = true;
+                  });
+                }
+                _checkIfNearCurrentLyric();
+              }
+              return false;
             },
+            child: ScrollConfiguration(
+              behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
+              child: ScrollablePositionedList.builder(
+                itemScrollController: _itemScrollController,
+                itemPositionsListener: _itemPositionsListener,
+                itemCount: widget.lyrics.parsedLyrics!.lyrics.length,
+                padding: EdgeInsets.symmetric(
+                    vertical: MediaQuery.of(context).size.height / 2.5),
+                itemBuilder: (context, index) {
+                  final isCurrent = isCurrentLyric(index);
+                  final displayText = widget.lyrics.parsedLyrics!.lyrics[index].text;
+
+                  final textStyle = AnimatedDefaultTextStyle(
+                    duration: const Duration(milliseconds: 400),
+                    curve: Curves.easeOutCubic,
+                    style: TextStyle(
+                      fontSize: 32,
+                      fontWeight: FontWeight.w900,
+                      color: isCurrent
+                          ? Colors.white
+                          : Colors.white.withValues(alpha: 0.35),
+                      height: 1.4,
+                    ),
+                    child: Text(
+                      displayText,
+                      textAlign: TextAlign.center,
+                    ),
+                  );
+
+                  return GestureDetector(
+                    onTap: () => _seekToLyric(index),
+                    behavior: HitTestBehavior.opaque,
+                    child: Padding(
+                      padding:
+                          const EdgeInsets.symmetric(vertical: 16.0, horizontal: 32),
+                      child: textStyle,
+                    ),
+                  );
+                },
+              ),
+            ),
           ),
         ),
-      ),
+        Positioned(
+          bottom: 16,
+          left: 0,
+          right: 0,
+          child: IgnorePointer(
+            ignoring: !_isUserScrolling,
+            child: AnimatedOpacity(
+              opacity: _isUserScrolling ? 1.0 : 0.0,
+              duration: const Duration(milliseconds: 300),
+              child: Center(
+                child: GestureDetector(
+                  onTap: _resyncToCurrentLyric,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withValues(alpha: 0.9),
+                      borderRadius: BorderRadius.circular(24),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withValues(alpha: 0.3),
+                          blurRadius: 8,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    child: const Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(Icons.sync, color: Colors.black87, size: 18),
+                        SizedBox(width: 8),
+                        Text(
+                          'Resync',
+                          style: TextStyle(
+                            color: Colors.black87,
+                            fontSize: 14,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
