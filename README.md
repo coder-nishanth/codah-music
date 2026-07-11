@@ -69,20 +69,6 @@ Output: `build/windows/x64/runner/Release/codah-music.exe`
 
 ---
 
-## :hammer_and_wrench: Tech Stack
-
-<table>
-<tr>
-<td><img src="https://img.shields.io/badge/Flutter-02569B?logo=flutter&logoColor=white" alt="Flutter"></td>
-<td><img src="https://img.shields.io/badge/Dart-0175C5?logo=dart&logoColor=white" alt="Dart"></td>
-<td><img src="https://img.shields.io/badge/Windows-0078D6?logo=windows&logoColor=white" alt="Windows"></td>
-</tr>
-</table>
-
-<br>
-
----
-
 <div align="center">
 
 **Made with :blue_heart: and Flutter**
