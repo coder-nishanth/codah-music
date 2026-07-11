@@ -46,6 +46,14 @@ Build release: `flutter build windows --release`
 
 ---
 
+## Support
+
+[![Buy Me a Coffee](https://img.shields.io/badge/Buy_Me_a_Coffee-FFDD00?style=flat&logo=buy-me-a-coffee&logoColor=black)](https://buymeacoffee.com/coder.nishanth)
+
+**UPI:** `coder-nishanth@airtel`
+
+---
+
 <div align="center">
 
 Made with Flutter
