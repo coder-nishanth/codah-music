@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:River/screens/library/downloads/downloading/widgets/downloading_section_tile.dart';
+import 'package:Codah/screens/library/downloads/downloading/widgets/downloading_section_tile.dart';
 
 import '../../../../../generated/l10n.dart';
 import 'cubit/downloading_cubit.dart';

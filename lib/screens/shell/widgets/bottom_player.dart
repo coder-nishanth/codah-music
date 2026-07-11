@@ -3,9 +3,9 @@ import 'package:palette_generator/palette_generator.dart';
 
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
-import 'package:River/services/media_player.dart';
-import 'package:River/utils/adaptive_widgets/buttons.dart';
-import 'package:River/utils/song_thumbnail.dart';
+import 'package:Codah/services/media_player.dart';
+import 'package:Codah/utils/adaptive_widgets/buttons.dart';
+import 'package:Codah/utils/song_thumbnail.dart';
 
 class BottomPlayer extends StatefulWidget {
   const BottomPlayer({super.key});

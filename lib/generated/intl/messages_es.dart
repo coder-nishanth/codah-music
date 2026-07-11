@@ -38,7 +38,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Copia de seguridad y restauración",
     ),
     "Battery_Optimisation_message": MessageLookupByLibrary.simpleMessage(
-      "Haz clic aquí para desactivar la optimización de batería para que River funcione correctamente",
+      "Haz clic aquí para desactivar la optimización de batería para que Codah funcione correctamente",
     ),
     "Battery_Optimisation_title": MessageLookupByLibrary.simpleMessage(
       "Optimización de batería detectada",
@@ -83,7 +83,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "Developer": MessageLookupByLibrary.simpleMessage("Desarrollador"),
     "Donate": MessageLookupByLibrary.simpleMessage("Donar"),
     "Donate_Message": MessageLookupByLibrary.simpleMessage(
-      "Apoya el desarrollo de River",
+      "Apoya el desarrollo de Codah",
     ),
     "Done": MessageLookupByLibrary.simpleMessage("Hecho"),
     "Download": MessageLookupByLibrary.simpleMessage("Descargar"),
@@ -107,7 +107,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Solicitud de características",
     ),
     "Google_Account": MessageLookupByLibrary.simpleMessage("Cuenta de Google"),
-    "River": MessageLookupByLibrary.simpleMessage("River"),
+    "Codah": MessageLookupByLibrary.simpleMessage("Codah"),
     "High": MessageLookupByLibrary.simpleMessage("Alto"),
     "History": MessageLookupByLibrary.simpleMessage("Historial"),
     "Home": MessageLookupByLibrary.simpleMessage("Inicio"),
@@ -168,7 +168,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "Restore": MessageLookupByLibrary.simpleMessage("Restaurar"),
     "Saved": MessageLookupByLibrary.simpleMessage("Guardado"),
-    "Search_River": MessageLookupByLibrary.simpleMessage("Buscar River"),
+    "Search_Codah": MessageLookupByLibrary.simpleMessage("Buscar Codah"),
     "Search_History_Deleted": MessageLookupByLibrary.simpleMessage(
       "Historial de búsqueda eliminado",
     ),

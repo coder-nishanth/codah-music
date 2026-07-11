@@ -1,12 +1,12 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../core/widgets/animated_river_title.dart';
-import '../../core/widgets/common_header.dart';
+import '../../core/widgets/animated_codah_title.dart';
 import '../../generated/l10n.dart';
 import '../../services/window_service.dart';
 import 'widgets/bottom_player.dart';
+import 'widgets/square_mini_player.dart';
 
 class AppShell extends StatefulWidget {
   const AppShell({
@@ -20,20 +20,16 @@ class AppShell extends StatefulWidget {
 }
 
 class _AppShellState extends State<AppShell> {
-  List<Map<String, dynamic>> _searchResults = [];
-  bool _searchLoading = false;
-
   int get _selectedIndex => widget.navigationShell.currentIndex;
 
   void _onNavTap(int index) {
-    widget.navigationShell.goBranch(
-      index,
-      initialLocation: index == widget.navigationShell.currentIndex,
-    );
+    widget.navigationShell.goBranch(index, initialLocation: true);
   }
 
   @override
   Widget build(BuildContext context) {
+    final currentPath = GoRouterState.of(context).uri.toString();
+    final isSearch = currentPath == '/search';
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: Row(
@@ -52,24 +48,38 @@ class _AppShellState extends State<AppShell> {
               children: [
                 const Spacer(),
                 _SidebarBtn(
-                  icon: CupertinoIcons.music_house_fill,
+                  icon: Icons.home_rounded,
                   label: S.of(context).Home,
-                  selected: _selectedIndex == 0,
+                  selected: _selectedIndex == 0 && !isSearch,
                   onTap: () => _onNavTap(0),
                 ),
                 const SizedBox(height: 4),
                 _SidebarBtn(
-                  icon: Icons.library_music_outlined,
+                  icon: Icons.search_rounded,
+                  label: 'Search',
+                  selected: isSearch,
+                  onTap: () => context.go('/search'),
+                ),
+                const SizedBox(height: 4),
+                _SidebarBtn(
+                  icon: Icons.library_music_rounded,
                   label: S.of(context).Saved,
                   selected: _selectedIndex == 1,
                   onTap: () => _onNavTap(1),
                 ),
                 const SizedBox(height: 4),
                 _SidebarBtn(
-                  icon: CupertinoIcons.gear_alt_fill,
+                  icon: Icons.settings_rounded,
                   label: S.of(context).Settings,
                   selected: _selectedIndex == 2,
                   onTap: () => _onNavTap(2),
+                ),
+                const SizedBox(height: 4),
+                _SidebarBtn(
+                  icon: Icons.favorite_rounded,
+                  label: 'Support',
+                  selected: _selectedIndex == 3,
+                  onTap: () => _onNavTap(3),
                 ),
                 const Spacer(),
                 const SizedBox(height: 16),
@@ -79,36 +89,30 @@ class _AppShellState extends State<AppShell> {
           Expanded(
             child: Column(
               children: [
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                  child: Row(
+                SizedBox(
+                  height: 44,
+                  child: Stack(
                     children: [
-                      const AnimatedRiverTitle(),
-                      const Spacer(),
-                      SizedBox(
-                        width: 400,
-                        child: CommonHeader(
-                          onResultsChanged: (results, loading) {
-                            setState(() {
-                              _searchResults = results;
-                              _searchLoading = loading;
-                            });
+                      Positioned.fill(
+                        child: GestureDetector(
+                          behavior: HitTestBehavior.translucent,
+                          onPanStart: (_) {
+                            const MethodChannel('flutter/window')
+                                .invokeMethod('startWindowDragging');
                           },
+                          onDoubleTap: () => WindowService.maximize(),
                         ),
                       ),
-                      const Spacer(),
-                      _WBtn(
-                        icon: Icons.minimize,
-                        onTap: () => WindowService.minimize(),
-                      ),
-                      _WBtn(
-                        icon: Icons.crop_square,
-                        onTap: () => WindowService.maximize(),
-                      ),
-                      _WBtn(
-                        icon: Icons.close,
-                        onTap: () => WindowService.close(),
-                        isClose: true,
+                      const Center(
+                        child: Row(
+                          children: [
+                            SizedBox(width: 16),
+                            AnimatedCodahTitle(),
+                            Spacer(),
+                            _MacOSTrafficLights(),
+                            SizedBox(width: 16),
+                          ],
+                        ),
                       ),
                     ],
                   ),
@@ -117,22 +121,19 @@ class _AppShellState extends State<AppShell> {
                   child: Stack(
                     children: [
                       widget.navigationShell,
-                      if (_searchResults.isNotEmpty || _searchLoading)
-                        Positioned(
-                          top: 8,
-                          left: 0,
-                          right: 0,
-                          child: Center(
-                            child: SizedBox(
-                              width: 400,
-                              child: _buildSearchOverlay(),
-                            ),
-                          ),
+                      if (currentPath == '/')
+                        const Align(
+                          alignment: Alignment.bottomCenter,
+                          child: BottomPlayer(),
+                        )
+                      else if (currentPath == '/support')
+                        const SizedBox.shrink()
+                      else
+                        const Positioned(
+                          bottom: 12,
+                          right: 12,
+                          child: SquareMiniPlayer(),
                         ),
-                      const Align(
-                        alignment: Alignment.bottomCenter,
-                        child: BottomPlayer(),
-                      ),
                     ],
                   ),
                 ),
@@ -144,53 +145,6 @@ class _AppShellState extends State<AppShell> {
     );
   }
 
-  Widget _buildSearchOverlay() {
-    return Container(
-      constraints: const BoxConstraints(maxHeight: 400),
-      margin: const EdgeInsets.symmetric(horizontal: 8),
-      decoration: BoxDecoration(
-        color: Theme.of(context).cardColor,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: Theme.of(context).dividerColor.withValues(alpha: 0.2),
-          width: 0.5,
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.3),
-            blurRadius: 20,
-            spreadRadius: 0,
-            offset: const Offset(0, 8),
-          ),
-        ],
-      ),
-      child: _searchLoading && _searchResults.isEmpty
-          ? const Padding(
-              padding: EdgeInsets.all(20),
-              child: Center(
-                child: SizedBox(
-                  width: 24,
-                  height: 24,
-                  child: CircularProgressIndicator(
-                    strokeWidth: 2,
-                    color: Colors.white54,
-                  ),
-                ),
-              ),
-            )
-          : ClipRRect(
-              borderRadius: BorderRadius.circular(12),
-              child: ListView.builder(
-                shrinkWrap: true,
-                padding: const EdgeInsets.symmetric(vertical: 4),
-                itemCount: _searchResults.length,
-                itemBuilder: (context, index) {
-                  return SearchResultTile(item: _searchResults[index]);
-                },
-        ),
-      ),
-    );
-  }
 }
 
 class _SidebarBtn extends StatelessWidget {
@@ -232,43 +186,104 @@ class _SidebarBtn extends StatelessWidget {
   }
 }
 
-class _WBtn extends StatefulWidget {
-  final IconData icon;
-  final VoidCallback onTap;
-  final bool isClose;
-
-  const _WBtn({required this.icon, required this.onTap, this.isClose = false});
+class _MacOSTrafficLights extends StatefulWidget {
+  const _MacOSTrafficLights();
 
   @override
-  State<_WBtn> createState() => _WBtnState();
+  State<_MacOSTrafficLights> createState() => _MacOSTrafficLightsState();
 }
 
-class _WBtnState extends State<_WBtn> {
-  bool _hovered = false;
+class _MacOSTrafficLightsState extends State<_MacOSTrafficLights> {
+  bool _closeHovered = false;
+  bool _minHovered = false;
+  bool _maxHovered = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        _TrafficDot(
+          baseColor: const Color(0xFFFF5F57),
+          hoverColor: const Color(0xFFE0443E),
+          icon: Icons.close,
+          hovered: _closeHovered,
+          onEnter: () => setState(() => _closeHovered = true),
+          onExit: () => setState(() => _closeHovered = false),
+          onTap: () => WindowService.close(),
+        ),
+        const SizedBox(width: 10),
+        _TrafficDot(
+          baseColor: const Color(0xFFFFBD2E),
+          hoverColor: const Color(0xFFE0A325),
+          icon: Icons.remove,
+          hovered: _minHovered,
+          onEnter: () => setState(() => _minHovered = true),
+          onExit: () => setState(() => _minHovered = false),
+          onTap: () => WindowService.minimize(),
+        ),
+        const SizedBox(width: 10),
+        _TrafficDot(
+          baseColor: const Color(0xFF28C840),
+          hoverColor: const Color(0xFF1D9B30),
+          icon: Icons.fullscreen,
+          hovered: _maxHovered,
+          onEnter: () => setState(() => _maxHovered = true),
+          onExit: () => setState(() => _maxHovered = false),
+          onTap: () => WindowService.maximize(),
+        ),
+      ],
+    );
+  }
+}
+
+class _TrafficDot extends StatelessWidget {
+  final Color baseColor;
+  final Color hoverColor;
+  final IconData icon;
+  final bool hovered;
+  final VoidCallback onEnter;
+  final VoidCallback onExit;
+  final VoidCallback onTap;
+
+  const _TrafficDot({
+    required this.baseColor,
+    required this.hoverColor,
+    required this.icon,
+    required this.hovered,
+    required this.onEnter,
+    required this.onExit,
+    required this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
     return MouseRegion(
-      onEnter: (_) => setState(() => _hovered = true),
-      onExit: (_) => setState(() => _hovered = false),
+      onEnter: (_) => onEnter(),
+      onExit: (_) => onExit(),
       child: GestureDetector(
-        onTap: widget.onTap,
+        onTap: onTap,
         child: Container(
-          width: 36,
-          height: 30,
-          alignment: Alignment.center,
+          width: 18,
+          height: 18,
           decoration: BoxDecoration(
-            color: _hovered
-                ? (widget.isClose
-                    ? Colors.redAccent
-                    : Colors.white.withValues(alpha: 0.1))
-                : Colors.transparent,
-            borderRadius: BorderRadius.circular(6),
+            color: hovered ? hoverColor : baseColor,
+            shape: BoxShape.circle,
+            boxShadow: [
+              if (hovered)
+                BoxShadow(
+                  color: baseColor.withValues(alpha: 0.6),
+                  blurRadius: 8,
+                  spreadRadius: 2,
+                ),
+            ],
           ),
-          child: Icon(
-            widget.icon,
-            size: 14,
-            color: Colors.white.withValues(alpha: _hovered ? 1.0 : 0.6),
+          child: Center(
+            child: Icon(
+              icon,
+              size: 12,
+              color: hovered ? Colors.black87 : Colors.transparent,
+            ),
           ),
         ),
       ),

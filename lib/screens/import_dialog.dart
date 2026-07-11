@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:River/services/import_service.dart';
-import 'package:River/themes/colors.dart';
+import 'package:Codah/services/import_service.dart';
+import 'package:Codah/themes/colors.dart';
 
 class ImportDialog extends StatefulWidget {
   final Stream<ImportState> stream;

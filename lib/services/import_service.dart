@@ -1,9 +1,9 @@
 import 'dart:async';
 
 import 'package:get_it/get_it.dart';
-import 'package:River/services/library.dart';
-import 'package:River/services/spotify.dart';
-import 'package:River/ytmusic/ytmusic.dart';
+import 'package:Codah/services/library.dart';
+import 'package:Codah/services/spotify.dart';
+import 'package:Codah/ytmusic/ytmusic.dart';
 
 class ImportState {
   final int total;

@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_swipe_action_cell/core/cell.dart';
+import 'package:get_it/get_it.dart';
 
 import '../../../../../generated/l10n.dart';
 import '../../../../../services/bottom_message.dart';
+import '../../../../../services/media_player.dart';
 import '../../../../../utils/bottom_modals.dart';
 import '../../../../../core/widgets/section_item.dart';
 
@@ -24,6 +26,11 @@ class PlaylistDetailsPage extends StatelessWidget {
       create: (_) => PlaylistDetailsCubit(playlistkey)..load(),
       child: BlocBuilder<PlaylistDetailsCubit, PlaylistDetailsState>(
         builder: (context, state) {
+          if (state case PlaylistDetailsLoaded(:final playlist)) {
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              GetIt.I<MediaPlayer>().preloadSongs(playlist['songs'] ?? []);
+            });
+          }
           return switch (state) {
             PlaylistDetailsLoading() => const Scaffold(
                 body: Center(child: CircularProgressIndicator()),

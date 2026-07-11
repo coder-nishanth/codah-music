@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../../../core/widgets/animated_river_title.dart';
+import '../../../core/widgets/animated_codah_title.dart';
 
 
 class AboutPage extends StatelessWidget {
@@ -22,7 +22,7 @@ class AboutPage extends StatelessWidget {
               ClipRRect(
                 borderRadius: BorderRadius.circular(16),
                 child: Image.asset(
-                  'icons/River_nobg.png',
+                  'icons/Codah_nobg.png',
                   width: 120,
                   height: 120,
                   fit: BoxFit.contain,
@@ -30,11 +30,11 @@ class AboutPage extends StatelessWidget {
               ),
               const SizedBox(height: 24),
               
-              const AnimatedRiverTitle(fontSize: 28, letterSpacing: 2.0),
+              const AnimatedCodahTitle(fontSize: 28, letterSpacing: 2.0),
               const SizedBox(height: 8),
               
               const Text(
-                'Version 1.0.0',
+                'Version 1.2.0',
                 style: TextStyle(fontSize: 16, color: Colors.grey),
               ),
               const SizedBox(height: 32),

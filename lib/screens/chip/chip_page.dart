@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:River/core/utils/service_locator.dart';
-import 'package:River/screens/chip/cubit/chip_cubit.dart';
-import 'package:River/core/widgets/section_item.dart';
-import 'package:River/utils/internet_guard.dart';
+import 'package:Codah/core/utils/service_locator.dart';
+import 'package:Codah/screens/chip/cubit/chip_cubit.dart';
+import 'package:Codah/core/widgets/section_item.dart';
+import 'package:Codah/utils/internet_guard.dart';
 
 import 'package:loading_indicator_m3e/loading_indicator_m3e.dart';
 

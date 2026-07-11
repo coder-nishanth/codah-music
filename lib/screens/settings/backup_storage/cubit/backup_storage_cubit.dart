@@ -60,7 +60,7 @@ class BackupStorageCubit extends Cubit<BackupStorageState> {
     required List items,
   }) async {
     final Map backup = {
-      'name': 'River',
+      'name': 'Codah',
       'type': 'backup',
       'version': 1,
       'data': {},

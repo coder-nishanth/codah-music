@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:River/generated/l10n.dart';
-import 'package:River/screens/settings/widgets/setting_item.dart';
-import 'package:River/themes/text_styles.dart';
-import 'package:River/utils/bottom_modals.dart';
+import 'package:Codah/generated/l10n.dart';
+import 'package:Codah/screens/settings/widgets/setting_item.dart';
+import 'package:Codah/themes/text_styles.dart';
+import 'package:Codah/utils/bottom_modals.dart';
 
 import 'cubit/ytmusic_cubit.dart';
 

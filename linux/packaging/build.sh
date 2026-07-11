@@ -20,11 +20,11 @@ SKIP_FLUTTER_BUILD=false
 
 # Version from pubspec.yaml
 VERSION=$(grep '^version:' pubspec.yaml | sed 's/version: *//;s/+.*//;s/ *$//')
-echo "Building River Music $VERSION"
+echo "Building CODAH MUSIC $VERSION"
 
 BUNDLE="$REPO_ROOT/build/linux/x64/release/bundle"
 if [ "$SKIP_FLUTTER_BUILD" = true ]; then
-  if [ ! -x "$BUNDLE/river-music" ]; then
+  if [ ! -x "$BUNDLE/codah-music" ]; then
     echo "Bundle not found. Run: flutter build linux"
     exit 1
   fi
@@ -41,7 +41,7 @@ rm -rf "$STAGING"
 mkdir -p "$STAGING/usr/bin/lib" "$STAGING/usr/bin/data"
 
 # --- Staging: binary, libs, data (all under usr/bin so engine finds them) ---
-cp "$BUNDLE/river-music" "$STAGING/usr/bin/river-music"
+cp "$BUNDLE/codah-music" "$STAGING/usr/bin/codah-music"
 cp -a "$BUNDLE/lib/"* "$STAGING/usr/bin/lib/" 2>/dev/null || true
 cp -a "$BUNDLE/data/"* "$STAGING/usr/bin/data/"
 
@@ -55,8 +55,8 @@ for lib in libmpv libmimalloc; do
   done
 done
 
-patchelf --set-rpath '$ORIGIN/lib' "$STAGING/usr/bin/river-music"
-chmod +x "$STAGING/usr/bin/river-music"
+patchelf --set-rpath '$ORIGIN/lib' "$STAGING/usr/bin/codah-music"
+chmod +x "$STAGING/usr/bin/codah-music"
 
 # .deb/.rpm: same layout
 PKG_STAGING="$REPO_ROOT/build/linux_pkg_staging_named"
@@ -65,21 +65,21 @@ mkdir -p "$PKG_STAGING/usr/bin/lib" "$PKG_STAGING/usr/bin/data" \
   "$PKG_STAGING/usr/share/applications" "$PKG_STAGING/usr/share/icons/hicolor/256x256/apps"
 cp -a "$STAGING/usr/bin/lib/"* "$PKG_STAGING/usr/bin/lib/"
 cp -a "$STAGING/usr/bin/data/"* "$PKG_STAGING/usr/bin/data/"
-cp "$REPO_ROOT/icons/River_nobg.png" "$PKG_STAGING/usr/share/icons/hicolor/256x256/apps/river-music.png"
-cp "$REPO_ROOT/linux/packaging/river-music.desktop" "$PKG_STAGING/usr/share/applications/river-music.desktop"
-patchelf --set-rpath '$ORIGIN/lib' "$PKG_STAGING/usr/bin/river-music"
-chmod +x "$PKG_STAGING/usr/bin/river-music"
+cp "$REPO_ROOT/icons/Codah_nobg.png" "$PKG_STAGING/usr/share/icons/hicolor/256x256/apps/codah-music.png"
+cp "$REPO_ROOT/linux/packaging/codah-music.desktop" "$PKG_STAGING/usr/share/applications/codah-music.desktop"
+patchelf --set-rpath '$ORIGIN/lib' "$PKG_STAGING/usr/bin/codah-music"
+chmod +x "$PKG_STAGING/usr/bin/codah-music"
 
 echo "Staging ready at $STAGING"
 
 # --- AppImage ---
-APPDIR="$REPO_ROOT/build/River-Music.AppDir"
+APPDIR="$REPO_ROOT/build/Codah-Music.AppDir"
 rm -rf "$APPDIR"
 mkdir -p "$APPDIR/usr" "$APPDIR/usr/share/icons/hicolor/256x256/apps"
 cp -a "$STAGING/usr/bin" "$APPDIR/usr/"
-cp "$REPO_ROOT/icons/River_nobg.png" "$APPDIR/usr/share/icons/hicolor/256x256/apps/river-music.png"
-cp "$REPO_ROOT/icons/River_nobg.png" "$APPDIR/river-music.png"
-cp "$REPO_ROOT/linux/packaging/river-music.desktop" "$APPDIR/river-music.desktop"
+cp "$REPO_ROOT/icons/Codah_nobg.png" "$APPDIR/usr/share/icons/hicolor/256x256/apps/codah-music.png"
+cp "$REPO_ROOT/icons/Codah_nobg.png" "$APPDIR/codah-music.png"
+cp "$REPO_ROOT/linux/packaging/codah-music.desktop" "$APPDIR/codah-music.desktop"
 cp "$REPO_ROOT/linux/packaging/AppRun" "$APPDIR/AppRun"
 chmod +x "$APPDIR/AppRun"
 
@@ -95,40 +95,40 @@ else
   chmod +x "$REPO_ROOT/build/appimagetool.AppImage"
   APPIMAGETOOL="$REPO_ROOT/build/appimagetool.AppImage"
 fi
-ARCH=x86_64 "$APPIMAGETOOL" -n "$APPDIR" "$REPO_ROOT/build/River-Music-${VERSION}-x86_64.AppImage"
-echo "Built: build/River-Music-${VERSION}-x86_64.AppImage"
+ARCH=x86_64 "$APPIMAGETOOL" -n "$APPDIR" "$REPO_ROOT/build/Codah-Music-${VERSION}-x86_64.AppImage"
+echo "Built: build/Codah-Music-${VERSION}-x86_64.AppImage"
 
 # --- .deb ---
 if command -v dpkg-deb &>/dev/null; then
-  PKG="$REPO_ROOT/build/river-music_${VERSION}_amd64"
+  PKG="$REPO_ROOT/build/codah-music_${VERSION}_amd64"
   rm -rf "$PKG"
   mkdir -p "$PKG/DEBIAN" "$PKG/usr/share/applications" "$PKG/usr/share/icons/hicolor/256x256/apps"
   cp -a "$PKG_STAGING/usr/bin" "$PKG/usr/"
-  cp "$REPO_ROOT/icons/River_nobg.png" "$PKG/usr/share/icons/hicolor/256x256/apps/river-music.png"
-  cp "$REPO_ROOT/linux/packaging/river-music.desktop" "$PKG/usr/share/applications/river-music.desktop"
+  cp "$REPO_ROOT/icons/Codah_nobg.png" "$PKG/usr/share/icons/hicolor/256x256/apps/codah-music.png"
+  cp "$REPO_ROOT/linux/packaging/codah-music.desktop" "$PKG/usr/share/applications/codah-music.desktop"
   sed "s/VERSION/$VERSION/" "$REPO_ROOT/linux/packaging/control.in" > "$PKG/DEBIAN/control"
-  dpkg-deb --root-owner-group --build "$PKG" "$REPO_ROOT/build/river-music_${VERSION}_amd64.deb"
+  dpkg-deb --root-owner-group --build "$PKG" "$REPO_ROOT/build/codah-music_${VERSION}_amd64.deb"
   rm -rf "$PKG"
-  echo "Built: build/river-music_${VERSION}_amd64.deb"
+  echo "Built: build/codah-music_${VERSION}_amd64.deb"
 elif command -v fpm &>/dev/null; then
-  fpm -s dir -t deb -n river-music -v "$VERSION" \
+  fpm -s dir -t deb -n codah-music -v "$VERSION" \
     --architecture amd64 \
-    --description "River Music Desktop - Music player" \
+    --description "CODAH MUSIC Desktop - Music player" \
     -C "$PKG_STAGING" usr
-  mv "river-music_${VERSION}_amd64.deb" "$REPO_ROOT/build/"
-  echo "Built: build/river-music_${VERSION}_amd64.deb"
+  mv "codah-music_${VERSION}_amd64.deb" "$REPO_ROOT/build/"
+  echo "Built: build/codah-music_${VERSION}_amd64.deb"
 else
   echo "Skip .deb: install dpkg or fpm (gem install fpm)"
 fi
 
 # --- .rpm ---
 if command -v fpm &>/dev/null; then
-  fpm -s dir -t rpm -n river-music -v "$VERSION" \
+  fpm -s dir -t rpm -n codah-music -v "$VERSION" \
     --architecture x86_64 \
-    --description "River Music Desktop - Music player" \
+    --description "CODAH MUSIC Desktop - Music player" \
     -C "$PKG_STAGING" usr
-  mv "$REPO_ROOT/river-music-${VERSION}-1.x86_64.rpm" "$REPO_ROOT/build/river-music_${VERSION}_x86_64.rpm"
-  echo "Built: build/river-music_${VERSION}_x86_64.rpm"
+  mv "$REPO_ROOT/codah-music-${VERSION}-1.x86_64.rpm" "$REPO_ROOT/build/codah-music_${VERSION}_x86_64.rpm"
+  echo "Built: build/codah-music_${VERSION}_x86_64.rpm"
 else
   echo "Skip .rpm: install fpm (gem install fpm)"
 fi

@@ -1,9 +1,9 @@
-import 'package:River/core/widgets/squiggly_progress_bar.dart';
+import 'package:Codah/core/widgets/squiggly_progress_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
-import 'package:River/utils/song_thumbnail.dart';
+import 'package:Codah/utils/song_thumbnail.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:just_audio_background/just_audio_background.dart';
@@ -34,10 +34,8 @@ class _PlayerPageState extends State<PlayerPage> {
   List<Color> paletteColors = [];
   bool fetchedSong = false;
   late MediaItem? currentSong;
-  bool _hasLyrics = false;
-  bool _lyricsLoading = true;
   bool _showLyrics = false;
-  final GlobalKey<State> _lyricsBoxKey = GlobalKey();
+
 
   @override
   void initState() {
@@ -67,8 +65,6 @@ class _PlayerPageState extends State<PlayerPage> {
       if (mounted) {
         setState(() {
           currentSong = GetIt.I<MediaPlayer>().currentSongNotifier.value;
-          _lyricsLoading = true;
-          _hasLyrics = false;
         });
       }
     }
@@ -292,19 +288,29 @@ class _PlayerPageState extends State<PlayerPage> {
                                                                       ),
                                                                     ],
                                                                   ),
-                                                                  child: ClipRRect(
-                                                                    borderRadius:
-                                                                        BorderRadius
-                                                                            .circular(
-                                                                                12),
-                                                                    child:
-                                                                        SongThumbnail(
-                                                                      song: currentSong!
-                                                                          .extras!,
-                                                                      fit: BoxFit
-                                                                          .cover,
-                                                                      onImageReady:
-                                                                          updateBackgroundColor,
+                                                                  child: GestureDetector(
+                                                                    onTap: () {
+                                                                      final player = GetIt.I<MediaPlayer>().player;
+                                                                      if (player.playing) {
+                                                                        player.pause();
+                                                                      } else {
+                                                                        player.play();
+                                                                      }
+                                                                    },
+                                                                    child: ClipRRect(
+                                                                      borderRadius:
+                                                                          BorderRadius
+                                                                              .circular(
+                                                                                  12),
+                                                                      child:
+                                                                          SongThumbnail(
+                                                                        song: currentSong!
+                                                                            .extras!,
+                                                                        fit: BoxFit
+                                                                            .cover,
+                                                                        onImageReady:
+                                                                            updateBackgroundColor,
+                                                                      ),
                                                                     ),
                                                                   ),
                                                                 ),
@@ -326,36 +332,14 @@ class _PlayerPageState extends State<PlayerPage> {
                                                     padding:
                                                         const EdgeInsets.all(40.0),
                                                     child: _showLyrics
-                                                        ? (_hasLyrics
-                                                            ? LyricsBox(
-                                                                key: _lyricsBoxKey,
-                                                                currentSong: currentSong!,
-                                                                size: Size(
-                                                                    constraints.maxWidth / 2,
-                                                                    constraints.maxHeight),
-                                                                onLyricsFound: (found) {
-                                                                  if (mounted) {
-                                                                    setState(() {
-                                                                      _hasLyrics = found;
-                                                                      _lyricsLoading = false;
-                                                                    });
-                                                                  }
-                                                                },
-                                                              )
-                                                            : Center(
-                                                                 child: _lyricsLoading
-                                                                     ? const CircularProgressIndicator(
-                                                                         color: Colors.white,
-                                                                       )
-                                                                     : Text(
-                                                                         'No Lyrics',
-                                                                         style: TextStyle(
-                                                                           fontSize: 24,
-                                                                           fontWeight: FontWeight.w600,
-                                                                           color: Colors.white.withValues(alpha: 0.5),
-                                                                         ),
-                                                                       ),
-                                                             ))
+                                                        ? LyricsBox(
+                                                            key: ValueKey(currentSong!.id),
+                                                            currentSong: currentSong!,
+                                                            size: Size(
+                                                                constraints.maxWidth / 2,
+                                                                constraints.maxHeight),
+                                                            onLyricsFound: (_) {},
+                                                          )
                                                         : const QueueList(),
                                                   ),
                                                 ),
@@ -364,25 +348,9 @@ class _PlayerPageState extends State<PlayerPage> {
                                           ),
                                         ],
                                       ),
-                                      if (!_hasLyrics)
-                                        Offstage(
-                                          child: LyricsBox(
-                                            key: _lyricsBoxKey,
-                                            currentSong: currentSong!,
-                                            size: Size.zero,
-                                            onLyricsFound: (found) {
-                                              if (mounted) {
-                                                setState(() {
-                                                  _hasLyrics = found;
-                                                  _lyricsLoading = false;
-                                                });
-                                              }
-                                            },
-                                          ),
-                                        ),
                                     ],
                                   );
-                                } else {
+                                 } else {
                                   return Padding(
                                     padding: const EdgeInsets.symmetric(
                                         horizontal: 24.0),
@@ -407,14 +375,24 @@ class _PlayerPageState extends State<PlayerPage> {
                                                   ),
                                                 ],
                                               ),
-                                              child: ClipRRect(
-                                                borderRadius:
-                                                    BorderRadius.circular(12),
-                                                child: SongThumbnail(
-                                                  song: currentSong!.extras!,
-                                                  fit: BoxFit.cover,
-                                                  onImageReady:
-                                                      updateBackgroundColor,
+                                              child: GestureDetector(
+                                                onTap: () {
+                                                  final player = GetIt.I<MediaPlayer>().player;
+                                                  if (player.playing) {
+                                                    player.pause();
+                                                  } else {
+                                                    player.play();
+                                                  }
+                                                },
+                                                child: ClipRRect(
+                                                  borderRadius:
+                                                      BorderRadius.circular(12),
+                                                  child: SongThumbnail(
+                                                    song: currentSong!.extras!,
+                                                    fit: BoxFit.cover,
+                                                    onImageReady:
+                                                        updateBackgroundColor,
+                                                  ),
                                                 ),
                                               ),
                                             ),

@@ -2,30 +2,27 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:go_router/go_router.dart';
-import 'package:River/screens/browse/browse_page.dart';
-import 'package:River/screens/chip/chip_page.dart';
-import 'package:River/screens/home/home_page.dart';
-import 'package:River/screens/chart/chart_details_page.dart';
-import 'package:River/services/chart_model.dart';
-import 'package:River/screens/library/downloads/downloading/downloading_page.dart';
-import 'package:River/screens/library/downloads/downloads_page.dart';
-import 'package:River/screens/library/downloads/playlist/download_playlist_page.dart';
-import 'package:River/screens/library/favourites/favourites_page.dart';
-import 'package:River/screens/library/history/history_page.dart';
-import 'package:River/screens/library/library_page.dart';
-import 'package:River/screens/library/playlist/playlist_details_page.dart';
-import 'package:River/screens/player/player_page.dart';
-import 'package:River/screens/settings/about/about_page.dart';
-
-import 'package:River/screens/settings/backup_storage/backup_storage_page.dart';
-import 'package:River/screens/settings/content/content_settings_page.dart';
-import 'package:River/screens/settings/interface/interface_settings_page.dart';
-import 'package:River/screens/settings/player/equalizer/equalizer_page.dart';
-import 'package:River/screens/settings/player/player_settings_page.dart';
-import 'package:River/screens/settings/privacy/privacy_page.dart';
-import 'package:River/screens/settings/services/yt_music/yt_music_page.dart';
-import 'package:River/screens/settings/settings_page.dart';
-import 'package:River/screens/shell/app_shell.dart';
+import 'package:Codah/screens/browse/browse_page.dart';
+import 'package:Codah/screens/chip/chip_page.dart';
+import 'package:Codah/screens/search/search_page.dart';
+import 'package:Codah/screens/home/home_page.dart';
+import 'package:Codah/screens/chart/chart_details_page.dart';
+import 'package:Codah/services/chart_model.dart';
+import 'package:Codah/screens/library/downloads/downloading/downloading_page.dart';
+import 'package:Codah/screens/library/downloads/downloads_page.dart';
+import 'package:Codah/screens/library/downloads/playlist/download_playlist_page.dart';
+import 'package:Codah/screens/library/favourites/favourites_page.dart';
+import 'package:Codah/screens/library/history/history_page.dart';
+import 'package:Codah/screens/library/library_page.dart';
+import 'package:Codah/screens/library/playlist/playlist_details_page.dart';
+import 'package:Codah/screens/player/player_page.dart';
+import 'package:Codah/screens/settings/about/about_page.dart';
+import 'package:Codah/screens/settings/support_page.dart';
+import 'package:Codah/screens/settings/backup_storage/backup_storage_page.dart';
+import 'package:Codah/screens/settings/privacy/privacy_page.dart';
+import 'package:Codah/screens/settings/services/yt_music/yt_music_page.dart';
+import 'package:Codah/screens/settings/settings_page.dart';
+import 'package:Codah/screens/shell/app_shell.dart';
 
 GoRouter router = GoRouter(
   initialLocation: '/',
@@ -104,7 +101,13 @@ List<StatefulShellBranch> branches = [
                 return ChartDetailsPage(chartUrl: args);
               },
             ),
-
+            GoRoute(
+              path: 'search',
+              builder: (context, state) {
+                final query = state.extra as String? ?? '';
+                return SearchPage(query: query);
+              },
+            ),
           ]),
     ],
   ),
@@ -157,24 +160,6 @@ List<StatefulShellBranch> branches = [
         path: '/settings',
         builder: (context, state) => const SettingsPage(),
         routes: [
-
-          GoRoute(
-              path: 'player',
-              builder: (context, state) => const PlayerSettingsPage(),
-              routes: [
-                GoRoute(
-                  path: 'equalizer',
-                  builder: (context, state) => const EqualizerPage(),
-                )
-              ]),
-          GoRoute(
-            path: 'interface',
-            builder: (context, state) => const InterfaceSettingsPage(),
-          ),
-          GoRoute(
-            path: 'content',
-            builder: (context, state) => const ContentSettingsPage(),
-          ),
           GoRoute(
             path: 'services/ytmusic',
             builder: (context, state) => const YTMusicPage(),
@@ -192,7 +177,15 @@ List<StatefulShellBranch> branches = [
             builder: (context, state) => const AboutPage(),
           ),
         ]),
-  ])
+  ]),
+  StatefulShellBranch(
+    routes: [
+      GoRoute(
+        path: '/support',
+        builder: (context, state) => const SupportPage(),
+      ),
+    ],
+  ),
 ];
 
 class MyPageView extends StatefulWidget {

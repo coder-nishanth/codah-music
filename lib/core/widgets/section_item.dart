@@ -7,7 +7,7 @@ import 'package:expandable_text/expandable_text.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
-import 'package:River/ytmusic/ytmusic.dart';
+import 'package:Codah/ytmusic/ytmusic.dart';
 
 import '../../generated/l10n.dart';
 import '../../services/bottom_message.dart';
@@ -17,6 +17,35 @@ import '../../utils/enhanced_image.dart';
 import '../../utils/extensions.dart';
 import '../../services/media_player.dart';
 import '../../utils/bottom_modals.dart';
+import 'metrolist_sections.dart';
+
+IconData _sectionIcon(String? title) {
+  if (title == null) return Icons.music_note;
+  final t = title.toLowerCase();
+  if (t.contains('quick') || t.contains('fast')) return Icons.speed;
+  if (t.contains('trend')) return Icons.trending_up;
+  if (t.contains('chart')) return Icons.bar_chart;
+  if (t.contains('listen') || t.contains('again') || t.contains('keep')) return Icons.history;
+  if (t.contains('mixed') || t.contains('shuffle')) return Icons.shuffle;
+  if (t.contains('forgotten')) return Icons.restore;
+  if (t.contains('similar') || t.contains('related')) return Icons.compare_arrows;
+  if (t.contains('new release')) return Icons.new_releases;
+  if (t.contains('album')) return Icons.album;
+  if (t.contains('artist')) return Icons.person;
+  if (t.contains('playlist')) return Icons.playlist_play;
+  if (t.contains('podcast')) return Icons.podcasts;
+  if (t.contains('discover') || t.contains('daily')) return Icons.explore;
+  if (t.contains('recommend')) return Icons.recommend;
+  if (t.contains('community') || t.contains('group')) return Icons.groups;
+  if (t.contains('top') || t.contains('best')) return Icons.emoji_events;
+  if (t.contains('focus') || t.contains('chill') || t.contains('mood')) return Icons.psychology;
+  if (t.contains('workout') || t.contains('energy')) return Icons.fitness_center;
+  if (t.contains('party')) return Icons.celebration;
+  if (t.contains('sleep') || t.contains('relax')) return Icons.nightlight;
+  if (t.contains('romance') || t.contains('love')) return Icons.favorite;
+  if (t.contains('travel') || t.contains('commute')) return Icons.directions_car;
+  return Icons.music_note;
+}
 
 class SectionItem extends StatefulWidget {
   const SectionItem({required this.section, this.isMore = false, super.key});
@@ -63,6 +92,31 @@ class _SectionItemState extends State<SectionItem> {
 
   @override
   Widget build(BuildContext context) {
+    final customType = widget.section['customType'];
+    if (customType == 'speed_dial') {
+      return Column(
+        children: [
+          SpeedDialGrid(items: widget.section['contents'] ?? []),
+          const SizedBox(height: 12),
+        ],
+      );
+    }
+    if (customType == 'daily_discover') {
+      return Column(
+        children: [
+          DailyDiscoverCarousel(items: widget.section['contents'] ?? []),
+          const SizedBox(height: 12),
+        ],
+      );
+    }
+    if (customType == 'mood_and_genres') {
+      return Column(
+        children: [
+          MoodAndGenresGrid(items: widget.section['contents'] ?? []),
+          const SizedBox(height: 12),
+        ],
+      );
+    }
     horizontalPageController = PageController(
         viewportFraction: 350 / MediaQuery.of(context).size.width);
     return widget.section['contents'].isEmpty
@@ -171,7 +225,10 @@ class _SectionItemState extends State<SectionItem> {
                             widget.section['thumbnails'].first['url'],
                           ),
                         )
-                      : null,
+                      : Icon(
+                          _sectionIcon(widget.section['title']),
+                          color: Colors.white54, size: 28,
+                        ),
                 ),
               if (widget.section['viewType'] == 'COLUMN' && !widget.isMore)
                 SongList(
@@ -266,15 +323,18 @@ class SongTile extends StatelessWidget {
         (song['aspectRatio'] != null ? 50 / song['aspectRatio'] : 50)
             .toDouble();
     return AdaptiveListTile(
-        onTap: onTap ?? () async {
-          if (song['endpoint'] != null && song['videoId'] == null) {
-            context.push(
-              '/browse',
-              extra: {
-                'endpoint': song['endpoint'],
-              },
-            );
-          } else if (song['isChart'] == true) {
+         onTap: onTap ?? () async {
+           if (song['chartUrl'] != null) {
+             context.push('/chart_details',
+                 extra: song['chartUrl']);
+           } else if (song['endpoint'] != null && song['videoId'] == null) {
+             context.push(
+               '/browse',
+               extra: {
+                 'endpoint': song['endpoint'],
+               },
+             );
+           } else if (song['isChart'] == true) {
              BottomMessage.showText(context, "Searching and playing ${song['title']}...");
              final query = "${song['title']} ${song['subtitle'] ?? ''}";
              try {

@@ -3,9 +3,9 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:get_it/get_it.dart';
-import 'package:River/models/lyrics_model.dart';
-import 'package:River/services/lyrics.dart';
-import 'package:River/services/media_player.dart';
+import 'package:Codah/models/lyrics_model.dart';
+import 'package:Codah/services/lyrics.dart';
+import 'package:Codah/services/media_player.dart';
 import 'package:just_audio_background/just_audio_background.dart';
 import 'package:loading_indicator_m3e/loading_indicator_m3e.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
@@ -63,7 +63,8 @@ class _LyricsBoxState extends State<LyricsBox> {
           title: widget.currentSong.title,
           artist: widget.currentSong.artist,
           album: widget.currentSong.album,
-          duration: widget.currentSong.duration?.inSeconds.toString(),
+          duration: widget.currentSong.duration != null ? widget.currentSong.duration!.inSeconds.toString() : null,
+          videoId: widget.currentSong.id,
         );
         _lyricsLoaded = false;
         _fetchLyricsFuture!.then((lyrics) {
@@ -136,16 +137,12 @@ class LoadedLyricsWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if ((lyrics.parsedLyrics?.lyrics.isEmpty ?? true) &&
-        lyrics.lyricsPlain.isNotEmpty) {
+        lyrics.lyricsPlain.isNotEmpty)
       return PlainLyricsWidget(lyrics: lyrics);
-    } else if (lyrics.parsedLyrics?.lyrics.isNotEmpty ?? false) {
-      return SyncedLyricsWidget(
-        lyrics: lyrics,
-      );
-    }
-    return const Center(
-      child: Text("No Lyrics found!"),
-    );
+    else if (lyrics.parsedLyrics?.lyrics.isNotEmpty ?? false)
+      return SyncedLyricsWidget(lyrics: lyrics);
+    else
+      return const Center(child: Text("No Lyrics found!"));
   }
 }
 
@@ -179,11 +176,10 @@ class PlainLyricsWidget extends StatelessWidget {
           "\n${lyrics.lyricsPlain}\n",
           textAlign: TextAlign.center,
           style: const TextStyle(
-            fontSize: 34,
-            fontWeight: FontWeight.w800,
+            fontSize: 32,
+            fontWeight: FontWeight.w900,
             color: Colors.white,
             height: 1.5,
-            letterSpacing: 0.2,
           ),
         ),
       ),
@@ -202,58 +198,51 @@ class SyncedLyricsWidget extends StatefulWidget {
   State<SyncedLyricsWidget> createState() => _SyncedLyricsWidgetState();
 }
 
-class _SyncedLyricsWidgetState extends State<SyncedLyricsWidget>
-    with TickerProviderStateMixin {
+class _SyncedLyricsWidgetState extends State<SyncedLyricsWidget> {
   StreamSubscription? _streamSubscription;
   final ItemScrollController _itemScrollController = ItemScrollController();
   final ItemPositionsListener _itemPositionsListener =
       ItemPositionsListener.create();
   Duration duration = Duration.zero;
   int _currentLyricIndex = 0;
+  bool _initialScrollDone = false;
   
   bool _isUserScrolling = false;
   Timer? _userScrollTimer;
   final Duration _userScrollCooldown = const Duration(milliseconds: 1500);
 
-  late AnimationController _glowController;
-  late Animation<double> _glowAnimation;
-
   @override
   void initState() {
     super.initState();
 
-    _glowController = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 2000),
-    )..repeat(reverse: true);
-
-    _glowAnimation = Tween<double>(begin: 0.2, end: 0.9).animate(
-      CurvedAnimation(parent: _glowController, curve: Curves.easeInOut),
-    );
-
     try {
       _streamSubscription =
           GetIt.I<MediaPlayer>().player.positionStream.listen((event) {
-        if (mounted) {
-          duration = event;
-          final newIndex = _findCurrentLyricIndex();
-          if (newIndex != _currentLyricIndex) {
-            setState(() {
-              _currentLyricIndex = newIndex;
-            });
-            _scrollToCurrentLyric(newIndex);
-          }
+        if (!mounted) return;
+        duration = event;
+        final newIndex = _findCurrentLyricIndex();
+
+        if (!_initialScrollDone) {
+          _initialScrollDone = true;
+          _currentLyricIndex = newIndex;
+          _scrollToCurrentLyric(newIndex);
+          return;
+        }
+
+        if (newIndex != _currentLyricIndex) {
+          setState(() {
+            _currentLyricIndex = newIndex;
+          });
+          _scrollToCurrentLyric(newIndex);
         }
       });
     } catch (e) {
-      print("Error attaching position stream: $e");
     }
   }
 
   @override
   void dispose() {
     _userScrollTimer?.cancel();
-    _glowController.dispose();
     _streamSubscription?.cancel();
     super.dispose();
   }
@@ -264,7 +253,7 @@ class _SyncedLyricsWidgetState extends State<SyncedLyricsWidget>
         index: index,
         duration: const Duration(milliseconds: 700),
         curve: Curves.easeOutCubic,
-        alignment: 0.5,
+        alignment: 0.44,
       );
     }
   }
@@ -341,57 +330,32 @@ class _SyncedLyricsWidgetState extends State<SyncedLyricsWidget>
                 vertical: MediaQuery.of(context).size.height / 2.5),
             itemBuilder: (context, index) {
               final isCurrent = isCurrentLyric(index);
-              final lyricText = widget.lyrics.parsedLyrics!.lyrics[index].text;
-              
-              
+              final displayText = widget.lyrics.parsedLyrics!.lyrics[index].text;
+
+              final textStyle = AnimatedDefaultTextStyle(
+                duration: const Duration(milliseconds: 400),
+                curve: Curves.easeOutCubic,
+                style: TextStyle(
+                  fontSize: 32,
+                  fontWeight: FontWeight.w900,
+                  color: isCurrent
+                      ? Colors.white
+                      : Colors.white.withValues(alpha: 0.35),
+                  height: 1.4,
+                ),
+                child: Text(
+                  displayText,
+                  textAlign: TextAlign.center,
+                ),
+              );
+
               return GestureDetector(
                 onTap: () => _seekToLyric(index),
                 behavior: HitTestBehavior.opaque,
                 child: Padding(
                   padding:
                       const EdgeInsets.symmetric(vertical: 16.0, horizontal: 32),
-                  child: AnimatedBuilder(
-                    animation: _glowAnimation,
-                    builder: (context, child) {
-                      return AnimatedDefaultTextStyle(
-                        duration: const Duration(milliseconds: 400),
-                        curve: Curves.easeOutCubic,
-                        style: TextStyle(
-                          fontSize: isCurrent ? 38 : 28,
-                          fontWeight:
-                              isCurrent ? FontWeight.w900 : FontWeight.w600,
-                          color: isCurrent
-                              ? Colors.white
-                              : Colors.white.withValues(alpha: 0.35),
-                          height: 1.4,
-                          letterSpacing: isCurrent ? 0.5 : -0.3,
-                          shadows: isCurrent
-                              ? [
-                                  Shadow(
-                                    color: Colors.white.withValues(
-                                        alpha: _glowAnimation.value * 0.8),
-                                    blurRadius: 15,
-                                  ),
-                                  Shadow(
-                                    color: Colors.white.withValues(
-                                        alpha: _glowAnimation.value * 0.4),
-                                    blurRadius: 30,
-                                  ),
-                                  Shadow(
-                                    color: Colors.blueAccent.withValues(
-                                        alpha: _glowAnimation.value * 0.3),
-                                    blurRadius: 50,
-                                  ),
-                                ]
-                              : [],
-                        ),
-                        child: Text(
-                          lyricText,
-                          textAlign: TextAlign.center,
-                        ),
-                      );
-                    },
-                  ),
+                  child: textStyle,
                 ),
               );
             },
@@ -399,22 +363,5 @@ class _SyncedLyricsWidgetState extends State<SyncedLyricsWidget>
         ),
       ),
     );
-  }
-}
-
-class AnimatedBuilder extends AnimatedWidget {
-  final Widget Function(BuildContext context, Widget? child) builder;
-  final Widget? child;
-
-  const AnimatedBuilder({
-    super.key,
-    required Animation<double> animation,
-    required this.builder,
-    this.child,
-  }) : super(listenable: animation);
-
-  @override
-  Widget build(BuildContext context) {
-    return builder(context, child);
   }
 }

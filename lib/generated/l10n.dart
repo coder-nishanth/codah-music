@@ -46,8 +46,8 @@ class S {
     return Localizations.of<S>(context, S);
   }
 
-  String get River {
-    return Intl.message('River', name: 'River', desc: '', args: []);
+  String get Codah {
+    return Intl.message('Codah', name: 'Codah', desc: '', args: []);
   }
 
   String get Next_Up {
@@ -74,10 +74,10 @@ class S {
     return Intl.message('Settings', name: 'Settings', desc: '', args: []);
   }
 
-  String get Search_River {
+  String get Search_Codah {
     return Intl.message(
-      'Search River',
-      name: 'Search_River',
+      'Search Codah',
+      name: 'Search_Codah',
       desc: '',
       args: [],
     );
@@ -152,7 +152,7 @@ class S {
 
   String get Battery_Optimisation_message {
     return Intl.message(
-      'Click here disable battery optimisation for River to work properly',
+      'Click here disable battery optimisation for Codah to work properly',
       name: 'Battery_Optimisation_message',
       desc: '',
       args: [],
@@ -165,7 +165,7 @@ class S {
 
   String get Donate_Message {
     return Intl.message(
-      'Support the development of River',
+      'Support the development of Codah',
       name: 'Donate_Message',
       desc: '',
       args: [],

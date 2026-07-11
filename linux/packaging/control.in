@@ -1,7 +1,7 @@
-Package: river-music
+Package: codah-music
 Version: VERSION
 Section: sound
 Priority: optional
 Architecture: amd64
-Maintainer: River Music <noreply@river.music>
-Description: River Music Desktop - Music player
+Maintainer: CODAH MUSIC <noreply@codah.music>
+Description: CODAH MUSIC Desktop - Music player

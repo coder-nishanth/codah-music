@@ -27,7 +27,7 @@ class FileStorage {
     Directory directory = Directory("dir");
     if (Platform.isWindows) {
       directory =
-          Directory(path.join((await getDownloadsDirectory())!.path, 'River'));
+          Directory(path.join((await getDownloadsDirectory())!.path, 'Codah'));
     } else {
       directory = await getApplicationDocumentsDirectory();
     }
@@ -46,7 +46,7 @@ class FileStorage {
     Directory directory = Directory("dir");
     if (Platform.isWindows) {
       directory =
-          Directory(path.join((await getDownloadsDirectory())!.path, 'River'));
+          Directory(path.join((await getDownloadsDirectory())!.path, 'Codah'));
     } else {
       directory = await getApplicationDocumentsDirectory();
     }
@@ -113,8 +113,6 @@ class FileStorage {
         await file.delete();
       }
       await file.writeAsBytes(data, flush: true);
-
-      await file.writeAsBytes(data, flush: true);
       return file;
     } catch (e) {
       return null;
@@ -134,7 +132,7 @@ class FileStorage {
     final file = picker.files[0].xFile;
     String data = await file.readAsString();
     Map backup = jsonDecode(data);
-    if (backup['name'] != 'River' && backup['type'] != 'backup') {
+    if (backup['name'] != 'Codah' && backup['type'] != 'backup') {
       return false;
     }
     Map? settings = backup['data']?['settings'];

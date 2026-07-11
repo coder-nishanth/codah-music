@@ -1,7 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:flutter/foundation.dart';
 import 'package:get_it/get_it.dart';
-import 'package:River/services/download_manager.dart';
+import 'package:Codah/services/download_manager.dart';
 
 part 'downloading_state.dart';
 

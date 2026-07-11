@@ -1,13 +1,11 @@
 import 'dart:convert';
-import 'dart:developer';
 
 import 'package:http/http.dart' as http;
 import 'package:html/parser.dart' show parse;
 import 'package:html/dom.dart';
-import 'package:River/services/chart_model.dart';
+import 'package:Codah/services/chart_model.dart';
 
 class ChartsService {
- 
   static const String HOT_100 = 'https://www.billboard.com/charts/hot-100/';
   static const String BILLBOARD_200 = 'https://www.billboard.com/charts/billboard-200/';
   static const String GLOBAL_200 = 'https://www.billboard.com/charts/billboard-global-200/';
@@ -23,7 +21,6 @@ class ChartsService {
   static const String LATIN_SONGS = 'https://www.billboard.com/charts/latin-songs/';
   static const String DANCE_ELECTRONIC = 'https://www.billboard.com/charts/dance-electronic-songs/';
   static const String CHRISTIAN_SONGS = 'https://www.billboard.com/charts/christian-songs/';
-
 
   static const String SPOTIFY_TOP_50_GLOBAL = 'https://charts-spotify-com-service.spotify.com/public/v0/charts';
 
@@ -51,7 +48,6 @@ class ChartsService {
   Future<List<ChartURL>> getChartsWithPreviews() async {
       List<ChartURL> charts = getAllBillboardCharts();
       
-      
       await Future.wait(charts.map((chart) async {
          try {
              ChartModel model;
@@ -65,7 +61,6 @@ class ChartsService {
                  chart.coverArt = model.chartItems!.first.imageUrl;
              }
          } catch (e) {
-             log("Error fetching preview for ${chart.title}: $e");
          }
       }));
       
@@ -83,7 +78,6 @@ class ChartsService {
   Future<ChartModel> getSpotifyTop50Global() async {
       return getSpotifyTop50Chart(ChartURL(title: "Spotify Top 50 Global", url: SPOTIFY_TOP_50_GLOBAL));
   }
- 
 
   Future<ChartModel> getBillboardChart(ChartURL url) async {
     var client = http.Client();
@@ -118,19 +112,15 @@ class ChartsService {
           chartItems
               .add(ChartItemModel(name: ttl, imageUrl: imgURL, subtitle: lbl));
         }
-        final chart = ChartModel(
+        return ChartModel(
             chartName: url.title,
             chartItems: chartItems,
             url: url.url,
             lastUpdated: DateTime.now());
-        log('Billboard Charts: ${chart.chartItems!.length} tracks',
-            name: "Billboard");
-        return chart;
       } else {
         throw Exception("Failed to load page");
       }
     } catch (e) {
-      log('Error while getting data from:${url.url}', name: "Billboard");
       throw Exception("Error: $e");
     } finally {
         client.close();
@@ -150,15 +140,12 @@ class ChartsService {
             imageUrl: item['trackMetadata']['displayImageUri'],
           ));
         }
-        final chart = ChartModel(
+        return ChartModel(
           chartName: url.title,
           chartItems: chartItems,
           url: url.url,
           lastUpdated: DateTime.now(),
         );
-        log('Spotify Charts: ${chart.chartItems!.length} tracks',
-            name: "Spotify");
-        return chart;
       } else {
         throw Exception('Failed to load chart');
       }

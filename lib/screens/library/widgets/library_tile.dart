@@ -3,11 +3,11 @@ import 'package:expandable_text/expandable_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
-import 'package:River/generated/l10n.dart';
-import 'package:River/services/media_player.dart';
-import 'package:River/utils/adaptive_widgets/listtile.dart';
-import 'package:River/utils/bottom_modals.dart';
-import 'package:River/utils/extensions.dart';
+import 'package:Codah/generated/l10n.dart';
+import 'package:Codah/services/media_player.dart';
+import 'package:Codah/utils/adaptive_widgets/listtile.dart';
+import 'package:Codah/utils/bottom_modals.dart';
+import 'package:Codah/utils/extensions.dart';
 
 class LibraryTile extends StatelessWidget {
   const LibraryTile({required this.songs, required this.index, super.key});

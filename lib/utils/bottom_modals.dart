@@ -8,13 +8,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
-import 'package:River/utils/playlist_thumbnail.dart';
+import 'package:Codah/utils/playlist_thumbnail.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:provider/provider.dart';
-import 'package:share_plus/share_plus.dart';
 
-import 'package:River/services/import_service.dart';
-import 'package:River/screens/import_dialog.dart';
+import 'package:Codah/services/import_service.dart';
+import 'package:Codah/screens/import_dialog.dart';
 
 import '../generated/l10n.dart';
 import '../services/bottom_message.dart';
@@ -736,7 +735,7 @@ class _AppleMusicStylePopup extends StatelessWidget {
         hasValidPosition ? buttonPosition.dy + buttonSize.height + 8 : 60;
     final double right = hasValidPosition
         ? (screenWidth - buttonPosition.dx - buttonSize.width)
-            .clamp(16, screenWidth - 216)
+            .clamp(16.0, (screenWidth - 216).clamp(16.0, screenWidth))
         : 16;
 
     return Stack(
@@ -765,8 +764,8 @@ class _AppleMusicStylePopup extends StatelessWidget {
                   ),
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(12),
-                    child: BackdropFilter(
-                      filter: ImageFilter.blur(sigmaX: 60, sigmaY: 60),
+                    child: ColoredBox(
+                      color: Colors.black.withValues(alpha: 0.6),
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
@@ -838,18 +837,6 @@ class _AppleMusicStylePopup extends StatelessWidget {
                                 });
                               },
                             ),
-                          _menuItem(
-                            context,
-                            icon: AdaptiveIcons.share,
-                            title: 'Share',
-                            onTap: () {
-                              Navigator.pop(context);
-                              Share.shareUri(
-                                Uri.parse(
-                                    'https://music.youtube.com/watch?v=${song['videoId']}'),
-                              );
-                            },
-                          ),
                           const SizedBox(height: 6),
                         ],
                       ),
@@ -1023,20 +1010,7 @@ BottomModalLayout _playerOptionsModal(BuildContext context, Map song) {
                     'endpoint':
                         song['album']['endpoint'].cast<String, dynamic>(),
                   });
-                }),
-
-          AdaptiveListTile(
-            dense: true,
-            title: const Text('Share'),
-            leading: Icon(AdaptiveIcons.share),
-            onTap: () {
-              Navigator.pop(context);
-              Share.shareUri(
-                Uri.parse(
-                    'https://music.youtube.com/watch?v=${song['videoId']}'),
-              );
-            },
-          ),
+                 }),
         ],
       ),
     ),
@@ -1087,10 +1061,6 @@ BottomModalLayout _songBottomModal(BuildContext context, Map song) {
       subtitle: song['subtitle'] != null
           ? Text(song['subtitle'], maxLines: 1, overflow: TextOverflow.ellipsis)
           : null,
-      trailing: IconButton(
-          onPressed: () => Share.shareUri(Uri.parse(
-              'https://music.youtube.com/watch?v=${song['videoId']}')),
-          icon: const Icon(CupertinoIcons.share)),
     ),
     child: SingleChildScrollView(
       child: Column(
@@ -1246,14 +1216,6 @@ BottomModalLayout _playlistBottomModal(BuildContext context, Map playlist) {
       subtitle: playlist['subtitle'] != null
           ? Text(playlist['subtitle'],
               maxLines: 1, overflow: TextOverflow.ellipsis)
-          : null,
-      trailing: playlist['isPredefined'] != false
-          ? IconButton(
-              onPressed: () => Share.shareUri(Uri.parse(playlist['type'] ==
-                      'ARTIST'
-                  ? 'https://music.youtube.com/channel/${playlist['endpoint']['browseId']}'
-                  : 'https://music.youtube.com/playlist?list=${playlist['playlistId']}')),
-              icon: const Icon(CupertinoIcons.share))
           : null,
     ),
     child: SingleChildScrollView(
@@ -1454,7 +1416,6 @@ BottomModalLayout _downloadBottomModal(BuildContext context) {
                     try {
                       File(path).delete();
                     } catch (e) {
-                      debugPrint(e.toString());
                     }
                   }
                 }
@@ -2227,16 +2188,6 @@ errorWidget: (context, url, error) => const Icon(Icons.music_note),
                   });
           },
         ),
-        _buildAction(
-          context,
-          icon: AdaptiveIcons.share,
-          title: 'Share',
-          onTap: () {
-             Navigator.pop(context);
-              Share.shareUri(Uri.parse(
-                  'https://music.youtube.com/watch?v=${song['videoId']}'));
-          },
-        ),
       ],
     );
   }
@@ -2465,18 +2416,6 @@ class _PlaylistWindowContent extends StatelessWidget {
                   'endpoint': playlist['album']['endpoint'],
                 },
               );
-          },
-        ),
-         _buildAction(
-          context,
-          icon: AdaptiveIcons.share,
-          title: 'Share',
-          onTap: () {
-             Navigator.pop(context);
-               Share.shareUri(Uri.parse(playlist['type'] ==
-                      'ARTIST'
-                  ? 'https://music.youtube.com/channel/${playlist['endpoint']['browseId']}'
-                  : 'https://music.youtube.com/playlist?list=${playlist['playlistId']}'));
           },
         ),
 

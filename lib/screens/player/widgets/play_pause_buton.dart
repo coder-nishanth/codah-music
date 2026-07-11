@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
-import 'package:River/services/media_player.dart';
-import 'package:River/utils/extensions.dart';
+import 'package:Codah/services/media_player.dart';
+import 'package:Codah/utils/extensions.dart';
 import 'package:loading_indicator_m3e/loading_indicator_m3e.dart';
 
 class PlayPauseButton extends StatefulWidget {

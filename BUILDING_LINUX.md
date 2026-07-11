@@ -1,6 +1,6 @@
-# Building Linux Packages for River Music
+# Building Linux Packages for CODAH MUSIC
 
-This guide explains how to build Linux distribution packages (DEB, AppImage, RPM) for River Music Desktop.
+This guide explains how to build Linux distribution packages (DEB, AppImage, RPM) for CODAH MUSIC Desktop.
 
 ## Platform Limitation ⚠️
 
@@ -32,7 +32,7 @@ flutter pub global activate flutter_distributor
 ### Build All Packages
 ```bash
 # Navigate to project directory
-cd /path/to/River-Music-Desktop
+cd /path/to/Codah-Music-Desktop
 
 # Install dependencies
 flutter pub get
@@ -108,9 +108,9 @@ flutter_distributor release --name dev
 
 Once built, distribute the packages:
 
-- **DEB**: Users install with `sudo dpkg -i River-*.deb`
-- **AppImage**: Users make executable and run: `chmod +x River-*.AppImage && ./River-*.AppImage`
-- **RPM**: Users install with `sudo rpm -i River-*.rpm`
+- **DEB**: Users install with `sudo dpkg -i Codah-*.deb`
+- **AppImage**: Users make executable and run: `chmod +x Codah-*.AppImage && ./Codah-*.AppImage`
+- **RPM**: Users install with `sudo rpm -i Codah-*.rpm`
 
 ## Current Status
 

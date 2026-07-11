@@ -1,5 +1,5 @@
-import 'package:River/ytmusic/client.dart';
-import 'package:River/ytmusic/mixins/library.dart';
+import 'package:Codah/ytmusic/client.dart';
+import 'package:Codah/ytmusic/mixins/library.dart';
 
 import 'mixins/browsing.dart';
 import 'mixins/search.dart';

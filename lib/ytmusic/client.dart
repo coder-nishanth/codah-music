@@ -1,8 +1,8 @@
 import 'dart:convert';
 
-import 'package:flutter/material.dart';
-import 'package:River/ytmusic/helpers.dart';
-import 'package:River/ytmusic/modals/yt_config.dart';
+
+import 'package:Codah/ytmusic/helpers.dart';
+import 'package:Codah/ytmusic/modals/yt_config.dart';
 import 'package:http/http.dart';
 
 class YTClient {
@@ -90,7 +90,6 @@ class YTClient {
       final Response response = await get(uri, headers: headers);
       return response;
     } catch (e) {
-      debugPrint("Exception in YTClient::sendGetReques: $e");
       lastConnectionErrorTime.value = DateTime.now().millisecondsSinceEpoch;
       return Response.bytes([], 503);
     }
@@ -105,7 +104,6 @@ class YTClient {
       final Response response = await get(uri, headers: headers);
       return response;
     } catch (e) {
-      debugPrint("Exception in YTClient::_sendGetRequest: $e");
       lastConnectionErrorTime.value = DateTime.now().millisecondsSinceEpoch;
       return Response.bytes([], 503);
     }
@@ -118,7 +116,6 @@ class YTClient {
       final Response response = await get(uri, headers: headers);
       return response;
     } catch (e) {
-      debugPrint("Exception in YTClient::addPlayingStats: $e");
       lastConnectionErrorTime.value = DateTime.now().millisecondsSinceEpoch;
       return Response.bytes([], 503);
     }
@@ -152,7 +149,6 @@ class YTClient {
         return {};
       }
     } catch (e) {
-      debugPrint("Exception in YTClient::sendRequest: $e");
       lastConnectionErrorTime.value = DateTime.now().millisecondsSinceEpoch;
       return {};
     }

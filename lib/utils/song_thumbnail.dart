@@ -1,7 +1,7 @@
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:River/utils/enhanced_image.dart';
+import 'package:Codah/utils/enhanced_image.dart';
 
 class SongThumbnail extends StatefulWidget {
   final Map song;

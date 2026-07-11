@@ -2,11 +2,11 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
-import 'package:River/generated/l10n.dart';
-import 'package:River/themes/colors.dart';
-import 'package:River/utils/adaptive_widgets/buttons.dart';
-import 'package:River/utils/adaptive_widgets/icons.dart';
-import 'package:River/ytmusic/ytmusic.dart';
+import 'package:Codah/generated/l10n.dart';
+import 'package:Codah/themes/colors.dart';
+import 'package:Codah/utils/adaptive_widgets/buttons.dart';
+import 'package:Codah/utils/adaptive_widgets/icons.dart';
+import 'package:Codah/ytmusic/ytmusic.dart';
 import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';
 
 class InternetGuard extends StatefulWidget {

@@ -89,13 +89,13 @@ BEGIN
     BEGIN
         BLOCK "040904e4"
         BEGIN
-            VALUE "CompanyName", "com.river.music" "\0"
-            VALUE "FileDescription", "River Music" "\0"
+            VALUE "CompanyName", "com.codah.music" "\0"
+            VALUE "FileDescription", "CODAH MUSIC" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
-            VALUE "InternalName", "river-music" "\0"
-            VALUE "LegalCopyright", "Copyright (C) 2026 com.river.music. All rights reserved." "\0"
-            VALUE "OriginalFilename", "river-music.exe" "\0"
-            VALUE "ProductName", "River Music" "\0"
+            VALUE "InternalName", "codah-music" "\0"
+            VALUE "LegalCopyright", "Copyright (C) 2026 com.codah.music. All rights reserved." "\0"
+            VALUE "OriginalFilename", "codah-music.exe" "\0"
+            VALUE "ProductName", "CODAH MUSIC" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END

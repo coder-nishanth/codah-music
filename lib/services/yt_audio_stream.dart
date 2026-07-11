@@ -5,58 +5,100 @@ import 'dart:io';
 import 'package:just_audio/just_audio.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 
+class _CachedStream {
+  final Uri url;
+  final int totalBytes;
+  final String mimeType;
+  final bool isThrottled;
+  _CachedStream({required this.url, required this.totalBytes, required this.mimeType, required this.isThrottled});
+}
+
 class YouTubeAudioSource extends StreamAudioSource {
   final String videoId;
   final String quality;
-  final YoutubeExplode ytExplode;
-  AudioOnlyStreamInfo? _cachedStreamInfo;
+  _CachedStream? _cachedStream;
 
   YouTubeAudioSource({
     required this.videoId,
     required this.quality,
     super.tag,
-  }) : ytExplode = YoutubeExplode();
+  });
 
-  Future<AudioOnlyStreamInfo> _getStreamInfo() async {
-    if (_cachedStreamInfo != null) return _cachedStreamInfo!;
+  Future<void> preload() async {
+    await _getStreamInfo();
+  }
 
-    final manifest = await ytExplode.videos.streams.getManifest(videoId,
-        requireWatchPage: true, ytClients: [YoutubeApiClient.androidVr]);
-    Iterable<AudioOnlyStreamInfo> supportedStreams = manifest.audioOnly;
-    supportedStreams = supportedStreams.sortByBitrate();
+  bool get hasPreloaded => _cachedStream != null;
 
-    final audioStream = quality == 'high'
-        ? supportedStreams.lastOrNull
-        : supportedStreams.firstOrNull;
+  Future<_CachedStream> _getStreamInfo() async {
+    if (_cachedStream != null) return _cachedStream!;
 
-    if (audioStream == null) {
-      throw Exception('No audio stream available for this video.');
+    int attempts = 0;
+    const int maxAttempts = 2;
+    while (attempts < maxAttempts) {
+      attempts++;
+      try {
+        final manifest = await ytExplode.videos.streams.getManifest(videoId,
+            requireWatchPage: true, ytClients: [YoutubeApiClient.androidVr]);
+
+        Iterable<AudioOnlyStreamInfo> audioStreams = manifest.audioOnly;
+        audioStreams = audioStreams.sortByBitrate();
+        final bestAudio = quality == 'high'
+            ? audioStreams.lastOrNull
+            : audioStreams.firstOrNull;
+
+        if (bestAudio != null) {
+          _cachedStream = _CachedStream(
+            url: bestAudio.url,
+            totalBytes: bestAudio.size.totalBytes,
+            mimeType: bestAudio.codec.mimeType,
+            isThrottled: bestAudio.isThrottled,
+          );
+          return _cachedStream!;
+        }
+
+        final muxedStreams = manifest.muxed..sort((a, b) => b.bitrate.compareTo(a.bitrate));
+        final bestMuxed = muxedStreams.isNotEmpty ? muxedStreams.first : null;
+
+        if (bestMuxed != null) {
+          _cachedStream = _CachedStream(
+            url: bestMuxed.url,
+            totalBytes: bestMuxed.size.totalBytes,
+            mimeType: bestMuxed.codec.mimeType,
+            isThrottled: bestMuxed.isThrottled,
+          );
+          return _cachedStream!;
+        }
+
+        throw Exception('No audio stream available for this video.');
+      } catch (e) {
+        if (attempts >= maxAttempts) rethrow;
+        await Future.delayed(Duration(seconds: attempts * 2));
+      }
     }
-
-    _cachedStreamInfo = audioStream;
-    return audioStream;
+    throw Exception('Failed to get stream info after $maxAttempts attempts.');
   }
 
   @override
   Future<StreamAudioResponse> request([int? start, int? end]) async {
     try {
-      final audioStream = await _getStreamInfo();
+      final streamInfo = await _getStreamInfo();
 
       start ??= 0;
-      end ??= (audioStream.isThrottled
+      end ??= (streamInfo.isThrottled
           ? (end ?? (start + 10379935))
-          : audioStream.size.totalBytes);
-      if (end > audioStream.size.totalBytes) {
-        end = audioStream.size.totalBytes;
+          : streamInfo.totalBytes);
+      if (end > streamInfo.totalBytes) {
+        end = streamInfo.totalBytes;
       }
 
-      final stream = await _downloadStream(audioStream.url, start, end - 1);
+      final stream = await _downloadStream(streamInfo.url, start, end - 1);
       return StreamAudioResponse(
-        sourceLength: audioStream.size.totalBytes,
+        sourceLength: streamInfo.totalBytes,
         contentLength: end - start,
         offset: start,
         stream: stream,
-        contentType: audioStream.codec.mimeType,
+        contentType: streamInfo.mimeType,
       );
     } catch (e) {
       throw Exception('Failed to load audio: $e');
@@ -76,9 +118,6 @@ Future<String> createAudioStreamServer() async {
   final host = server.address.host;
   final port = server.port;
   final url = 'http://$host:$port/audio';
-
-  print(
-      'Generic streaming server started on $url. Use ?id=...&quality=... to stream.');
 
   return url;
 }
@@ -108,15 +147,12 @@ Future<void> handleAudioRequest(HttpRequest request) async {
     return;
   }
 
-  print('Processing request for video ID: $videoId (Quality: $quality)');
-
-  try {
+  if (videoId == null || videoId.isEmpty) {
     AudioOnlyStreamInfo? audioStreamInfo;
 
     if (_manifestCache.containsKey(videoId)) {
       final cached = _manifestCache[videoId]!;
       if (DateTime.now().isBefore(cached.expiry)) {
-        print('Using cached manifest for $videoId');
         audioStreamInfo = cached.info;
       } else {
         _manifestCache.remove(videoId);
@@ -207,14 +243,10 @@ Future<void> handleAudioRequest(HttpRequest request) async {
         response.add(chunk);
       }
     } catch (streamError) {
-      print('Stream error for $videoId: $streamError');
     }
 
     await response.close();
-    print(
-        '[$videoId] Served ${isPartial ? 'partial' : 'full'} stream: bytes $start-$end');
   } catch (e) {
-    print('Error serving audio for ID $videoId: $e');
     try {
       response.statusCode = HttpStatus.internalServerError;
       response.write('Error: $e');
@@ -224,8 +256,6 @@ Future<void> handleAudioRequest(HttpRequest request) async {
 }
 
 final Map<String, ({String url, DateTime expiry})> _urlCache = {};
-
-final YoutubeExplode _ytClient = YoutubeExplode();
 
 Future<AudioSource> getDirectUrlAudioSource(
     String videoId, String quality, dynamic tag) async {
@@ -239,7 +269,7 @@ Future<AudioSource> getDirectUrlAudioSource(
   }
 
   try {
-    final manifest = await _ytClient.videos.streamsClient.getManifest(videoId,
+    final manifest = await ytExplode.videos.streamsClient.getManifest(videoId,
         requireWatchPage: true, ytClients: [YoutubeApiClient.androidVr]);
     Iterable<AudioOnlyStreamInfo> supportedStreams = manifest.audioOnly;
     supportedStreams = supportedStreams.sortByBitrate();
@@ -259,7 +289,6 @@ Future<AudioSource> getDirectUrlAudioSource(
 
     return AudioSource.uri(audioStream.url, tag: tag);
   } catch (e) {
-    print('Error fetching URL for $videoId: $e');
     rethrow;
   }
 }

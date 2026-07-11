@@ -1,7 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:flutter/foundation.dart';
 import 'package:get_it/get_it.dart';
-import 'package:River/services/library.dart';
+import 'package:Codah/services/library.dart';
 
 part 'playlist_details_state.dart';
 

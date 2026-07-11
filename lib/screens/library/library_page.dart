@@ -5,9 +5,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:River/core/utils/service_locator.dart';
-import 'package:River/utils/internet_guard.dart';
-import 'package:River/utils/playlist_thumbnail.dart';
+import 'package:Codah/core/utils/service_locator.dart';
+import 'package:Codah/utils/internet_guard.dart';
+import 'package:Codah/utils/playlist_thumbnail.dart';
 
 
 import '../../../../generated/l10n.dart';
@@ -33,15 +33,6 @@ class LibraryPage extends StatelessWidget {
                 centerTitle: true,
                 automaticallyImplyLeading: false,
                 actions: [
-                  IconButton(
-                    onPressed: () {
-                      Modals.showImportplaylistModal(context);
-                    },
-                    icon: const Icon(
-                      Icons.import_export_outlined,
-                      size: 25,
-                    ),
-                  ),
                   IconButton(
                     onPressed: () {
                       Modals.showCreateplaylistModal(context);

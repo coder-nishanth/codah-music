@@ -1,7 +1,7 @@
 import 'dart:core';
 import 'dart:math';
 
-import 'package:River/ytmusic/client.dart';
+import 'package:Codah/ytmusic/client.dart';
 
 import '../helpers.dart';
 import 'utils.dart';
@@ -388,8 +388,9 @@ List<Map<String, dynamic>> handleOuterContents(List contents,
           handleMusicShelfRenderer(musicShelfRenderer, thumbnails: thumbnails));
     } else if (gridRenderer != null) {
       results.add(handleGridRenderer(gridRenderer));
-    } else {}
-    results.add(result);
+    } else {
+      results.add(result);
+    }
   }
 
   return results;

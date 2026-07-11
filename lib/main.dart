@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:get_it/get_it.dart';
-import 'package:River/themes/theme.dart';
-import 'package:River/ytmusic/modals/yt_config.dart';
+import 'package:Codah/themes/theme.dart';
+import 'package:Codah/ytmusic/modals/yt_config.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:just_audio_media_kit/just_audio_media_kit.dart';
 import 'package:path_provider/path_provider.dart';
@@ -21,6 +21,7 @@ import 'services/media_player.dart';
 import 'services/settings_manager.dart';
 import 'utils/router.dart';
 import 'ytmusic/ytmusic.dart';
+import 'services/window_service.dart';
 import 'services/yt_audio_stream.dart';
 
 void main() async {
@@ -31,7 +32,7 @@ void main() async {
   if (Platform.isWindows) {
     JustAudioMediaKit.ensureInitialized();
     JustAudioMediaKit.bufferSize = 8 * 1024 * 1024;
-    JustAudioMediaKit.title = 'River Music';
+    JustAudioMediaKit.title = 'CODAH MUSIC';
     JustAudioMediaKit.prefetchPlaylist = true;
     JustAudioMediaKit.pitch = true;
   }
@@ -77,13 +78,19 @@ void main() async {
         ChangeNotifierProvider(create: (_) => mediaPlayer),
         ChangeNotifierProvider(create: (_) => libraryService),
       ],
-      child: const River(),
+      child: const Codah(),
     ),
   );
+
+  if (Platform.isWindows) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      WindowService.maximize();
+    });
+  }
 }
 
-class River extends StatelessWidget {
-  const River({super.key});
+class Codah extends StatelessWidget {
+  const Codah({super.key});
   @override
   Widget build(BuildContext context) {
     return Shortcuts(
@@ -91,7 +98,7 @@ class River extends StatelessWidget {
         LogicalKeySet(LogicalKeyboardKey.select): const ActivateIntent(),
       },
       child: MaterialApp.router(
-        title: 'River Music',
+        title: 'CODAH MUSIC',
         scrollBehavior: const SmoothScrollBehavior(),
         routerConfig: router,
         locale: Locale(context.watch<SettingsManager>().language['value']!),

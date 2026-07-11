@@ -1,4 +1,4 @@
-import 'package:River/ytmusic/client.dart';
+import 'package:Codah/ytmusic/client.dart';
 
 import '../helpers.dart';
 import 'utils.dart';

@@ -1,8 +1,0 @@
-[Desktop Entry]
-Type=Application
-Name=River Music
-Comment=Music player
-Exec=river-music
-Icon=river-music
-Categories=AudioVideo;Audio;Music;Player;
-StartupWMClass=river-music

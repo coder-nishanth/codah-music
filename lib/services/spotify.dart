@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:developer';
 
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:http/http.dart';
@@ -50,7 +49,6 @@ class SpotifyService {
         },
       );
     } catch (e) {
-      log('Error in getting spotify access token: $e', name: "spotifyAPI");
     }
 
     if (response != null && response.statusCode == 200) {
@@ -108,14 +106,8 @@ class SpotifyService {
         }
         playlistName = result["name"] ?? "Liked";
         description = result["description"];
-      } else {
-        log(
-          'Error in getHundredTracksOfPlaylist, called: $path, returned: ${response.statusCode}',
-          error: response.body,
-        );
       }
     } catch (e) {
-      log('Error in getting spotify playlist tracks: $e');
     }
 
     if (data.containsKey('total')) {
@@ -170,14 +162,8 @@ class SpotifyService {
         final int total = result['total'] as int;
 
         return {'tracks': tracks, 'total': total};
-      } else {
-        log(
-          'Error in getHundredTracksOfPlaylist, called: $path, returned: ${response.statusCode}',
-          error: response.body,
-        );
       }
     } catch (e) {
-      log('Error in getting spotify playlist tracks: $e', name: "spotifyAPI");
     }
     return {};
   }
@@ -197,11 +183,6 @@ class SpotifyService {
     if (response.statusCode == 200) {
       final result = jsonDecode(response.body) as Map;
       return result;
-    } else {
-      log(
-        'Error in getTrackDetails, called: $path, returned: ${response.statusCode}',
-        error: response.body,
-      );
     }
     return {};
   }
@@ -230,15 +211,9 @@ class SpotifyService {
             'artists': element['artists'],
           });
         }
-      } else {
-        log(
-          'Error in get50AlbumTracks, called: ${path.toString()}, returned: ${response.statusCode}',
-          error: response.body,
-        );
       }
       return songsData;
     } catch (e) {
-      log('Error in getting spotify album tracks: $e', name: "spotifyAPI");
       return List.empty();
     }
   }
@@ -291,11 +266,6 @@ class SpotifyService {
                 await get50AlbumTracks(accessToken, albumId, offset: i * 50));
           }
         }
-      } else {
-        log(
-          'Error in getAllAlbumTracks, called: ${path.toString()}, returned: ${response.statusCode}',
-          error: response.body,
-        );
       }
       return {
         "tracks": songsData,
@@ -308,7 +278,6 @@ class SpotifyService {
         "artists": artists ?? "",
       };
     } catch (e) {
-      log('Error in getting spotify album tracks: $e', name: "spotifyAPI");
       return {"tracks": List.empty(), "total": 0, "error": e, 'playlistName': ""};
     }
   }

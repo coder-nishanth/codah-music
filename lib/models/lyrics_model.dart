@@ -1,7 +1,6 @@
-import 'dart:developer';
-
 enum LyricsProvider {
-  lrcnet,
+  lrclib,
+  lyrica,
   none,
 }
 
@@ -35,7 +34,7 @@ class Lyrics {
   }) {
     if (lyricsSynced != null) {
       parsedLyrics = ParsedLyrics(
-        syncedLyrics: lyricsSynced ?? '',
+        syncedLyrics: lyricsSynced!,
         duration: duration ?? '',
       );
     }
@@ -43,7 +42,7 @@ class Lyrics {
 
   @override
   String toString() {
-    return 'Lyrics{artist: $artist, title: $title, album: $album, lyrics: ${lyricsPlain.substring(0, 15)}, lyricsSynced: ${lyricsSynced?.substring(0, 15)},duration: $duration, url: $url, id: $id, mediaID: $mediaID provider: $provider}';
+    return 'Lyrics{artist: $artist, title: $title, album: $album, lyricsLen: ${lyricsPlain.length}, lyricsSyncedLen: ${lyricsSynced?.length}, duration: $duration, id: $id, provider: $provider}';
   }
 
   Lyrics copyWith({
@@ -121,8 +120,11 @@ class ParsedLyrics {
     for (var match in matches) {
       final min = int.parse(match.group(1)!);
       final sec = int.parse(match.group(2)!);
-      final milli = int.parse(match.group(3)!);
+      final subsec = match.group(3)!;
       final text = match.group(4)!;
+      final milli = subsec.length <= 2
+          ? int.parse(subsec) * 10
+          : int.parse(subsec);
       lyrics.add(
         ParsedLyric(
           text: text,
@@ -134,7 +136,6 @@ class ParsedLyrics {
         ),
       );
     }
-    log("ParsedLyrics: ${lyrics.length}");
   }
 
   @override

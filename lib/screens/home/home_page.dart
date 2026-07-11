@@ -1,15 +1,13 @@
 import 'package:expressive_refresh/expressive_refresh.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:River/core/utils/service_locator.dart';
-import 'package:River/screens/home/cubit/home_cubit.dart';
-import 'package:River/core/widgets/section_item.dart';
-import 'package:River/utils/internet_guard.dart';
+import 'package:Codah/core/utils/service_locator.dart';
+import 'package:Codah/screens/home/cubit/home_cubit.dart';
+import 'package:Codah/core/widgets/section_item.dart';
+import 'package:Codah/utils/internet_guard.dart';
 import 'package:loading_indicator_m3e/loading_indicator_m3e.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 import '../../utils/adaptive_widgets/adaptive_widgets.dart';
 
@@ -57,32 +55,7 @@ class _HomePageState extends State<_HomePage> {
   }
 
   void _showSupportDialog() {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Support River Music'),
-        content: const Text(
-          'This app requires time and hard work to develop and maintain. '
-          'If you enjoy using River Music, please consider supporting the developer.',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Maybe Later'),
-          ),
-          FilledButton(
-            onPressed: () async {
-              Navigator.of(context).pop();
-              final uri = Uri.parse('https://support.iad1tya.cyou/');
-              if (await canLaunchUrl(uri)) {
-                await launchUrl(uri, mode: LaunchMode.externalApplication);
-              }
-            },
-            child: const Text('Support'),
-          ),
-        ],
-      ),
-    );
+    context.go('/support');
   }
 
   Future<void> _scrollListener() async {

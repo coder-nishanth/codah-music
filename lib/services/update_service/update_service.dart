@@ -3,16 +3,17 @@ import 'dart:io';
 
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
-import 'package:River/services/update_service/models/update_info.dart';
-import 'package:River/services/update_service/widgets/update_checking.dart';
-import 'package:River/services/update_service/widgets/update_dialog.dart';
+import 'package:Codah/services/update_service/models/update_info.dart';
+import 'package:Codah/services/update_service/widgets/update_checking.dart';
+import 'package:Codah/services/update_service/widgets/update_dialog.dart';
 import 'package:http/http.dart' as http;
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:pub_semver/pub_semver.dart';
+import 'package:Codah/services/bottom_message.dart';
 
 class UpdateService {
   static const String owner = 'iad1tya';
-  static const String repo = 'River_music';
+  static const String repo = 'codah-music';
 
   static Future<UpdateInfo?> checkForUpdate() async {
     try {
@@ -20,7 +21,7 @@ class UpdateService {
       final currentVersion = Version.parse(package.version);
 
       final Uri uri = Uri.parse(
-        'https://raw.githubusercontent.com/iad1tya/River-Music/main/desktop_update.json',
+        'https://raw.githubusercontent.com/iad1tya/codah-music/main/desktop_update.json',
       );
 
       final response = await http.get(uri);
@@ -48,15 +49,14 @@ class UpdateService {
         return UpdateInfo(
           version: remoteVersion,
           name: 'New Update Available',
-          body: 'A new version of River Music is available. Please update to continue.',
+          body: 'A new version of CODAH MUSIC is available. Please update to continue.',
           publishedAt: '',
-          downloadUrl: 'https://rivermusic.fun',
+          downloadUrl: 'https://codahmusic.fun',
         );
       }
       
       return null;
     } catch (e) {
-      debugPrint('Error checking for update: $e');
       return null;
     }
   }
@@ -84,9 +84,7 @@ class UpdateService {
     if (update != null) {
       await showUpdateDialog(context, update);
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('You are already on the latest version')),
-      );
+      BottomMessage.showText(context, 'You are already on the latest version');
     }
   }
 

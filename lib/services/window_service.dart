@@ -1,7 +1,7 @@
 import 'package:flutter/services.dart';
 
 class WindowService {
-  static const _channel = MethodChannel('river_music/window');
+  static const _channel = MethodChannel('codah_music/window');
 
   static Future<void> minimize() async {
     await _channel.invokeMethod('minimize');

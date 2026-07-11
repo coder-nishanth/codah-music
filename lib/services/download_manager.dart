@@ -5,7 +5,7 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
-import 'package:River/ytmusic/ytmusic.dart';
+import 'package:Codah/ytmusic/ytmusic.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:http/http.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
@@ -46,7 +46,6 @@ class DownloadManager {
           status == 'DOWNLOADING' && !activeIds.contains(id);
       final isInvalidQueued = status == 'QUEUED' && !queuedIds.contains(id);
       if (isInvalidDownloading || isInvalidQueued) {
-        debugPrint("Cleaning up interrupted download: ${song['title']}");
         await _updateSongMetadata(id, {'status': 'DELETED'});
       }
     }
@@ -208,7 +207,6 @@ class DownloadManager {
         throw Exception("File saving failed");
       }
     } catch (e) {
-      debugPrint("Error in _downloadSong: $e");
       await _updateSongMetadata(song['videoId'], {
         'status': 'DELETED',
       });
