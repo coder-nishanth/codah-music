@@ -7,7 +7,7 @@
 # <b>CODAH</b> MUSIC
 
 <p>
-  <i>Your all-in-one desktop music experience</i>
+  <a href="https://trendshift.io/repositories/15496?utm_source=repository-badge&utm_medium=badge&utm_campaign=badge-repository-15496" target="_blank" rel="noopener noreferrer"><img src="https://trendshift.io/api/badge/repositories/15496" alt="thedotmack/claude-mem | Trendshift" width="250" height="55"/></a>
 </p>
 
 <br>
@@ -16,7 +16,6 @@
 [![Flutter](https://img.shields.io/badge/Flutter-02569B?style=for-the-badge&logo=flutter&logoColor=white)](https://flutter.dev)
 [![Windows](https://img.shields.io/badge/Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white)](https://codahmusic.onrender.com)
 [![License](https://img.shields.io/badge/license-MIT-green?style=for-the-badge)](LICENSE)
-<a href="https://trendshift.io/repositories/15496?utm_source=repository-badge&utm_medium=badge&utm_campaign=badge-repository-15496" target="_blank" rel="noopener noreferrer"><img src="https://trendshift.io/api/badge/repositories/15496" alt="thedotmack/claude-mem | Trendshift" width="250" height="55"/></a>
 
 <br>
 
