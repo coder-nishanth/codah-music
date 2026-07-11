@@ -1,11 +1,30 @@
 import 'package:flutter/material.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../core/widgets/animated_codah_title.dart';
 
 
-class AboutPage extends StatelessWidget {
+class AboutPage extends StatefulWidget {
   const AboutPage({super.key});
+
+  @override
+  State<AboutPage> createState() => _AboutPageState();
+}
+
+class _AboutPageState extends State<AboutPage> {
+  String _version = '';
+
+  @override
+  void initState() {
+    super.initState();
+    _loadVersion();
+  }
+
+  Future<void> _loadVersion() async {
+    final info = await PackageInfo.fromPlatform();
+    if (mounted) setState(() => _version = info.version);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,9 +52,9 @@ class AboutPage extends StatelessWidget {
               const AnimatedCodahTitle(fontSize: 28, letterSpacing: 2.0),
               const SizedBox(height: 8),
               
-              const Text(
-                'Version 1.2.0',
-                style: TextStyle(fontSize: 16, color: Colors.grey),
+              Text(
+                'Version $_version',
+                style: const TextStyle(fontSize: 16, color: Colors.grey),
               ),
               const SizedBox(height: 32),
               

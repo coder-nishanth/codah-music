@@ -147,7 +147,7 @@ Future<void> handleAudioRequest(HttpRequest request) async {
     return;
   }
 
-  if (videoId == null || videoId.isEmpty) {
+  try {
     AudioOnlyStreamInfo? audioStreamInfo;
 
     if (_manifestCache.containsKey(videoId)) {
