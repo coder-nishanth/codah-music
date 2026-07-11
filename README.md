@@ -7,7 +7,7 @@
 # <b>CODAH</b> MUSIC
 
 <p>
-  <a href="https://trendshift.io/repositories/15496?utm_source=repository-badge&utm_medium=badge&utm_campaign=badge-repository-15496" target="_blank" rel="noopener noreferrer"><img src="https://trendshift.io/api/badge/repositories/15496" alt="thedotmack/claude-mem | Trendshift" width="250" height="55"/></a>
+  <img src="https://trendshift.io/api/badge/repositories/15496" alt="thedotmack/claude-mem | Trendshift" width="250" height="55"/>
 </p>
 
 <br>
