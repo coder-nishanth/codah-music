@@ -18,9 +18,8 @@ VersionInfoCompany=coder-nishanth
 VersionInfoDescription=CODAH MUSIC Installer
 VersionInfoProductName=CODAH MUSIC
 VersionInfoProductVersion=1.0.0
-PrivilegesRequired=admin
+PrivilegesRequired=lowest
 PrivilegesRequiredOverridesAllowed=dialog
-SignTool=signtool
 
 [Files]
 Source: "..\build\windows\x64\runner\Release\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs
@@ -28,7 +27,6 @@ Source: "..\build\windows\x64\runner\Release\*"; DestDir: "{app}"; Flags: ignore
 [Icons]
 Name: "{group}\CODAH MUSIC"; Filename: "{app}\codah-music.exe"; IconFilename: "{app}\codah-music.exe"
 Name: "{group}\Uninstall CODAH MUSIC"; Filename: "{uninstallexe}"
-Name: "{commondesktop}\CODAH MUSIC"; Filename: "{app}\codah-music.exe"; IconFilename: "{app}\codah-music.exe"
 
 [Run]
 Filename: "{app}\codah-music.exe"; Description: "Launch CODAH MUSIC"; Flags: postinstall nowait skipifsilent
