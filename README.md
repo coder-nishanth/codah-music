@@ -37,6 +37,26 @@ streaming, local playback, lyrics, and chart discovery — all in one beautiful 
 
 ---
 
+## 📸 Screenshots
+
+<div align="center">
+
+![Player](screenshots/1.png)
+
+![Lyrics](screenshots/2.png)
+
+![Charts](screenshots/3.png)
+
+![Library](screenshots/4.png)
+
+![Settings](screenshots/5.png)
+
+</div>
+
+<br>
+
+---
+
 ## :rocket: Quick Start
 
 ```bash
