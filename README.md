@@ -28,18 +28,10 @@
 
 <br>
 
-<table align="center">
-<tr>
-<td align="center" width="9999" valign="top">
-
-## :headphones: What is CODAH MUSIC?
+## 🎧 What is CODAH MUSIC?
 
 **CODAH MUSIC** is a desktop music player built with Flutter that brings together
 streaming, local playback, lyrics, and chart discovery — all in one beautiful app.
-
-</td>
-</tr>
-</table>
 
 <br>
 
