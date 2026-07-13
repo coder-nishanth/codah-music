@@ -93,6 +93,17 @@ When running the app for the first time, Windows SmartScreen may show a warning.
 
 ---
 
+## :heart: Thanks
+
+Inspiration and ideas from:
+
+- **Simpmusic** — music streaming concepts
+- **Echo Music** — UI and player design ideas
+
+<br>
+
+---
+
 <div align="center">
 
 **Made with :blue_heart: and Flutter**
