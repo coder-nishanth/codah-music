@@ -14,6 +14,7 @@ import 'package:provider/provider.dart';
 
 import 'generated/l10n.dart';
 import 'services/download_manager.dart';
+import 'services/equalizer_service.dart';
 import 'services/file_storage.dart';
 import 'services/library.dart';
 import 'services/lyrics.dart';
@@ -61,6 +62,8 @@ void main() async {
 
   MediaPlayer mediaPlayer = MediaPlayer();
   GetIt.I.registerSingleton<MediaPlayer>(mediaPlayer);
+  EqualizerService equalizerService = EqualizerService();
+  GetIt.I.registerSingleton<EqualizerService>(equalizerService);
   LibraryService libraryService = LibraryService();
   GetIt.I.registerSingleton<DownloadManager>(DownloadManager());
   GetIt.I.registerSingleton(panelKey);

@@ -33,6 +33,9 @@ class AppTheme {
         unselectedLabelTextStyle:
             TextStyle(color: Colors.black.withValues(alpha: 0.6), fontSize: 11),
       ),
+      switchTheme: SwitchThemeData(
+        overlayColor: WidgetStateProperty.all(Colors.transparent),
+      ),
       pageTransitionsTheme: PageTransitionsTheme(
         builders: Map<TargetPlatform, PageTransitionsBuilder>.fromIterable(
           TargetPlatform.values,
@@ -80,6 +83,9 @@ class AppTheme {
         selectedLabelTextStyle: const TextStyle(color: Colors.black, fontSize: 11, fontWeight: FontWeight.bold),
         unselectedLabelTextStyle:
             TextStyle(color: Colors.black.withValues(alpha: 0.6), fontSize: 11),
+      ),
+      switchTheme: SwitchThemeData(
+        overlayColor: WidgetStateProperty.all(Colors.transparent),
       ),
       pageTransitionsTheme: PageTransitionsTheme(
         builders: Map<TargetPlatform, PageTransitionsBuilder>.fromIterable(

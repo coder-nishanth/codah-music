@@ -17,6 +17,7 @@ import 'package:Codah/screens/library/library_page.dart';
 import 'package:Codah/screens/library/playlist/playlist_details_page.dart';
 import 'package:Codah/screens/player/player_page.dart';
 import 'package:Codah/screens/settings/about/about_page.dart';
+import 'package:Codah/screens/settings/audio/equalizer_page.dart';
 import 'package:Codah/screens/settings/support_page.dart';
 import 'package:Codah/screens/settings/backup_storage/backup_storage_page.dart';
 import 'package:Codah/screens/settings/privacy/privacy_page.dart';
@@ -175,6 +176,10 @@ List<StatefulShellBranch> branches = [
           GoRoute(
             path: 'about',
             builder: (context, state) => const AboutPage(),
+          ),
+          GoRoute(
+            path: 'equalizer',
+            builder: (context, state) => const EqualizerPage(),
           ),
         ]),
   ]),

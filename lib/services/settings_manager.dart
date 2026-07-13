@@ -80,6 +80,10 @@ class SettingsManager extends ChangeNotifier {
     _loudnessTargetGain = _box.get('LOUDNESS_TARGET_GAIN', defaultValue: 0.0);
     _equalizerBandsGain =
         _box.get('EQUALIZER_BANDS_GAIN', defaultValue: []).cast<double>();
+    if (_equalizerBandsGain.length != 10) {
+      _equalizerBandsGain = List<double>.filled(10, 0.0);
+      _box.put('EQUALIZER_BANDS_GAIN', _equalizerBandsGain);
+    }
   }
 
   setThemeMode(ThemeMode mode) async {

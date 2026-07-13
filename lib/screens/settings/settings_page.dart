@@ -41,6 +41,14 @@ class SettingsPage extends StatelessWidget {
                       isLast: true,
                       onTap: () => context.go('/settings/services/ytmusic'),
                     ),
+                    GroupTitle(title: "Audio"),
+                    SettingTile(
+                      title: S.of(context).Equalizer,
+                      leading: const Icon(Icons.equalizer),
+                      isFirst: true,
+                      isLast: true,
+                      onTap: () => context.go('/settings/equalizer'),
+                    ),
                     GroupTitle(title: "Privacy"),
                     SettingTile(
                       title: "Privacy",
