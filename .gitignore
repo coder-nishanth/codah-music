@@ -29,3 +29,7 @@ installers/*.exe
 
 # Signing
 *.pfx
+
+# Website
+website/node_modules/
+website/dist/

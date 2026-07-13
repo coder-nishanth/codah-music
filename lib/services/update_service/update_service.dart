@@ -12,7 +12,7 @@ import 'package:pub_semver/pub_semver.dart';
 import 'package:Codah/services/bottom_message.dart';
 
 class UpdateService {
-  static const String owner = 'iad1tya';
+  static const String owner = 'coder-nishanth';
   static const String repo = 'codah-music';
 
   static Future<UpdateInfo?> checkForUpdate() async {
