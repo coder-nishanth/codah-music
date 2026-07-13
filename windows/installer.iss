@@ -11,12 +11,12 @@ UninstallDisplayName=Codah Music
 Compression=lzma2
 SolidCompression=yes
 OutputDir=..\installers
-OutputBaseFilename=CodahMusic-Setup-1.0.0
+OutputBaseFilename=Codah-Music-Setup-1.0.0
 SetupIconFile=runner\resources\app_icon.ico
 VersionInfoVersion=1.0.0.0
 VersionInfoCompany=coder-nishanth
-VersionInfoDescription=CODAH MUSIC Installer
-VersionInfoProductName=CODAH MUSIC
+VersionInfoDescription=Codah Music Installer
+VersionInfoProductName=Codah Music
 VersionInfoProductVersion=1.0.0
 PrivilegesRequired=lowest
 PrivilegesRequiredOverridesAllowed=dialog
@@ -25,8 +25,8 @@ PrivilegesRequiredOverridesAllowed=dialog
 Source: "..\build\windows\x64\runner\Release\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs
 
 [Icons]
-Name: "{group}\CODAH MUSIC"; Filename: "{app}\codah-music.exe"; IconFilename: "{app}\codah-music.exe"
-Name: "{group}\Uninstall CODAH MUSIC"; Filename: "{uninstallexe}"
+Name: "{group}\Codah Music"; Filename: "{app}\codah-music.exe"; IconFilename: "{app}\codah-music.exe"
+Name: "{group}\Uninstall Codah Music"; Filename: "{uninstallexe}"
 
 [Run]
-Filename: "{app}\codah-music.exe"; Description: "Launch CODAH MUSIC"; Flags: postinstall nowait skipifsilent
+Filename: "{app}\codah-music.exe"; Description: "Launch Codah Music"; Flags: postinstall nowait skipifsilent
