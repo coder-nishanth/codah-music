@@ -99,6 +99,7 @@ Inspiration and ideas from:
 
 - **Simpmusic** — music streaming concepts
 - **Echo Music** — UI and player design ideas
+- **Metrolist** — UI components and design patterns
 
 <br>
 
