@@ -213,6 +213,59 @@ mixin BrowsingMixin on YTClient {
     return days;
   }
 
+  Future<List<Map<String, dynamic>>> getMoodAndGenres() async {
+    try {
+      Map<String, dynamic> body = {"browseId": "FEmusic_moods_and_genres"};
+      var response = await sendRequest('browse', body);
+      List<Map<String, dynamic>> results = [];
+
+      var tabContent = nav(response, [
+        'contents',
+        'singleColumnBrowseResultsRenderer',
+        'tabs',
+        0,
+        'tabRenderer',
+        'content',
+        'sectionListRenderer',
+        'contents',
+      ]);
+
+      if (tabContent == null) return results;
+
+      List sections = tabContent is List ? tabContent : [tabContent];
+
+      for (var section in sections) {
+        if (section is! Map) continue;
+        Map? gridRenderer = section['gridRenderer'];
+        if (gridRenderer == null) continue;
+
+        String? title = nav(gridRenderer, ['header', 'gridHeaderRenderer', 'title', 'runs', 0, 'text']);
+        List? items = gridRenderer['items'];
+        if (items == null) continue;
+
+        for (var item in items) {
+          if (item is! Map) continue;
+          Map? btn = item['musicNavigationButtonRenderer'];
+          if (btn == null) continue;
+
+          String? itemTitle = nav(btn, ['buttonText', 'runs', 0, 'text']);
+          Map? endpoint = nav(btn, ['clickCommand', 'browseEndpoint']);
+
+          if (itemTitle != null && endpoint != null) {
+            results.add({
+              'title': itemTitle,
+              'endpoint': endpoint,
+              'section': title,
+            });
+          }
+        }
+      }
+      return results;
+    } catch (_) {
+      return [];
+    }
+  }
+
   Future addYoutubeHistory(String videoId) async {
     signatureTimestamp = signatureTimestamp ?? getDatestamp() - 1;
     Map<String, dynamic> body = {};

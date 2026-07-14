@@ -226,19 +226,38 @@ class DailyDiscoverCarousel extends StatelessWidget {
   }
 }
 
-class MoodAndGenresGrid extends StatelessWidget {
+class MoodAndGenresGrid extends StatefulWidget {
   final List items;
   const MoodAndGenresGrid({required this.items, super.key});
 
-  Color _parseColor(dynamic val) {
-    if (val is int) return Color(val);
-    return const Color(0xFF9C27B0);
+  @override
+  State<MoodAndGenresGrid> createState() => _MoodAndGenresGridState();
+}
+
+class _MoodAndGenresGridState extends State<MoodAndGenresGrid> {
+  late final PageController _pageController;
+
+  @override
+  void initState() {
+    super.initState();
+    _pageController = PageController();
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    if (items.isEmpty) return const SizedBox();
-    final itemHeight = 52.0;
+    if (widget.items.isEmpty) return const SizedBox();
+
+    final screenWidth = MediaQuery.of(context).size.width;
+    final crossAxisCount = screenWidth > 900 ? 5 : screenWidth > 600 ? 4 : 3;
+    const rows = 3;
+    final perPage = crossAxisCount * rows;
+    final pageCount = (widget.items.length / perPage).ceil();
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -249,50 +268,87 @@ class MoodAndGenresGrid extends StatelessWidget {
             children: [
               const Icon(Icons.explore, size: 20, color: Colors.white70),
               const SizedBox(width: 8),
-              Text('Mood & Genres',
-                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+              const Text('Mood & Genres',
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
             ],
           ),
         ),
         SizedBox(
-          height: itemHeight * 2 + 12,
-          child: GridView.builder(
-            padding: const EdgeInsets.symmetric(horizontal: 12),
-            scrollDirection: Axis.horizontal,
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              mainAxisSpacing: 8,
-              crossAxisSpacing: 8,
-              childAspectRatio: 3.5,
-            ),
-            itemCount: items.length,
-            itemBuilder: (context, index) {
-              final item = items[index];
-              final color = _parseColor(item['color']);
-              return AdaptiveInkWell(
-                borderRadius: BorderRadius.circular(10),
-                onTap: () {
-                  if (item['endpoint'] != null) {
-                    context.go('/chip', extra: item['endpoint']);
-                  }
-                },
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: color,
-                    borderRadius: BorderRadius.circular(10),
+          height: rows * (screenWidth / crossAxisCount / 4.5) + (rows - 1) * 4,
+          child: PageView.builder(
+            controller: _pageController,
+            padEnds: false,
+            itemCount: pageCount,
+            itemBuilder: (context, pageIndex) {
+              final start = pageIndex * perPage;
+              final end = (start + perPage).clamp(0, widget.items.length);
+              final pageItems = widget.items.sublist(start, end);
+              return Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 12),
+                child: GridView.builder(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: crossAxisCount,
+                    mainAxisSpacing: 4,
+                    crossAxisSpacing: 4,
+                    childAspectRatio: 4.5,
                   ),
-                  alignment: Alignment.center,
-                  child: Text(
-                    item['title'] ?? '',
-                    style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 13, color: Colors.white),
-                    overflow: TextOverflow.ellipsis,
-                  ),
+                  itemCount: pageItems.length,
+                  itemBuilder: (context, index) {
+                    final item = pageItems[index];
+                    return _MoodGenreButton(
+                      title: item['title'] ?? '',
+                      onTap: () {
+                        if (item['endpoint'] != null) {
+                          context.go('/chip', extra: item);
+                        }
+                      },
+                    );
+                  },
                 ),
               );
             },
           ),
         ),
       ],
+    );
+  }
+}
+
+class _MoodGenreButton extends StatelessWidget {
+  final String title;
+  final VoidCallback onTap;
+
+  const _MoodGenreButton({required this.title, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    return AdaptiveInkWell(
+      borderRadius: BorderRadius.circular(8),
+      onTap: onTap,
+      child: Container(
+        decoration: BoxDecoration(
+          color: isDark
+              ? const Color(0xFF3A3A3F)
+              : const Color(0xFFF0F0F4),
+          borderRadius: BorderRadius.circular(8),
+        ),
+        alignment: Alignment.centerLeft,
+        padding: const EdgeInsets.symmetric(horizontal: 12),
+        child: Text(
+          title,
+          style: TextStyle(
+            fontWeight: FontWeight.w500,
+            fontSize: 14,
+            color: Theme.of(context).colorScheme.onSurface,
+          ),
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+        ),
+      ),
     );
   }
 }

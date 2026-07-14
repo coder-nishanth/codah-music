@@ -11,6 +11,7 @@ import 'package:Codah/utils/playlist_thumbnail.dart';
 
 
 import '../../../../generated/l10n.dart';
+import '../../../../services/import_service.dart';
 import '../../../../services/library.dart';
 import '../../../../utils/adaptive_widgets/adaptive_widgets.dart';
 import '../../../../utils/bottom_modals.dart';
@@ -33,6 +34,15 @@ class LibraryPage extends StatelessWidget {
                 centerTitle: true,
                 automaticallyImplyLeading: false,
                 actions: [
+                  IconButton(
+                    onPressed: () {
+                      Modals.showImportplaylistModal(context);
+                    },
+                    icon: const Icon(
+                      Icons.file_download_outlined,
+                      size: 25,
+                    ),
+                  ),
                   IconButton(
                     onPressed: () {
                       Modals.showCreateplaylistModal(context);
@@ -140,12 +150,12 @@ class _LibraryBody extends StatelessWidget {
         'onSecondaryTap': () {
            if (item['videoId'] == null && item['playlistId'] != null) {
               Modals.showPlaylistBottomModal(context, item);
-            } else if (item['isPredefined'] == false) {
+           } else if (item['isPredefined'] == false) {
               Modals.showPlaylistBottomModal(
                 context,
                 {...item, 'playlistId': key},
               );
-            }
+           }
         }
       });
     }
@@ -178,7 +188,10 @@ class _LibraryGridCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AdaptiveInkWell(
+    final playlistKey = item['playlist_key'];
+    final isPlaylist = playlistKey != null;
+
+    Widget card = AdaptiveInkWell(
       borderRadius: BorderRadius.circular(12),
       onTap: item['onTap'],
       onSecondaryTap: item['onSecondaryTap'], 
@@ -212,6 +225,63 @@ class _LibraryGridCard extends StatelessWidget {
             ),
         ],
       ),
+    );
+
+    if (!isPlaylist) return card;
+
+    return ValueListenableBuilder<String?>(
+      valueListenable: ImportService.importingKey,
+      builder: (_, importingKey, child) {
+        if (importingKey == null || importingKey != playlistKey) return child!;
+
+        final colorScheme = Theme.of(context).colorScheme;
+        return Stack(
+          children: [
+            child!,
+            Positioned.fill(
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.black.withOpacity(0.6),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SizedBox(
+                      width: 28,
+                      height: 28,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2.5,
+                        color: colorScheme.primary,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    ValueListenableBuilder<int>(
+                      valueListenable: ImportService.importingCurrent,
+                      builder: (_, current, __) {
+                        return ValueListenableBuilder<int>(
+                          valueListenable: ImportService.importingTotal,
+                          builder: (_, total, __) {
+                            return Text(
+                              total > 0 ? 'Importing $current / $total' : 'Importing...',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 12,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            );
+                          },
+                        );
+                      },
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+      child: card,
     );
   }
 

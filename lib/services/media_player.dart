@@ -139,11 +139,13 @@ class MediaPlayer extends ChangeNotifier {
       final processingState = event.processingState;
       if (processingState == ProcessingState.loading ||
           processingState == ProcessingState.buffering) {
-        _buttonState.value = ButtonState.loading;
+        if (!GetIt.I<EqualizerService>().isApplyingEQ) {
+          _buttonState.value = ButtonState.loading;
+        }
       } else if (processingState == ProcessingState.ready) {
         _buttonState.value =
             isPlaying ? ButtonState.playing : ButtonState.paused;
-        if (isPlaying) {
+        if (isPlaying && !GetIt.I<EqualizerService>().isApplyingEQ) {
           GetIt.I<EqualizerService>().applyEqualizer();
         }
       } else if (processingState == ProcessingState.completed) {

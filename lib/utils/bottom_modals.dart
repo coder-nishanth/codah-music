@@ -13,7 +13,6 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:provider/provider.dart';
 
 import 'package:Codah/services/import_service.dart';
-import 'package:Codah/screens/import_dialog.dart';
 
 import '../generated/l10n.dart';
 import '../services/bottom_message.dart';
@@ -507,19 +506,9 @@ Widget _importPlaylistModal(BuildContext context) {
       ),
       AdaptiveFilledButton(
         color: Theme.of(context).colorScheme.primary,
-        onPressed: () async {
+        onPressed: () {
           Navigator.pop(context);
-          final stream = ImportService().import(title);
-          showDialog(
-            context: context,
-            barrierDismissible: false,
-            builder: (context) => ImportDialog(stream: stream),
-          ).then((_) {
-            Modals.showCenterLoadingModal(context, title: "Refreshing...");
-            Future.delayed(Duration(seconds: 1), () {
-              Navigator.pop(context);
-            });
-          });
+          ImportService().import(title).listen((_) {});
         },
         child: Text(
           S.of(context).Import,
@@ -2559,19 +2548,9 @@ class _ImportPlaylistWindowContent extends StatelessWidget {
                  const SizedBox(width: 16),
                 AdaptiveFilledButton(
                   color: Theme.of(context).colorScheme.primary,
-                  onPressed: () async {
+                  onPressed: () {
                     Navigator.pop(context);
-                    final stream = ImportService().import(title);
-                    showDialog(
-                      context: context,
-                      barrierDismissible: false,
-                      builder: (context) => ImportDialog(stream: stream),
-                    ).then((_) {
-                      Modals.showCenterLoadingModal(context, title: "Refreshing...");
-                      Future.delayed(const Duration(seconds: 1), () {
-                        Navigator.pop(context);
-                      });
-                    });
+                    ImportService().import(title).listen((_) {});
                   },
                   child: Text(
                     S.of(context).Import,

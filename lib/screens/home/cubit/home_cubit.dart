@@ -20,12 +20,14 @@ class HomeCubit extends Cubit<HomeState> {
         ChartsService().getChartsWithPreviews(),
         _fetchRecommendationsFromHistory(),
         _fetchTrendingSongs(),
+        _ytMusic.getMoodAndGenres(),
       ]);
 
       final feed = results[0] as Map<String, dynamic>;
       final charts = results[1] as List<ChartURL>;
       final recommendations = results[2] as List<Map<String, dynamic>>;
       final trending = results[3] as List<Map<String, dynamic>>;
+      final moodAndGenresFull = results[4] as List<Map<String, dynamic>>;
 
       final ytSections = List<Map<String, dynamic>>.from(feed['sections'] ?? []);
       final chips = feed['chips'] ?? [];
@@ -44,6 +46,9 @@ class HomeCubit extends Cubit<HomeState> {
 
       final dailyDiscover = _createDailyDiscoverSection(recommendations);
       if (dailyDiscover != null) sections.add(dailyDiscover);
+
+      final moodAndGenres = _createMoodAndGenresSection(moodAndGenresFull.isNotEmpty ? moodAndGenresFull : chips);
+      if (moodAndGenres != null) sections.add(moodAndGenres);
 
       if (trending.isNotEmpty) {
         sections.add(_createTrendingSection(trending));
@@ -182,31 +187,24 @@ class HomeCubit extends Cubit<HomeState> {
     };
   }
 
-  Map<String, dynamic>? _createMoodAndGenresSection(List chips) {
-    if (chips.isEmpty) return null;
-    final skipTitles = ['for you', 'all', 'new releases', 'podcasts', 'songs', 'videos'];
-    final moodItems = chips.where((chip) {
-      final title = (chip['title'] as String?)?.toLowerCase() ?? '';
-      return !skipTitles.any((s) => title == s) && title.isNotEmpty;
+  Map<String, dynamic>? _createMoodAndGenresSection(List items) {
+    if (items.isEmpty) return null;
+    final moodItems = items.where((item) {
+      final title = (item['title'] as String?)?.toLowerCase() ?? '';
+      return title.isNotEmpty && title != 'all';
     }).toList();
     if (moodItems.isEmpty) return null;
-    final colors = [
-      0xFFE91E63, 0xFF9C27B0, 0xFF3F51B5, 0xFF2196F3,
-      0xFF00BCD4, 0xFF009688, 0xFF4CAF50, 0xFFFF5722,
-      0xFF795548, 0xFF607D8B, 0xFFFF9800, 0xFF673AB7,
-    ];
-    final items = <Map<String, dynamic>>[];
+    final result = <Map<String, dynamic>>[];
     for (int i = 0; i < moodItems.length; i++) {
-      items.add({
+      result.add({
         'title': moodItems[i]['title'],
-        'color': colors[i % colors.length],
         'endpoint': moodItems[i]['endpoint'],
       });
     }
     return {
       'customType': 'mood_and_genres',
       'title': 'Mood & Genres',
-      'contents': items,
+      'contents': result,
     };
   }
 
@@ -237,12 +235,14 @@ class HomeCubit extends Cubit<HomeState> {
         ChartsService().getChartsWithPreviews(),
         _fetchRecommendationsFromHistory(),
         _fetchTrendingSongs(),
+        _ytMusic.getMoodAndGenres(),
       ]);
 
       final feed = results[0] as Map<String, dynamic>;
       final charts = results[1] as List<ChartURL>;
       final recommendations = results[2] as List<Map<String, dynamic>>;
       final trending = results[3] as List<Map<String, dynamic>>;
+      final moodAndGenresFull = results[4] as List<Map<String, dynamic>>;
 
       final ytSections = List<Map<String, dynamic>>.from(feed['sections'] ?? []);
       final chips = feed['chips'] ?? [];
@@ -261,6 +261,9 @@ class HomeCubit extends Cubit<HomeState> {
 
       final dailyDiscover = _createDailyDiscoverSection(recommendations);
       if (dailyDiscover != null) sections.add(dailyDiscover);
+
+      final moodAndGenres = _createMoodAndGenresSection(moodAndGenresFull.isNotEmpty ? moodAndGenresFull : chips);
+      if (moodAndGenres != null) sections.add(moodAndGenres);
 
       if (trending.isNotEmpty) {
         sections.add(_createTrendingSection(trending));

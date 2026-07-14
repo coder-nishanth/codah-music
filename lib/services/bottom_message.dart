@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 
 import '../themes/text_styles.dart';
@@ -5,36 +6,46 @@ import '../utils/adaptive_widgets/theme.dart';
 
 class BottomMessage {
   static OverlayEntry? _currentEntry;
+  static OverlayState? _cachedOverlay;
+  static Color? _cachedBgColor;
+  static TextStyle? _cachedTextStyle;
+  static final ValueNotifier<String> _textNotifier = ValueNotifier('');
 
   static void showText(BuildContext context, String text,
       {Duration duration = const Duration(milliseconds: 1500)}) {
-    _currentEntry?.remove();
-    _currentEntry = null;
-
-    final overlay = Overlay.of(context);
-    final colorScheme = Theme.of(context).colorScheme;
-    final bgColor = AdaptiveTheme.of(context).primaryColor.withOpacity(0.9);
-    final textStyle =
-        smallTextStyle(context, bold: false, opacity: 0.8).copyWith(
-      color: colorScheme.onPrimary,
+    _cachedOverlay = Overlay.of(context);
+    _cachedBgColor = AdaptiveTheme.of(context).primaryColor.withOpacity(0.9);
+    _cachedTextStyle = smallTextStyle(context, bold: false, opacity: 0.8).copyWith(
+      color: Theme.of(context).colorScheme.onPrimary,
     );
+    _textNotifier.value = text;
 
-    final entry = OverlayEntry(
-      builder: (_) => _TopToast(
-        text: text,
-        textStyle: textStyle,
-        backgroundColor: bgColor,
-        onDismiss: () {
-          _currentEntry?.remove();
-          _currentEntry = null;
-        },
-      ),
-    );
+    if (_currentEntry == null) {
+      _currentEntry = OverlayEntry(
+        builder: (_) => _TopToast(
+          textNotifier: _textNotifier,
+          textStyle: _cachedTextStyle!,
+          backgroundColor: _cachedBgColor!,
+        ),
+      );
+      _cachedOverlay!.insert(_currentEntry!);
+    }
 
-    _currentEntry = entry;
-    overlay.insert(entry);
+    _scheduleRemove(duration);
+  }
 
-    Future.delayed(duration, () {
+  static void showOverlay(String text,
+      {Duration duration = const Duration(milliseconds: 1500)}) {
+    if (_cachedOverlay == null) return;
+    _textNotifier.value = text;
+    _scheduleRemove(duration);
+  }
+
+  static Timer? _removeTimer;
+
+  static void _scheduleRemove(Duration duration) {
+    _removeTimer?.cancel();
+    _removeTimer = Timer(duration, () {
       _currentEntry?.remove();
       _currentEntry = null;
     });
@@ -42,16 +53,14 @@ class BottomMessage {
 }
 
 class _TopToast extends StatefulWidget {
-  final String text;
+  final ValueNotifier<String> textNotifier;
   final TextStyle textStyle;
   final Color backgroundColor;
-  final VoidCallback onDismiss;
 
   const _TopToast({
-    required this.text,
+    required this.textNotifier,
     required this.textStyle,
     required this.backgroundColor,
-    required this.onDismiss,
   });
 
   @override
@@ -77,10 +86,16 @@ class _TopToastState extends State<_TopToast>
       end: Offset.zero,
     ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOutCubic));
     _controller.forward();
+    widget.textNotifier.addListener(_onTextChanged);
+  }
+
+  void _onTextChanged() {
+    setState(() {});
   }
 
   @override
   void dispose() {
+    widget.textNotifier.removeListener(_onTextChanged);
     _controller.dispose();
     super.dispose();
   }
@@ -115,7 +130,7 @@ class _TopToastState extends State<_TopToast>
                     ],
                   ),
                   child: Text(
-                    widget.text,
+                    widget.textNotifier.value,
                     style: widget.textStyle,
                     textAlign: TextAlign.center,
                   ),

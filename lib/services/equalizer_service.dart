@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
@@ -38,6 +39,10 @@ class EqualizerService {
 
   NativePlayer? _nativePlayer;
   bool _initialized = false;
+  Timer? _debounceTimer;
+  bool _isApplyingEQ = false;
+
+  bool get isApplyingEQ => _isApplyingEQ;
 
   void _ensureNativePlayer() {
     if (_nativePlayer != null) return;
@@ -52,6 +57,13 @@ class EqualizerService {
         }
       }
     }
+  }
+
+  void applyEqualizerDebounced() {
+    _debounceTimer?.cancel();
+    _debounceTimer = Timer(const Duration(milliseconds: 150), () {
+      applyEqualizer();
+    });
   }
 
   Future<void> applyEqualizer() async {
@@ -69,7 +81,12 @@ class EqualizerService {
     final gains = settings.equalizerBandsGain;
     if (gains.length != bandCount) return;
 
-    await _applyFilterChain(gains);
+    _isApplyingEQ = true;
+    try {
+      await _applyFilterChain(gains);
+    } finally {
+      _isApplyingEQ = false;
+    }
   }
 
   Future<void> _applyFilterChain(List<double> gains) async {
@@ -111,7 +128,7 @@ class EqualizerService {
   Future<void> updateBand(int index, double gain) async {
     final settings = GetIt.I<SettingsManager>();
     await settings.setEqualizerBandsGain(index, gain);
-    await applyEqualizer();
+    applyEqualizerDebounced();
   }
 
   Future<void> toggle(bool enabled) async {

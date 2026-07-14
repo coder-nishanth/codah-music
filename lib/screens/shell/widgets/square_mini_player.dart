@@ -27,6 +27,10 @@ class _SquareMiniPlayerState extends State<SquareMiniPlayer> {
           decoration: BoxDecoration(
             color: const Color(0xFF202020),
             borderRadius: BorderRadius.circular(12),
+            border: Border.all(
+              color: Colors.white,
+              width: 3,
+            ),
             boxShadow: [
               BoxShadow(
                 color: Colors.black.withValues(alpha: 0.4),
@@ -42,17 +46,17 @@ class _SquareMiniPlayerState extends State<SquareMiniPlayer> {
               children: [
                 GestureDetector(
                   onTap: () => context.push('/player'),
-                  child: ClipRRect(
-                    borderRadius: const BorderRadius.only(
-                      topLeft: Radius.circular(12),
-                      topRight: Radius.circular(12),
-                    ),
-                    child: SongThumbnail(
-                      song: currentSong.extras!,
-                      dp: MediaQuery.of(context).devicePixelRatio,
-                      width: 200,
-                      height: 200,
-                      fit: BoxFit.cover,
+                  child: Padding(
+                    padding: const EdgeInsets.all(4),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(8),
+                      child: SongThumbnail(
+                        song: currentSong.extras!,
+                        dp: MediaQuery.of(context).devicePixelRatio,
+                        width: 200,
+                        height: 200,
+                        fit: BoxFit.cover,
+                      ),
                     ),
                   ),
                 ),
