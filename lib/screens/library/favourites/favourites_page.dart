@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_swipe_action_cell/core/cell.dart';
+import 'package:loading_indicator_m3e/loading_indicator_m3e.dart';
 
 import '../../../../generated/l10n.dart';
 import '../../../../utils/bottom_modals.dart';
@@ -26,7 +27,7 @@ class FavouritesPage extends StatelessWidget {
           builder: (context, state) {
             return switch (state) {
               FavouritesLoading() =>
-                const Center(child: AdaptiveProgressRing()),
+                const Center(child: LoadingIndicatorM3E()),
               FavouritesError(:final message) => Center(child: Text(message)),
               FavouritesLoaded(:final songs) => _FavouritesBody(songs: songs),
             };

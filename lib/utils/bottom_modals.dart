@@ -5,6 +5,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:duration_picker/duration_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:loading_indicator_m3e/loading_indicator_m3e.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
@@ -72,7 +73,7 @@ class Modals {
           title: Text(title ?? S.of(context).Progress),
           content: const Row(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: [CircularProgressIndicator()],
+            children: [LoadingIndicatorM3E()],
           ),
         );
       },

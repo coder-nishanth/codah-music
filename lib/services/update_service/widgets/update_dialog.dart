@@ -14,7 +14,8 @@ class UpdateDialog extends StatelessWidget {
     final theme = Theme.of(context);
 
     return AlertDialog(
-      title: const Text('Update Available'),
+      backgroundColor: const Color(0xFFF0F4FF),
+      title: const Text('Update Available', style: TextStyle(color: Color(0xFF1A1A2E))),
       content: ConstrainedBox(
         constraints: const BoxConstraints(maxHeight: 400),
         child: SingleChildScrollView(
@@ -23,7 +24,9 @@ class UpdateDialog extends StatelessWidget {
             children: [
               Text(
                 'Version ${info.version}',
-                style: theme.textTheme.titleMedium,
+                style: theme.textTheme.titleMedium?.copyWith(
+                  color: const Color(0xFF3A3A5C),
+                ),
               ),
               const SizedBox(height: 12),
               MarkdownBody(
@@ -32,7 +35,9 @@ class UpdateDialog extends StatelessWidget {
                     : '_No changelog provided._',
                 selectable: true,
                 styleSheet: MarkdownStyleSheet.fromTheme(theme).copyWith(
-                  p: theme.textTheme.bodyMedium,
+                  p: theme.textTheme.bodyMedium?.copyWith(
+                    color: const Color(0xFF3A3A5C),
+                  ),
                   h1: theme.textTheme.titleLarge,
                   h2: theme.textTheme.titleMedium,
                   h3: theme.textTheme.titleSmall,
@@ -59,9 +64,13 @@ class UpdateDialog extends StatelessWidget {
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(context),
-          child: const Text('Later'),
+          child: const Text('Later', style: TextStyle(color: Color(0xFF5A5A7A))),
         ),
         FilledButton(
+          style: FilledButton.styleFrom(
+            backgroundColor: const Color(0xFF4A6CF7),
+            foregroundColor: Colors.white,
+          ),
           onPressed: () async {
             final uri = Uri.parse(info.downloadUrl);
 

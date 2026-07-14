@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_swipe_action_cell/core/cell.dart';
 import 'package:get_it/get_it.dart';
+import 'package:loading_indicator_m3e/loading_indicator_m3e.dart';
 
 import '../../../../../generated/l10n.dart';
 import '../../../../../services/bottom_message.dart';
@@ -33,7 +34,7 @@ class PlaylistDetailsPage extends StatelessWidget {
           }
           return switch (state) {
             PlaylistDetailsLoading() => const Scaffold(
-                body: Center(child: CircularProgressIndicator()),
+                body: Center(child: LoadingIndicatorM3E()),
               ),
             PlaylistDetailsError() => const Scaffold(
                 body: Center(child: Text('Not available')),

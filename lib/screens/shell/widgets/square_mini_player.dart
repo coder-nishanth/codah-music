@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
+import 'package:loading_indicator_m3e/loading_indicator_m3e.dart';
 import 'package:Codah/services/media_player.dart';
 import 'package:Codah/utils/song_thumbnail.dart';
 
@@ -73,6 +74,16 @@ class _SquareMiniPlayerState extends State<SquareMiniPlayer> {
                       ValueListenableBuilder(
                         valueListenable: mediaPlayer.buttonState,
                         builder: (context, buttonState, _) {
+                          if (buttonState == ButtonState.loading) {
+                            return const Padding(
+                              padding: EdgeInsets.all(4),
+                              child: SizedBox(
+                                width: 36,
+                                height: 36,
+                                child: LoadingIndicatorM3E(),
+                              ),
+                            );
+                          }
                           return _IconBtn(
                             icon: buttonState == ButtonState.playing
                                 ? Icons.pause_circle_filled_rounded

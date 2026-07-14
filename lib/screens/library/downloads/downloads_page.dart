@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:loading_indicator_m3e/loading_indicator_m3e.dart';
 import 'package:Codah/services/download_manager.dart';
 
 import '../../../../generated/l10n.dart';
@@ -36,7 +37,7 @@ class DownloadsPage extends StatelessWidget {
           builder: (context, state) {
             return switch (state) {
               DownloadsLoading() =>
-                const Center(child: CircularProgressIndicator()),
+                const Center(child: LoadingIndicatorM3E()),
               DownloadsError(:final message) => Center(child: Text(message)),
               DownloadsLoaded(:final playlists) =>
                 _DownloadsBody(playlists: playlists),

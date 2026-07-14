@@ -7,6 +7,7 @@ import 'package:expandable_text/expandable_text.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
+import 'package:loading_indicator_m3e/loading_indicator_m3e.dart';
 import 'package:Codah/ytmusic/ytmusic.dart';
 
 import '../../generated/l10n.dart';
@@ -243,7 +244,7 @@ class _SectionItemState extends State<SectionItem> {
                   items: widget.section['contents'],
                   controller: horizontalScrollController,
                 ),
-              if (loadingMore) const AdaptiveProgressRing(),
+              if (loadingMore) const LoadingIndicatorM3E(),
               if (widget.section['continuation'] != null && !loadingMore)
                 AdaptiveButton(
                     onPressed: loadMoreItems, child: const Text("Load More"))

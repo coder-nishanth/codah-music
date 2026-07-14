@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:loading_indicator_m3e/loading_indicator_m3e.dart';
 import 'package:palette_generator/palette_generator.dart';
 
 import 'package:get_it/get_it.dart';
@@ -127,14 +128,11 @@ class _BottomPlayerState extends State<BottomPlayer> {
                                             : player.player.play();
                                       },
                                       icon: buttonState == ButtonState.loading
-                                          ? const SizedBox(
-                                              width: 28,
-                                              height: 28,
-                                              child: CircularProgressIndicator(
-                                                strokeWidth: 2.5,
-                                                color: Colors.white,
-                                              ),
-                                            )
+                                       ? const SizedBox(
+                                               width: 28,
+                                               height: 28,
+                                               child: LoadingIndicatorM3E(),
+                                             )
                                           : Icon(
                                               buttonState == ButtonState.playing
                                                   ? Icons.pause

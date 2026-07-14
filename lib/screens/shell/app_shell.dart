@@ -1,9 +1,17 @@
+import 'dart:io';
+
+import 'package:desktop_drop/desktop_drop.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/widgets/animated_codah_title.dart';
 import '../../generated/l10n.dart';
+import '../../services/bottom_message.dart';
+import '../../services/media_player.dart';
+import '../../services/settings_manager.dart';
+import '../../services/update_service/update_service.dart';
 import '../../services/window_service.dart';
 import 'widgets/bottom_player.dart';
 import 'widgets/square_mini_player.dart';
@@ -24,6 +32,105 @@ class _AppShellState extends State<AppShell> {
 
   void _onNavTap(int index) {
     widget.navigationShell.goBranch(index, initialLocation: true);
+  }
+
+  bool _handleKeyEvent(KeyEvent event) {
+    if (event is! KeyDownEvent && event is! KeyRepeatEvent) return false;
+
+    final isTextField = !HardwareKeyboard.instance.physicalKeysPressed
+        .where((k) => k != PhysicalKeyboardKey.shiftLeft &&
+            k != PhysicalKeyboardKey.shiftRight &&
+            k != PhysicalKeyboardKey.controlLeft &&
+            k != PhysicalKeyboardKey.controlRight &&
+            k != PhysicalKeyboardKey.altLeft &&
+            k != PhysicalKeyboardKey.altRight &&
+            k != PhysicalKeyboardKey.metaLeft &&
+            k != PhysicalKeyboardKey.metaRight)
+        .any((k) => false);
+
+    final focusNode = FocusManager.instance.primaryFocus;
+    final hasPrimaryFocus = focusNode?.hasPrimaryFocus ?? true;
+    if (!hasPrimaryFocus) return false;
+
+    final ctrl = HardwareKeyboard.instance.logicalKeysPressed
+        .contains(LogicalKeyboardKey.controlLeft) ||
+        HardwareKeyboard.instance.logicalKeysPressed
+            .contains(LogicalKeyboardKey.controlRight);
+    final shift = HardwareKeyboard.instance.logicalKeysPressed
+        .contains(LogicalKeyboardKey.shiftLeft) ||
+        HardwareKeyboard.instance.logicalKeysPressed
+            .contains(LogicalKeyboardKey.shiftRight);
+
+    final mediaPlayer = GetIt.I<MediaPlayer>();
+
+    if (event.logicalKey == LogicalKeyboardKey.space && !ctrl && !shift) {
+      if (mediaPlayer.player.playing) {
+        mediaPlayer.player.pause();
+      } else {
+        mediaPlayer.player.play();
+      }
+      return true;
+    }
+
+    if (ctrl && event.logicalKey == LogicalKeyboardKey.arrowRight) {
+      mediaPlayer.player.seekToNext();
+      return true;
+    }
+
+    if (ctrl && event.logicalKey == LogicalKeyboardKey.arrowLeft) {
+      mediaPlayer.player.seekToPrevious();
+      return true;
+    }
+
+    if (ctrl && !shift && event.logicalKey == LogicalKeyboardKey.arrowUp) {
+      final newVol = (mediaPlayer.player.volume + 0.1).clamp(0.0, 1.0);
+      mediaPlayer.player.setVolume(newVol);
+      return true;
+    }
+
+    if (ctrl && !shift && event.logicalKey == LogicalKeyboardKey.arrowDown) {
+      final newVol = (mediaPlayer.player.volume - 0.1).clamp(0.0, 1.0);
+      mediaPlayer.player.setVolume(newVol);
+      return true;
+    }
+
+    if (ctrl && shift && event.logicalKey == LogicalKeyboardKey.keyS) {
+      mediaPlayer.setShuffleModeEnabled(!mediaPlayer.shuffleModeEnabled);
+      return true;
+    }
+
+    if (ctrl && shift && event.logicalKey == LogicalKeyboardKey.keyR) {
+      mediaPlayer.changeLoopMode();
+      return true;
+    }
+
+    return false;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    HardwareKeyboard.instance.addHandler(_handleKeyEvent);
+    _checkForUpdatesInBackground();
+    GetIt.I<SettingsManager>().addListener(_onSettingsChanged);
+  }
+
+  void _onSettingsChanged() {
+    if (mounted) setState(() {});
+  }
+
+  void _checkForUpdatesInBackground() async {
+    final update = await UpdateService.checkForUpdate();
+    if (mounted) {
+      GetIt.I<SettingsManager>().hasUpdate = update != null;
+    }
+  }
+
+  @override
+  void dispose() {
+    HardwareKeyboard.instance.removeHandler(_handleKeyEvent);
+    GetIt.I<SettingsManager>().removeListener(_onSettingsChanged);
+    super.dispose();
   }
 
   @override
@@ -73,6 +180,7 @@ class _AppShellState extends State<AppShell> {
                   label: S.of(context).Settings,
                   selected: _selectedIndex == 2,
                   onTap: () => _onNavTap(2),
+                  badge: GetIt.I<SettingsManager>().hasUpdate,
                 ),
                 const SizedBox(height: 4),
                 _SidebarBtn(
@@ -118,23 +226,46 @@ class _AppShellState extends State<AppShell> {
                   ),
                 ),
                 Expanded(
-                  child: Stack(
-                    children: [
-                      widget.navigationShell,
-                      if (currentPath == '/')
-                        const Align(
-                          alignment: Alignment.bottomCenter,
-                          child: BottomPlayer(),
-                        )
-                      else if (currentPath == '/support')
-                        const SizedBox.shrink()
-                      else
-                        const Positioned(
-                          bottom: 12,
-                          right: 12,
-                          child: SquareMiniPlayer(),
-                        ),
-                    ],
+                  child: DropTarget(
+                    onDragDone: (details) async {
+                      final audioExtensions = [
+                        '.mp3', '.m4a', '.wav', '.flac', '.ogg', '.aac', '.wma',
+                      ];
+                      for (final file in details.files) {
+                        final ext = file.path.toLowerCase();
+                        if (audioExtensions.any((e) => ext.endsWith(e))) {
+                          await GetIt.I<MediaPlayer>().addToQueue({
+                            'videoId': null,
+                            'title': file.name,
+                            'path': file.path,
+                          });
+                          if (context.mounted) {
+                            BottomMessage.showText(
+                              context,
+                              '${file.name} added to queue',
+                            );
+                          }
+                        }
+                      }
+                    },
+                    child: Stack(
+                      children: [
+                        widget.navigationShell,
+                        if (currentPath == '/')
+                          const Align(
+                            alignment: Alignment.bottomCenter,
+                            child: BottomPlayer(),
+                          )
+                        else if (currentPath == '/support')
+                          const SizedBox.shrink()
+                        else
+                          const Positioned(
+                            bottom: 12,
+                            right: 12,
+                            child: SquareMiniPlayer(),
+                          ),
+                      ],
+                    ),
                   ),
                 ),
               ],
@@ -152,12 +283,14 @@ class _SidebarBtn extends StatelessWidget {
   final String label;
   final bool selected;
   final VoidCallback onTap;
+  final bool badge;
 
   const _SidebarBtn({
     required this.icon,
     required this.label,
     required this.selected,
     required this.onTap,
+    this.badge = false,
   });
 
   @override
@@ -166,20 +299,38 @@ class _SidebarBtn extends StatelessWidget {
       message: label,
       child: GestureDetector(
         onTap: onTap,
-        child: Container(
-          width: 40,
-          height: 40,
-          decoration: BoxDecoration(
-            color: selected ? Colors.white.withValues(alpha: 0.1) : Colors.transparent,
-            borderRadius: BorderRadius.circular(10),
-          ),
-          child: Icon(
-            icon,
-            size: 20,
-            color: selected
-                ? Colors.white
-                : Colors.white.withValues(alpha: 0.4),
-          ),
+        child: Stack(
+          clipBehavior: Clip.none,
+          children: [
+            Container(
+              width: 40,
+              height: 40,
+              decoration: BoxDecoration(
+                color: selected ? Colors.white.withValues(alpha: 0.1) : Colors.transparent,
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Icon(
+                icon,
+                size: 20,
+                color: selected
+                    ? Colors.white
+                    : Colors.white.withValues(alpha: 0.4),
+              ),
+            ),
+            if (badge)
+              Positioned(
+                top: 4,
+                right: 4,
+                child: Container(
+                  width: 8,
+                  height: 8,
+                  decoration: const BoxDecoration(
+                    color: Colors.redAccent,
+                    shape: BoxShape.circle,
+                  ),
+                ),
+              ),
+          ],
         ),
       ),
     );

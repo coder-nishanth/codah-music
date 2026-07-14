@@ -31,6 +31,8 @@ class SettingsManager extends ChangeNotifier {
   List<double> _equalizerBandsGain = [];
   bool _loudnessEnabled = false;
   double _loudnessTargetGain = 0.0;
+  bool _hasUpdate = false;
+
 
   ThemeMode get themeMode => _themeMode;
   List<ThemeMode> get themeModes => _themeModes;
@@ -51,6 +53,7 @@ class SettingsManager extends ChangeNotifier {
   List<double> get equalizerBandsGain => _equalizerBandsGain;
   bool get loudnessEnabled => _loudnessEnabled;
   double get loudnessTargetGain => _loudnessTargetGain;
+  bool get hasUpdate => _hasUpdate;
 
   Map get settings => _box.toMap();
   SettingsManager() {
@@ -181,6 +184,12 @@ class SettingsManager extends ChangeNotifier {
     _loudnessTargetGain = value;
     notifyListeners();
   }
+
+  set hasUpdate(bool value) {
+    _hasUpdate = value;
+    notifyListeners();
+  }
+
 
   Future<void> setSettings(Map value) async {
     await Future.forEach(value.entries, (entry) async {

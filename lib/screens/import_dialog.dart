@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:loading_indicator_m3e/loading_indicator_m3e.dart';
 import 'package:Codah/services/import_service.dart';
 import 'package:Codah/themes/colors.dart';
 
@@ -47,7 +48,7 @@ class _ImportDialogState extends State<ImportDialog> {
           mainAxisSize: MainAxisSize.min,
           children: [
             if (!isDone && !isError)
-              const CircularProgressIndicator(),
+              const LoadingIndicatorM3E(),
             if (isDone)
               const Icon(Icons.check_circle, color: Colors.green, size: 50),
             if (isError)

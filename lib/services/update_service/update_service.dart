@@ -18,10 +18,11 @@ class UpdateService {
   static Future<UpdateInfo?> checkForUpdate() async {
     try {
       final package = await PackageInfo.fromPlatform();
-      final currentVersion = Version.parse(package.version);
+      final currentVersion = Version.parse(package.version.split('+').first);
 
+      final timestamp = DateTime.now().millisecondsSinceEpoch;
       final Uri uri = Uri.parse(
-        'https://raw.githubusercontent.com/iad1tya/codah-music/main/desktop_update.json',
+        'https://raw.githubusercontent.com/coder-nishanth/codah-music/main/desktop_update.json?t=$timestamp',
       );
 
       final response = await http.get(uri);
@@ -49,9 +50,9 @@ class UpdateService {
         return UpdateInfo(
           version: remoteVersion,
           name: 'New Update Available',
-          body: 'A new version of CODAH MUSIC is available. Please update to continue.',
+          body: 'A new version of CODAH MUSIC is available.',
           publishedAt: '',
-          downloadUrl: 'https://codahmusic.fun',
+          downloadUrl: 'https://codahmusic.onrender.com/',
         );
       }
       

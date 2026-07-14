@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:get_it/get_it.dart';
 import 'package:Codah/services/equalizer_service.dart';
 import 'package:Codah/services/yt_audio_stream.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:just_audio_background/just_audio_background.dart';
 import 'package:rxdart/rxdart.dart';
@@ -34,6 +35,7 @@ class MediaPlayer extends ChangeNotifier {
   bool _shuffleModeEnabled = false;
 
   bool autoFetching = false;
+
 
   MediaPlayer() {
     _player = AudioPlayer();
@@ -93,12 +95,6 @@ class MediaPlayer extends ChangeNotifier {
     _listenToAutofetch();
     _listenToPlayerErrors();
 
-    Timer.periodic(const Duration(seconds: 10), (timer) {
-      if (currentSongNotifier.value != null && _player.playing) {
-        GetIt.I<YTMusic>()
-            .addPlayingStats(currentSongNotifier.value!.id, _player.position);
-      }
-    });
   }
 
 
@@ -222,6 +218,7 @@ class MediaPlayer extends ChangeNotifier {
           final MediaItem item = _songList[_currentIndex.value!].tag;
           addHistory(item.extras!);
         }
+  
         notifyListeners();
       }
     });
@@ -351,6 +348,7 @@ class MediaPlayer extends ChangeNotifier {
       if (_lastPlayRequestId != requestId) return;
 
       await _player.play();
+
     } catch (e) {
       if (_lastPlayRequestId == requestId) {
         _buttonState.value = ButtonState.paused;
@@ -383,6 +381,7 @@ class MediaPlayer extends ChangeNotifier {
         await _player.setAudioSource(audioSource);
       }
 
+
     } else if (mediaItem['songs'] != null) {
       List songs = mediaItem['songs'];
       final songMaps = songs.map((s) => Map<String, dynamic>.from(s)).toList();
@@ -397,6 +396,7 @@ class MediaPlayer extends ChangeNotifier {
       final songMaps = songs.map((s) => Map<String, dynamic>.from(s)).toList();
       _originalPlaylist.insertAll(insertIndexOrig, songMaps);
       await _addSongListToQueue(songs, isNext: true);
+
     }
   }
 
@@ -449,6 +449,7 @@ class MediaPlayer extends ChangeNotifier {
       if (validSources.length > 1) {
         await _player.addAudioSources(validSources.sublist(1));
       }
+
 
       autoFetching = false;
     } catch (e) {
@@ -514,6 +515,7 @@ class MediaPlayer extends ChangeNotifier {
       _originalPlaylist.addAll(songMaps);
       await _addSongListToQueue(songs, isNext: false);
 
+
     } else if (mediaItem['playlistId'] != null) {
       List songs = mediaItem['type'] == 'ARTIST'
           ? await GetIt.I<YTMusic>()
@@ -522,6 +524,7 @@ class MediaPlayer extends ChangeNotifier {
       final songMaps = songs.map((s) => Map<String, dynamic>.from(s)).toList();
       _originalPlaylist.addAll(songMaps);
       await _addSongListToQueue(songs, isNext: false);
+
     }
   }
 
@@ -744,6 +747,7 @@ class MediaPlayer extends ChangeNotifier {
       debugPrint('Failed to restore queue order: $e');
     }
   }
+
 }
 
 enum ButtonState { loading, paused, playing }

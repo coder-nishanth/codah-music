@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:loading_indicator_m3e/loading_indicator_m3e.dart';
 
 class UpdateCheckingDialog extends StatelessWidget {
   const UpdateCheckingDialog({super.key});
@@ -12,7 +13,7 @@ class UpdateCheckingDialog extends StatelessWidget {
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            CircularProgressIndicator(),
+            LoadingIndicatorM3E(),
             SizedBox(width: 16),
             Text('Checking for updates…'),
           ],

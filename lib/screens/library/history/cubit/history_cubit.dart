@@ -7,6 +7,7 @@ part 'history_state.dart';
 class HistoryCubit extends Cubit<HistoryState> {
   late final Box _box;
   late final VoidCallback _listener;
+  String _searchQuery = '';
 
   HistoryCubit() : super(const HistoryLoading()) {
     _box = Hive.box('SONG_HISTORY');
@@ -24,15 +25,34 @@ class HistoryCubit extends Cubit<HistoryState> {
     _emitState();
   }
 
+  void search(String query) {
+    _searchQuery = query;
+    _emitState();
+  }
+
   void _emitState() {
     if (isClosed) return;
 
     try {
-      final songs = _box.values.toList();
+      List songs = _box.values.toList();
 
       songs.sort(
         (a, b) => (b['updatedAt'] ?? 0).compareTo(a['updatedAt'] ?? 0),
       );
+
+      if (_searchQuery.isNotEmpty) {
+        final q = _searchQuery.toLowerCase();
+        songs = songs.where((song) {
+          final title = (song['title'] ?? '').toString().toLowerCase();
+          final artist = (song['artists'] != null)
+              ? (song['artists'] as List)
+                  .map((a) => (a['name'] ?? '').toString())
+                  .join(' ')
+                  .toLowerCase()
+              : '';
+          return title.contains(q) || artist.contains(q);
+        }).toList();
+      }
 
       emit(HistoryLoaded(songs));
     } catch (e) {

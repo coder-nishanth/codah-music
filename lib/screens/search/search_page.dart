@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
+import 'package:loading_indicator_m3e/loading_indicator_m3e.dart';
 
 import '../../core/utils/service_locator.dart';
 import '../../services/media_player.dart';
@@ -438,7 +439,7 @@ class _SuggestionsList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListView(children: [
-      if (isLoading) const Padding(padding: EdgeInsets.all(20), child: Center(child: AdaptiveProgressRing())),
+      if (isLoading) const Padding(padding: EdgeInsets.all(20), child: Center(child: LoadingIndicatorM3E())),
       ...suggestionQueries.map((q) => AdaptiveListTile(
         onTap: () => onQueryTap(q),
         leading: Icon(Icons.search, size: 20, color: Colors.white.withValues(alpha: 0.4)),

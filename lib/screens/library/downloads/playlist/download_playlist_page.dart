@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_swipe_action_cell/core/cell.dart';
+import 'package:loading_indicator_m3e/loading_indicator_m3e.dart';
 
 import '../../../../../generated/l10n.dart';
 import '../../../../../utils/bottom_modals.dart';
@@ -25,7 +26,7 @@ class DownloadPlaylistPage extends StatelessWidget {
         builder: (context, state) {
           return switch (state) {
             DownloadPlaylistLoading() => const Scaffold(
-                body: Center(child: CircularProgressIndicator()),
+                body: Center(child: LoadingIndicatorM3E()),
               ),
             DownloadPlaylistError() => Scaffold(
                 appBar: AppBar(),

@@ -3,16 +3,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
+import 'package:loading_indicator_m3e/loading_indicator_m3e.dart';
 import 'package:Codah/utils/song_thumbnail.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:just_audio_background/just_audio_background.dart';
-import 'package:provider/provider.dart';
 import 'package:palette_generator/palette_generator.dart';
+import 'package:provider/provider.dart';
 
 import 'widgets/animated_gradient_bg.dart';
 
 import '../../services/media_player.dart';
+import '../../services/bottom_message.dart';
 import '../../themes/dark.dart';
 import '../../utils/adaptive_widgets/adaptive_widgets.dart';
 import '../../utils/bottom_modals.dart';
@@ -136,7 +138,7 @@ class _PlayerPageState extends State<PlayerPage> {
       ),
       child: (widget.videoId != null && fetchedSong == false)
           ? const Center(
-              child: AdaptiveProgressRing(),
+              child: LoadingIndicatorM3E(),
             )
           : WillPopScope(
               onWillPop: () async {
@@ -317,7 +319,7 @@ class _PlayerPageState extends State<PlayerPage> {
                                                               ),
                                                             ),
                                                           ),
-                                                          const SizedBox(height: 40),
+                                                          const SizedBox(height: 8),
                                                           _buildTitleAndControls(
                                                               context,
                                                               centered: false),
@@ -398,6 +400,7 @@ class _PlayerPageState extends State<PlayerPage> {
                                             ),
                                           ),
                                         ),
+                                        const SizedBox(height: 4),
                                         _buildTitleAndControls(context),
                                         const SizedBox(height: 20),
                                       ],
@@ -494,6 +497,19 @@ class _PlayerPageState extends State<PlayerPage> {
               },
             ),
             const SizedBox(width: 8),
+            AdaptiveIconButton(
+              onPressed: () {
+                final link = 'https://music.youtube.com/watch?v=${currentSong?.id ?? ''}';
+                Clipboard.setData(ClipboardData(text: link));
+                BottomMessage.showText(context, 'Link copied');
+              },
+              icon: Icon(
+                Icons.link,
+                size: 22,
+                color: Colors.white.withValues(alpha: 0.7),
+              ),
+            ),
+            const SizedBox(width: 8),
             Builder(
               builder: (buttonContext) => AdaptiveIconButton(
                 onPressed: () {
@@ -575,7 +591,7 @@ class _PlayerPageState extends State<PlayerPage> {
                 builder: (context, ButtonState value, child) {
                   if (value == ButtonState.loading) {
                     return const Center(
-                        child: CircularProgressIndicator(color: Colors.black));
+                        child: LoadingIndicatorM3E());
                   }
                   return IconButton(
                     onPressed: () {

@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:loading_indicator_m3e/loading_indicator_m3e.dart';
 import 'package:Codah/core/utils/service_locator.dart';
 import 'package:Codah/utils/internet_guard.dart';
 import 'package:Codah/utils/playlist_thumbnail.dart';
@@ -55,7 +56,7 @@ class LibraryPage extends StatelessWidget {
                 ],
               ),
               body: switch (state) {
-                LibraryLoading() => const Center(child: AdaptiveProgressRing()),
+                LibraryLoading() => const Center(child: LoadingIndicatorM3E()),
                 LibraryError(:final message) => Center(child: Text(message)),
                 LibraryLoaded(
                   :final playlists,
@@ -121,9 +122,11 @@ class _LibraryBody extends StatelessWidget {
       final key = entry.key;
       final item = entry.value;
 
+      if (item['isFolder'] == true) continue;
+
       gridItems.add({
         'title': item['title'],
-        'subtitle': (item['songs'] != null || item['isPredefined'])
+        'subtitle': (item['songs'] != null || item['isPredefined'] == true)
             ? (item['isPredefined'] == true
                 ? item['subtitle']
                 : S.of(context).nSongs(item['songs'].length))
@@ -247,13 +250,10 @@ class _LibraryGridCard extends StatelessWidget {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    SizedBox(
+                    const SizedBox(
                       width: 28,
                       height: 28,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2.5,
-                        color: colorScheme.primary,
-                      ),
+                      child: LoadingIndicatorM3E(),
                     ),
                     const SizedBox(height: 8),
                     ValueListenableBuilder<int>(

@@ -151,4 +151,5 @@ class EqualizerService {
     settings.equalizerBandsGain = List<double>.filled(bandCount, 0.0);
     await applyEqualizer();
   }
+
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:loading_indicator_m3e/loading_indicator_m3e.dart';
 import 'package:Codah/screens/library/downloads/downloading/widgets/downloading_section_tile.dart';
 
 import '../../../../../generated/l10n.dart';
@@ -23,7 +24,7 @@ class DownloadingPage extends StatelessWidget {
           builder: (context, state) {
             return switch (state) {
               DownloadingLoading() =>
-                const Center(child: CircularProgressIndicator()),
+                const Center(child: LoadingIndicatorM3E()),
               DownloadingError(:final message) => Center(child: Text(message)),
               DownloadingLoaded(
                 :final downloading,
