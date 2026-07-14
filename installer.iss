@@ -1,12 +1,12 @@
 [Setup]
 AppId={{CODAH-MUSIC-2024}}
 AppName=Codah Music
-AppVersion=2.0.1
+AppVersion=2.0.0
 AppPublisher=coder-nishanth
 DefaultDirName={autopf}\Codah Music
 DefaultGroupName=Codah Music
 OutputDir=C:\Users\Nishanth JP\Desktop
-OutputBaseFilename=Codah Music v2.0.1 Setup
+OutputBaseFilename=Codah Music v2.0.0 Setup
 Compression=lzma2
 SolidCompression=yes
 SetupIconFile=C:\Users\Nishanth JP\Desktop\codah-music\windows\runner\resources\app_icon.ico
