@@ -2,11 +2,33 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
+import 'package:scroll_animator/scroll_animator.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:Codah/services/bottom_message.dart';
 
-class SupportPage extends StatelessWidget {
+class SupportPage extends StatefulWidget {
   const SupportPage({super.key});
+
+  @override
+  State<SupportPage> createState() => _SupportPageState();
+}
+
+class _SupportPageState extends State<SupportPage> {
+  late final AnimatedScrollController _scrollController;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController = AnimatedScrollController(
+      animationFactory: const ChromiumEaseInOut(),
+    );
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -47,6 +69,7 @@ class SupportPage extends StatelessWidget {
             ),
             Center(
               child: SingleChildScrollView(
+            controller: _scrollController,
             padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 24),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,

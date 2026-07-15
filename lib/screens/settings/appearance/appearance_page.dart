@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:scroll_animator/scroll_animator.dart';
 
 import '../../../generated/l10n.dart';
 import '../widgets/setting_item.dart';
@@ -8,8 +9,29 @@ import '../../../utils/bottom_modals.dart';
 
 import 'cubit/appearance_cubit.dart';
 
-class AppearancePage extends StatelessWidget {
+class AppearancePage extends StatefulWidget {
   const AppearancePage({super.key});
+
+  @override
+  State<AppearancePage> createState() => _AppearancePageState();
+}
+
+class _AppearancePageState extends State<AppearancePage> {
+  late final AnimatedScrollController _scrollController;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController = AnimatedScrollController(
+      animationFactory: const ChromiumEaseInOut(),
+    );
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -27,6 +49,7 @@ class AppearancePage extends StatelessWidget {
                 final s = state as AppearanceLoaded;
 
                 return ListView(
+                  controller: _scrollController,
                   padding: const EdgeInsets.symmetric(
                     horizontal: 16,
                     vertical: 8,

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:scroll_animator/scroll_animator.dart';
 import 'package:Codah/generated/l10n.dart';
 import 'package:Codah/screens/settings/widgets/setting_item.dart';
 import 'package:Codah/themes/text_styles.dart';
@@ -11,8 +12,29 @@ import 'package:Codah/utils/bottom_modals.dart';
 import 'cubit/ytmusic_cubit.dart';
 
 
-class YTMusicPage extends StatelessWidget {
+class YTMusicPage extends StatefulWidget {
   const YTMusicPage({super.key});
+
+  @override
+  State<YTMusicPage> createState() => _YTMusicPageState();
+}
+
+class _YTMusicPageState extends State<YTMusicPage> {
+  late final AnimatedScrollController _scrollController;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController = AnimatedScrollController(
+      animationFactory: const ChromiumEaseInOut(),
+    );
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -30,6 +52,7 @@ class YTMusicPage extends StatelessWidget {
                 final cubit = context.read<YTMusicCubit>();
 
                 return ListView(
+                  controller: _scrollController,
                   padding:
                       const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                   children: [

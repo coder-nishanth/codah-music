@@ -6,6 +6,7 @@ import 'package:Codah/core/widgets/section_item.dart';
 import 'package:Codah/utils/internet_guard.dart';
 
 import 'package:loading_indicator_m3e/loading_indicator_m3e.dart';
+import 'package:scroll_animator/scroll_animator.dart';
 
 class ChipPage extends StatelessWidget {
   const ChipPage({
@@ -37,12 +38,14 @@ class _ChipPage extends StatefulWidget {
 }
 
 class _ChipPageState extends State<_ChipPage> {
-  late ScrollController _scrollController;
+  late AnimatedScrollController _scrollController;
 
   @override
   void initState() {
     super.initState();
-    _scrollController = ScrollController();
+    _scrollController = AnimatedScrollController(
+      animationFactory: const ChromiumEaseInOut(),
+    );
     _scrollController.addListener(_scrollListener);
   }
 

@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:scroll_animator/scroll_animator.dart';
 
 import '../../../generated/l10n.dart';
 import '../../../services/equalizer_service.dart';
@@ -17,6 +18,7 @@ class EqualizerPage extends StatefulWidget {
 class _EqualizerPageState extends State<EqualizerPage> {
   late final EqualizerService _eqService;
   late final SettingsManager _settings;
+  late final AnimatedScrollController _scrollController;
   late List<double> _gains;
   late bool _enabled;
   String? _selectedPreset;
@@ -24,6 +26,9 @@ class _EqualizerPageState extends State<EqualizerPage> {
   @override
   void initState() {
     super.initState();
+    _scrollController = AnimatedScrollController(
+      animationFactory: const ChromiumEaseInOut(),
+    );
     _eqService = GetIt.I<EqualizerService>();
     _settings = GetIt.I<SettingsManager>();
     _gains = List<double>.from(_settings.equalizerBandsGain);
@@ -81,6 +86,12 @@ class _EqualizerPageState extends State<EqualizerPage> {
   }
 
   @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     if (!Platform.isWindows) {
       return Scaffold(
@@ -104,6 +115,7 @@ class _EqualizerPageState extends State<EqualizerPage> {
         child: Container(
           constraints: const BoxConstraints(maxWidth: 1000),
           child: ListView(
+            controller: _scrollController,
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             children: [
               Card(

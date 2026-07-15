@@ -58,12 +58,6 @@ class _PlayPauseButtonState extends State<PlayPauseButton>
             height: 60,
             width: 60,
             alignment: Alignment.center,
-            decoration: BoxDecoration(
-              color: (context.isDarkMode ? Colors.white : Colors.black)
-                  .withAlpha(50),
-              borderRadius: BorderRadius.circular(
-                  buttonState == ButtonState.playing ? 15 : 40),
-            ),
             child: (buttonState == ButtonState.loading)
                 ? const ExpressiveLoadingIndicator()
                 : AnimatedIcon(

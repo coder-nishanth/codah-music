@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_swipe_action_cell/core/cell.dart';
 import 'package:loading_indicator_m3e/loading_indicator_m3e.dart';
+import 'package:scroll_animator/scroll_animator.dart';
 
 import '../../../../generated/l10n.dart';
 import '../../../../utils/bottom_modals.dart';
@@ -36,10 +37,31 @@ class HistoryPage extends StatelessWidget {
   }
 }
 
-class _HistoryBody extends StatelessWidget {
+class _HistoryBody extends StatefulWidget {
   const _HistoryBody({required this.songs});
 
   final List songs;
+
+  @override
+  State<_HistoryBody> createState() => _HistoryBodyState();
+}
+
+class _HistoryBodyState extends State<_HistoryBody> {
+  late final AnimatedScrollController _scrollController;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController = AnimatedScrollController(
+      animationFactory: const ChromiumEaseInOut(),
+    );
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -76,7 +98,7 @@ class _HistoryBody extends StatelessWidget {
           ),
         ),
         Expanded(
-          child: songs.isEmpty
+          child: widget.songs.isEmpty
               ? const Center(
                   child: Text("No History Found"),
                 )
@@ -85,9 +107,10 @@ class _HistoryBody extends StatelessWidget {
                     constraints: const BoxConstraints(maxWidth: 1000),
                     padding: const EdgeInsets.symmetric(horizontal: 8),
                     child: ListView.builder(
-                      itemCount: songs.length,
+                      controller: _scrollController,
+                      itemCount: widget.songs.length,
                       itemBuilder: (context, index) {
-                        final song = songs[index];
+                        final song = widget.songs[index];
 
                         return SwipeActionCell(
                           backgroundColor: Colors.transparent,

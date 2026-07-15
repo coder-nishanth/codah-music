@@ -3,18 +3,40 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
+import 'package:scroll_animator/scroll_animator.dart';
 import '../../services/media_player.dart';
 import '../../utils/adaptive_widgets/adaptive_widgets.dart';
 import '../../utils/enhanced_image.dart';
 import '../../utils/bottom_modals.dart';
 
-class SpeedDialGrid extends StatelessWidget {
+class SpeedDialGrid extends StatefulWidget {
   final List items;
   const SpeedDialGrid({required this.items, super.key});
 
   @override
+  State<SpeedDialGrid> createState() => _SpeedDialGridState();
+}
+
+class _SpeedDialGridState extends State<SpeedDialGrid> {
+  late final AnimatedScrollController _scrollController;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController = AnimatedScrollController(
+      animationFactory: const ChromiumEaseInOut(),
+    );
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    if (items.isEmpty) return const SizedBox();
+    if (widget.items.isEmpty) return const SizedBox();
     final itemWidth = 120.0;
     final itemHeight = 140.0;
 
@@ -32,8 +54,8 @@ class SpeedDialGrid extends StatelessWidget {
               const Spacer(),
               AdaptiveOutlinedButton(
                 onPressed: () {
-                  if (items.isNotEmpty) {
-                    final random = items[Random().nextInt(items.length)];
+                  if (widget.items.isNotEmpty) {
+                    final random = widget.items[Random().nextInt(widget.items.length)];
                     GetIt.I<MediaPlayer>().playSong(Map.from(random));
                   }
                 },
@@ -45,12 +67,13 @@ class SpeedDialGrid extends StatelessWidget {
         SizedBox(
           height: itemHeight + 16,
           child: ListView.separated(
+            controller: _scrollController,
             padding: const EdgeInsets.symmetric(horizontal: 12),
             scrollDirection: Axis.horizontal,
-            itemCount: items.length,
+            itemCount: widget.items.length,
             separatorBuilder: (_, __) => const SizedBox(width: 8),
             itemBuilder: (context, index) {
-              final item = items[index];
+              final item = widget.items[index];
               final thumbnails = item['thumbnails'] as List? ?? [];
               final thumbUrl = thumbnails.isNotEmpty
                   ? getEnhancedImage(thumbnails.first['url'], dp: MediaQuery.of(context).devicePixelRatio, width: itemWidth)
@@ -107,13 +130,34 @@ class SpeedDialGrid extends StatelessWidget {
   }
 }
 
-class DailyDiscoverCarousel extends StatelessWidget {
+class DailyDiscoverCarousel extends StatefulWidget {
   final List items;
   const DailyDiscoverCarousel({required this.items, super.key});
 
   @override
+  State<DailyDiscoverCarousel> createState() => _DailyDiscoverCarouselState();
+}
+
+class _DailyDiscoverCarouselState extends State<DailyDiscoverCarousel> {
+  late final AnimatedScrollController _scrollController;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController = AnimatedScrollController(
+      animationFactory: const ChromiumEaseInOut(),
+    );
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    if (items.isEmpty) return const SizedBox();
+    if (widget.items.isEmpty) return const SizedBox();
     const cardWidth = 260.0;
     const cardHeight = 320.0;
 
@@ -141,12 +185,13 @@ class DailyDiscoverCarousel extends StatelessWidget {
         SizedBox(
           height: cardHeight + 16,
           child: ListView.separated(
+            controller: _scrollController,
             padding: const EdgeInsets.symmetric(horizontal: 12),
             scrollDirection: Axis.horizontal,
-            itemCount: items.length,
+            itemCount: widget.items.length,
             separatorBuilder: (_, __) => const SizedBox(width: 12),
             itemBuilder: (context, index) {
-              final item = items[index];
+              final item = widget.items[index];
               final thumbnails = item['thumbnails'] as List? ?? [];
               final thumbUrl = thumbnails.isNotEmpty
                   ? getEnhancedImage(thumbnails.first['url'], dp: MediaQuery.of(context).devicePixelRatio, width: cardWidth)
@@ -236,6 +281,7 @@ class MoodAndGenresGrid extends StatefulWidget {
 
 class _MoodAndGenresGridState extends State<MoodAndGenresGrid> {
   late final PageController _pageController;
+  int _currentPage = 0;
 
   @override
   void initState() {
@@ -247,6 +293,14 @@ class _MoodAndGenresGridState extends State<MoodAndGenresGrid> {
   void dispose() {
     _pageController.dispose();
     super.dispose();
+  }
+
+  void _goToPage(int page) {
+    _pageController.animateToPage(
+      page,
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeInOut,
+    );
   }
 
   @override
@@ -263,13 +317,23 @@ class _MoodAndGenresGridState extends State<MoodAndGenresGrid> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
           child: Row(
             children: [
               const Icon(Icons.explore, size: 20, color: Colors.white70),
               const SizedBox(width: 8),
-              const Text('Mood & Genres',
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+              const Expanded(
+                child: Text('Mood & Genres',
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+              ),
+              AdaptiveIconButton(
+                icon: Icon(AdaptiveIcons.chevron_left),
+                onPressed: () => _goToPage(_currentPage - 1),
+              ),
+              AdaptiveIconButton(
+                icon: Icon(AdaptiveIcons.chevron_right),
+                onPressed: () => _goToPage(_currentPage + 1),
+              ),
             ],
           ),
         ),
@@ -279,6 +343,7 @@ class _MoodAndGenresGridState extends State<MoodAndGenresGrid> {
             controller: _pageController,
             padEnds: false,
             itemCount: pageCount,
+            onPageChanged: (index) => setState(() => _currentPage = index),
             itemBuilder: (context, pageIndex) {
               final start = pageIndex * perPage;
               final end = (start + perPage).clamp(0, widget.items.length);
@@ -353,28 +418,50 @@ class _MoodGenreButton extends StatelessWidget {
   }
 }
 
-class MultiRowHorizontalGrid extends StatelessWidget {
+class MultiRowHorizontalGrid extends StatefulWidget {
   final List items;
   final int rowCount;
   const MultiRowHorizontalGrid({required this.items, this.rowCount = 4, super.key});
 
   @override
+  State<MultiRowHorizontalGrid> createState() => _MultiRowHorizontalGridState();
+}
+
+class _MultiRowHorizontalGridState extends State<MultiRowHorizontalGrid> {
+  late final AnimatedScrollController _scrollController;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController = AnimatedScrollController(
+      animationFactory: const ChromiumEaseInOut(),
+    );
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    if (items.isEmpty) return const SizedBox();
+    if (widget.items.isEmpty) return const SizedBox();
     const itemHeight = 48.0;
     const itemWidth = 200.0;
 
     return SizedBox(
-      height: itemHeight * rowCount + 8 * (rowCount - 1),
+      height: itemHeight * widget.rowCount + 8 * (widget.rowCount - 1),
       child: ListView.separated(
+        controller: _scrollController,
         padding: const EdgeInsets.symmetric(horizontal: 12),
         scrollDirection: Axis.horizontal,
-        itemCount: (items.length / rowCount).ceil(),
+        itemCount: (widget.items.length / widget.rowCount).ceil(),
         separatorBuilder: (_, __) => const SizedBox(width: 8),
         itemBuilder: (context, pageIndex) {
-          final start = pageIndex * rowCount;
-          final end = (start + rowCount).clamp(0, items.length);
-          final pageItems = items.sublist(start, end);
+          final start = pageIndex * widget.rowCount;
+          final end = (start + widget.rowCount).clamp(0, widget.items.length);
+          final pageItems = widget.items.sublist(start, end);
           return SizedBox(
             width: itemWidth,
             child: Column(

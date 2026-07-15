@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:loading_indicator_m3e/loading_indicator_m3e.dart';
+import 'package:scroll_animator/scroll_animator.dart';
 import 'package:Codah/ytmusic/ytmusic.dart';
 
 import '../../generated/l10n.dart';
@@ -58,13 +59,26 @@ class SectionItem extends StatefulWidget {
 }
 
 class _SectionItemState extends State<SectionItem> {
-  final ScrollController horizontalScrollController = ScrollController();
-  PageController horizontalPageController = PageController();
+  final AnimatedScrollController horizontalScrollController = AnimatedScrollController(
+    animationFactory: const ChromiumEaseInOut(),
+  );
+  late PageController horizontalPageController;
   bool loadingMore = false;
+  bool _pageControllerInitialized = false;
 
   @override
   void initState() {
     super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (!_pageControllerInitialized) {
+      horizontalPageController = PageController(
+          viewportFraction: 350 / MediaQuery.sizeOf(context).width);
+      _pageControllerInitialized = true;
+    }
   }
 
   @override
@@ -118,8 +132,6 @@ class _SectionItemState extends State<SectionItem> {
         ],
       );
     }
-    horizontalPageController = PageController(
-        viewportFraction: 350 / MediaQuery.of(context).size.width);
     return widget.section['contents'].isEmpty
         ? const SizedBox()
         : Column(
@@ -173,10 +185,10 @@ class _SectionItemState extends State<SectionItem> {
                               }
                             }
                           },
-                          child: Text(widget.section['trailing']['text']),
+                          child: Text(widget.section['trailing']['text'],
+                              maxLines: 1, overflow: TextOverflow.ellipsis),
                         ),
-                      if (Platform.isWindows &&
-                          widget.section['viewType'] != 'SINGLE_COLUMN')
+                      if (widget.section['viewType'] != 'SINGLE_COLUMN')
                         AdaptiveIconButton(
                           icon: Icon(AdaptiveIcons.chevron_left),
                           onPressed: () {
@@ -196,8 +208,7 @@ class _SectionItemState extends State<SectionItem> {
                             }
                           },
                         ),
-                      if (Platform.isWindows &&
-                          widget.section['viewType'] != 'SINGLE_COLUMN')
+                      if (widget.section['viewType'] != 'SINGLE_COLUMN')
                         AdaptiveIconButton(
                           icon: Icon(AdaptiveIcons.chevron_right),
                           onPressed: () {
@@ -443,7 +454,7 @@ class ItemList extends StatefulWidget {
   const ItemList({required this.items, this.controller, super.key});
 
   final List items;
-  final ScrollController? controller;
+  final AnimatedScrollController? controller;
 
   @override
   State<ItemList> createState() => _ItemListState();

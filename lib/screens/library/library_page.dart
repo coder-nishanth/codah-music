@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:loading_indicator_m3e/loading_indicator_m3e.dart';
+import 'package:scroll_animator/scroll_animator.dart';
 import 'package:Codah/core/utils/service_locator.dart';
 import 'package:Codah/utils/internet_guard.dart';
 import 'package:Codah/utils/playlist_thumbnail.dart';
@@ -79,7 +80,7 @@ class LibraryPage extends StatelessWidget {
   }
 }
 
-class _LibraryBody extends StatelessWidget {
+class _LibraryBody extends StatefulWidget {
   const _LibraryBody(
       {required this.playlists,
       this.favouritesCount = 0,
@@ -92,31 +93,52 @@ class _LibraryBody extends StatelessWidget {
   final int historyCount;
 
   @override
+  State<_LibraryBody> createState() => _LibraryBodyState();
+}
+
+class _LibraryBodyState extends State<_LibraryBody> {
+  late final AnimatedScrollController _scrollController;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController = AnimatedScrollController(
+      animationFactory: const ChromiumEaseInOut(),
+    );
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final List<Map<String, dynamic>> gridItems = [];
 
     gridItems.add({
       'title': S.of(context).Favourites,
-      'subtitle': S.of(context).nSongs(favouritesCount),
+      'subtitle': S.of(context).nSongs(widget.favouritesCount),
       'icon': AdaptiveIcons.heart_fill,
       'onTap': () => context.push('/saved/favourites_page'),
     });
 
     gridItems.add({
       'title': S.of(context).Downloads,
-      'subtitle': S.of(context).nSongs(downloadsCount),
+      'subtitle': S.of(context).nSongs(widget.downloadsCount),
       'icon': AdaptiveIcons.download,
       'onTap': () => context.push('/saved/downloads_page'),
     });
 
     gridItems.add({
       'title': S.of(context).History,
-      'subtitle': S.of(context).nSongs(historyCount),
+      'subtitle': S.of(context).nSongs(widget.historyCount),
       'icon': Icons.history,
       'onTap': () => context.push('/saved/history_page'),
     });
 
-    final sortedPlaylists = SplayTreeMap.from(playlists);
+    final sortedPlaylists = SplayTreeMap.from(widget.playlists);
     for (var entry in sortedPlaylists.entries) {
       if (entry.value == null) continue;
       final key = entry.key;
@@ -166,6 +188,7 @@ class _LibraryBody extends StatelessWidget {
     return LayoutBuilder(
       builder: (context, constraints) {
         return GridView.builder(
+          controller: _scrollController,
           padding: const EdgeInsets.all(16),
           gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
             maxCrossAxisExtent: 200,

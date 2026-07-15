@@ -10,6 +10,7 @@ import 'package:Codah/screens/browse/cubit/browse_cubit.dart';
 import 'package:Codah/core/widgets/section_item.dart';
 import 'package:Codah/utils/internet_guard.dart';
 import 'package:loading_indicator_m3e/loading_indicator_m3e.dart';
+import 'package:scroll_animator/scroll_animator.dart';
 
 import '../../generated/l10n.dart';
 import '../../services/bottom_message.dart';
@@ -54,7 +55,7 @@ class _BrowsePage extends StatefulWidget {
 }
 
 class _BrowsePageState extends State<_BrowsePage> {
-  late ScrollController _scrollController;
+  late AnimatedScrollController _scrollController;
   YTMusic ytMusic = GetIt.I<YTMusic>();
   bool initialLoading = false;
   bool nextLoading = false;
@@ -64,7 +65,9 @@ class _BrowsePageState extends State<_BrowsePage> {
   @override
   void initState() {
     super.initState();
-    _scrollController = ScrollController();
+    _scrollController = AnimatedScrollController(
+      animationFactory: const ChromiumEaseInOut(),
+    );
     _scrollController.addListener(_scrollListener);
     fetchData();
   }

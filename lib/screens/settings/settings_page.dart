@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
+import 'package:scroll_animator/scroll_animator.dart';
 import '../../generated/l10n.dart';
 import '../../services/settings_manager.dart';
 import '../../services/update_service/update_service.dart';
@@ -10,8 +11,29 @@ import '../../utils/adaptive_widgets/adaptive_widgets.dart';
 import 'widgets/setting_item.dart';
 import 'cubit/settings_system_cubit.dart';
 
-class SettingsPage extends StatelessWidget {
+class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
+
+  @override
+  State<SettingsPage> createState() => _SettingsPageState();
+}
+
+class _SettingsPageState extends State<SettingsPage> {
+  late final AnimatedScrollController _scrollController;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController = AnimatedScrollController(
+      animationFactory: const ChromiumEaseInOut(),
+    );
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -35,6 +57,7 @@ class SettingsPage extends StatelessWidget {
                   child: Container(
                     constraints: const BoxConstraints(maxWidth: 1000),
                     child: ListView(
+                      controller: _scrollController,
                       padding: const EdgeInsets.symmetric(
                         horizontal: 16,
                         vertical: 8,

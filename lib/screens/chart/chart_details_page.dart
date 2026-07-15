@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:scroll_animator/scroll_animator.dart';
 import 'package:Codah/services/chart_model.dart';
 import 'package:Codah/services/charts_service.dart';
 import 'package:Codah/core/widgets/section_item.dart';
@@ -16,15 +17,25 @@ class ChartDetailsPage extends StatefulWidget {
 
 class _ChartDetailsPageState extends State<ChartDetailsPage> {
   late Future<ChartModel> futureChart;
+  late final AnimatedScrollController _scrollController;
 
   @override
   void initState() {
     super.initState();
+    _scrollController = AnimatedScrollController(
+      animationFactory: const ChromiumEaseInOut(),
+    );
     if (widget.chartUrl.url.contains('spotify.com')) {
        futureChart = ChartsService().getSpotifyTop50Chart(widget.chartUrl);
     } else {
        futureChart = ChartsService().getBillboardChart(widget.chartUrl);
     }
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
   }
 
   @override
@@ -46,6 +57,7 @@ class _ChartDetailsPageState extends State<ChartDetailsPage> {
 
           final items = snapshot.data!.chartItems!;
           return ListView.builder(
+            controller: _scrollController,
             itemCount: items.length,
             itemBuilder: (context, index) {
               final item = items[index];

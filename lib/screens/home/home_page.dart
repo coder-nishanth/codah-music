@@ -8,6 +8,7 @@ import 'package:Codah/core/widgets/section_item.dart';
 import 'package:Codah/utils/internet_guard.dart';
 import 'package:loading_indicator_m3e/loading_indicator_m3e.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:scroll_animator/scroll_animator.dart';
 
 import '../../utils/adaptive_widgets/adaptive_widgets.dart';
 
@@ -32,14 +33,27 @@ class _HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<_HomePage> {
-  late ScrollController _scrollController;
+  late AnimatedScrollController _scrollController;
+  late AnimatedScrollController _horizontalScrollController;
 
   @override
   void initState() {
     super.initState();
-    _scrollController = ScrollController();
+    _scrollController = AnimatedScrollController(
+      animationFactory: const ChromiumEaseInOut(),
+    );
+    _horizontalScrollController = AnimatedScrollController(
+      animationFactory: const ChromiumEaseInOut(),
+    );
     _scrollController.addListener(_scrollListener);
     _checkFirstLaunch();
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    _horizontalScrollController.dispose();
+    super.dispose();
   }
 
   Future<void> _checkFirstLaunch() async {
@@ -90,6 +104,7 @@ class _HomePageState extends State<_HomePage> {
       width: 8,
     ));
     return SingleChildScrollView(
+      controller: _horizontalScrollController,
       scrollDirection: Axis.horizontal,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -116,6 +131,7 @@ class _HomePageState extends State<_HomePage> {
                     child: Text(state.message ?? ''),
                   ),
                 HomeSuccess() => SingleChildScrollView(
+                    physics: const ClampingScrollPhysics(),
                     padding: const EdgeInsets.symmetric(vertical: 8),
                     controller: _scrollController,
                     child: SafeArea(

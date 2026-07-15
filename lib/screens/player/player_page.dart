@@ -585,7 +585,7 @@ class _PlayerPageState extends State<PlayerPage> {
               height: 64,
               width: 64,
               decoration: BoxDecoration(
-                  color: Colors.white, borderRadius: BorderRadius.circular(50)),
+                  borderRadius: BorderRadius.circular(50)),
               child: ValueListenableBuilder(
                 valueListenable: mediaPlayer.buttonState,
                 builder: (context, ButtonState value, child) {
@@ -604,7 +604,7 @@ class _PlayerPageState extends State<PlayerPage> {
                           ? Icons.pause
                           : Icons.play_arrow,
                       size: 32,
-                      color: Colors.black,
+                      color: Colors.white,
                     ),
                   );
                 },

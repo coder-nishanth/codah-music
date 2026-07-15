@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:scroll_animator/scroll_animator.dart';
 
 import '../../../../generated/l10n.dart';
 import '../widgets/setting_item.dart';
@@ -42,8 +43,29 @@ class PrivacyPage extends StatelessWidget {
   }
 }
 
-class _PrivacyView extends StatelessWidget {
+class _PrivacyView extends StatefulWidget {
   const _PrivacyView();
+
+  @override
+  State<_PrivacyView> createState() => _PrivacyViewState();
+}
+
+class _PrivacyViewState extends State<_PrivacyView> {
+  late final AnimatedScrollController _scrollController;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController = AnimatedScrollController(
+      animationFactory: const ChromiumEaseInOut(),
+    );
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -59,6 +81,7 @@ class _PrivacyView extends StatelessWidget {
               final cubit = context.read<PrivacyCubit>();
 
               return ListView(
+                controller: _scrollController,
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 children: [
                   GroupTitle(title: "Playback"),

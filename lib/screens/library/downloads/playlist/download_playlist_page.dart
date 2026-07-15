@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_swipe_action_cell/core/cell.dart';
 import 'package:loading_indicator_m3e/loading_indicator_m3e.dart';
+import 'package:scroll_animator/scroll_animator.dart';
 
 import '../../../../../generated/l10n.dart';
 import '../../../../../utils/bottom_modals.dart';
@@ -50,7 +51,7 @@ class DownloadPlaylistPage extends StatelessWidget {
   }
 }
 
-class _PlaylistView extends StatelessWidget {
+class _PlaylistView extends StatefulWidget {
   const _PlaylistView({
     required this.playlist,
     required this.songs,
@@ -62,12 +63,33 @@ class _PlaylistView extends StatelessWidget {
   final String playlistId;
 
   @override
+  State<_PlaylistView> createState() => _PlaylistViewState();
+}
+
+class _PlaylistViewState extends State<_PlaylistView> {
+  late final AnimatedScrollController _scrollController;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController = AnimatedScrollController(
+      animationFactory: const ChromiumEaseInOut(),
+    );
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: playlist['type'] == 'SONGS'
+        title: widget.playlist['type'] == 'SONGS'
             ? Text(S.of(context).Songs)
-            : Text(playlist['title']),
+            : Text(widget.playlist['title']),
         centerTitle: true,
       ),
       body: Center(
@@ -75,13 +97,14 @@ class _PlaylistView extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 8),
           constraints: const BoxConstraints(maxWidth: 1000),
           child: CustomScrollView(
+            controller: _scrollController,
             slivers: [
               SliverToBoxAdapter(
                 child: Column(
                   children: [
                     DownloadPlaylistHeader(
-                      playlist: playlist,
-                      imageType: playlist['type'],
+                      playlist: widget.playlist,
+                      imageType: widget.playlist['type'],
                     ),
                     const SizedBox(height: 8),
                   ],
@@ -90,7 +113,7 @@ class _PlaylistView extends StatelessWidget {
               SliverList(
                 delegate: SliverChildBuilderDelegate(
                   (context, index) {
-                    final song = songs[index];
+                    final song = widget.songs[index];
 
                     return SwipeActionCell(
                       key: ObjectKey(song['videoId']),
@@ -113,7 +136,7 @@ class _PlaylistView extends StatelessWidget {
                       child: DownloadedSongTile(song: song),
                     );
                   },
-                  childCount: songs.length,
+                  childCount: widget.songs.length,
                 ),
               ),
               const SliverToBoxAdapter(

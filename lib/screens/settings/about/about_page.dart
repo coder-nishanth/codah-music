@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:scroll_animator/scroll_animator.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../core/widgets/animated_codah_title.dart';
@@ -14,11 +15,21 @@ class AboutPage extends StatefulWidget {
 
 class _AboutPageState extends State<AboutPage> {
   String _version = '';
+  late final AnimatedScrollController _scrollController;
 
   @override
   void initState() {
     super.initState();
+    _scrollController = AnimatedScrollController(
+      animationFactory: const ChromiumEaseInOut(),
+    );
     _loadVersion();
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
   }
 
   Future<void> _loadVersion() async {
@@ -34,6 +45,7 @@ class _AboutPageState extends State<AboutPage> {
       ),
       body: Center(
         child: SingleChildScrollView(
+          controller: _scrollController,
           padding: const EdgeInsets.all(24),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,

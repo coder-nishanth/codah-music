@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_swipe_action_cell/core/cell.dart';
 import 'package:get_it/get_it.dart';
 import 'package:loading_indicator_m3e/loading_indicator_m3e.dart';
+import 'package:scroll_animator/scroll_animator.dart';
 
 import '../../../../../generated/l10n.dart';
 import '../../../../../services/bottom_message.dart';
@@ -50,7 +51,7 @@ class PlaylistDetailsPage extends StatelessWidget {
   }
 }
 
-class _PlaylistView extends StatelessWidget {
+class _PlaylistView extends StatefulWidget {
   const _PlaylistView({
     required this.playlist,
     required this.playlistKey,
@@ -60,10 +61,31 @@ class _PlaylistView extends StatelessWidget {
   final String playlistKey;
 
   @override
+  State<_PlaylistView> createState() => _PlaylistViewState();
+}
+
+class _PlaylistViewState extends State<_PlaylistView> {
+  late final AnimatedScrollController _scrollController;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController = AnimatedScrollController(
+      animationFactory: const ChromiumEaseInOut(),
+    );
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(playlist['title']),
+        title: Text(widget.playlist['title']),
         centerTitle: true,
       ),
       body: Center(
@@ -71,10 +93,11 @@ class _PlaylistView extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 8),
           constraints: const BoxConstraints(maxWidth: 1000),
           child: ListView(
+            controller: _scrollController,
             children: [
-              MyPlayistHeader(playlist: playlist),
+              MyPlayistHeader(playlist: widget.playlist),
               const SizedBox(height: 8),
-              ...playlist['songs'].map<Widget>((song) {
+              ...widget.playlist['songs'].map<Widget>((song) {
                 return SwipeActionCell(
                   backgroundColor: Colors.transparent,
                   key: ObjectKey(song['videoId']),
@@ -101,7 +124,7 @@ class _PlaylistView extends StatelessWidget {
                   ],
                   child: SongTile(
                     song: song,
-                    playlistId: playlistKey,
+                    playlistId: widget.playlistKey,
                   ),
                 );
               }).toList(),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:loading_indicator_m3e/loading_indicator_m3e.dart';
+import 'package:scroll_animator/scroll_animator.dart';
 import 'package:Codah/services/download_manager.dart';
 
 import '../../../../generated/l10n.dart';
@@ -49,14 +50,35 @@ class DownloadsPage extends StatelessWidget {
   }
 }
 
-class _DownloadsBody extends StatelessWidget {
+class _DownloadsBody extends StatefulWidget {
   const _DownloadsBody({required this.playlists});
 
   final Map playlists;
 
   @override
+  State<_DownloadsBody> createState() => _DownloadsBodyState();
+}
+
+class _DownloadsBodyState extends State<_DownloadsBody> {
+  late final AnimatedScrollController _scrollController;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController = AnimatedScrollController(
+      animationFactory: const ChromiumEaseInOut(),
+    );
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    List<MapEntry> sortedEntries = playlists.entries.toList();
+    List<MapEntry> sortedEntries = widget.playlists.entries.toList();
 
     sortedEntries.sort((a, b) {
       if (a.key == DownloadManager.songsPlaylistId) {
@@ -69,6 +91,7 @@ class _DownloadsBody extends StatelessWidget {
     });
 
     return SingleChildScrollView(
+      controller: _scrollController,
       child: Center(
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 8),

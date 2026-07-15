@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:scroll_animator/scroll_animator.dart';
 
 import '../../../generated/l10n.dart';
 import '../widgets/setting_item.dart';
@@ -51,8 +52,29 @@ class BackupStoragePage extends StatelessWidget {
   }
 }
 
-class _BackupStoragePage extends StatelessWidget {
+class _BackupStoragePage extends StatefulWidget {
   const _BackupStoragePage();
+
+  @override
+  State<_BackupStoragePage> createState() => _BackupStoragePageState();
+}
+
+class _BackupStoragePageState extends State<_BackupStoragePage> {
+  late final AnimatedScrollController _scrollController;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController = AnimatedScrollController(
+      animationFactory: const ChromiumEaseInOut(),
+    );
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -68,6 +90,7 @@ class _BackupStoragePage extends StatelessWidget {
               final cubit = context.read<BackupStorageCubit>();
 
               return ListView(
+                controller: _scrollController,
                 padding:
                     const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 children: [

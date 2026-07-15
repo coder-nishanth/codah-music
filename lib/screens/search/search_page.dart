@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:loading_indicator_m3e/loading_indicator_m3e.dart';
+import 'package:scroll_animator/scroll_animator.dart';
 
 import '../../core/utils/service_locator.dart';
 import '../../services/media_player.dart';
@@ -382,7 +383,7 @@ class _EmptyState extends StatelessWidget {
   }
 }
 
-class _HistoryList extends StatelessWidget {
+class _HistoryList extends StatefulWidget {
   final List<String> history;
   final ValueChanged<String> onTap;
   final VoidCallback onClear;
@@ -390,8 +391,29 @@ class _HistoryList extends StatelessWidget {
   const _HistoryList({required this.history, required this.onTap, required this.onClear});
 
   @override
+  State<_HistoryList> createState() => _HistoryListState();
+}
+
+class _HistoryListState extends State<_HistoryList> {
+  late final AnimatedScrollController _scrollController;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController = AnimatedScrollController(
+      animationFactory: const ChromiumEaseInOut(),
+    );
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    if (history.isEmpty) {
+    if (widget.history.isEmpty) {
       return Center(child: Text('No search history', style: TextStyle(color: Colors.white.withValues(alpha: 0.4))));
     }
     return Column(
@@ -403,19 +425,20 @@ class _HistoryList extends StatelessWidget {
               Text('Recent searches', style: TextStyle(color: Colors.white.withValues(alpha: 0.6), fontSize: 13, fontWeight: FontWeight.w500)),
               const Spacer(),
               GestureDetector(
-                onTap: onClear,
+                onTap: widget.onClear,
                 child: Text('Clear all', style: TextStyle(color: Colors.white.withValues(alpha: 0.4), fontSize: 13)),
               ),
             ],
           ),
         ),
         Expanded(child: ListView.builder(
-          itemCount: history.length,
+          controller: _scrollController,
+          itemCount: widget.history.length,
           itemBuilder: (context, index) {
             return AdaptiveListTile(
-              onTap: () => onTap(history[index]),
+              onTap: () => widget.onTap(widget.history[index]),
               leading: Icon(Icons.history, size: 20, color: Colors.white.withValues(alpha: 0.4)),
-              title: Text(history[index], style: const TextStyle(color: Colors.white, fontSize: 14)),
+              title: Text(widget.history[index], style: const TextStyle(color: Colors.white, fontSize: 14)),
             );
           },
         )),
@@ -424,7 +447,7 @@ class _HistoryList extends StatelessWidget {
   }
 }
 
-class _SuggestionsList extends StatelessWidget {
+class _SuggestionsList extends StatefulWidget {
   final List<String> suggestionQueries;
   final List<Map<String, dynamic>> suggestionItems;
   final bool isLoading;
@@ -437,21 +460,44 @@ class _SuggestionsList extends StatelessWidget {
   });
 
   @override
+  State<_SuggestionsList> createState() => _SuggestionsListState();
+}
+
+class _SuggestionsListState extends State<_SuggestionsList> {
+  late final AnimatedScrollController _scrollController;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController = AnimatedScrollController(
+      animationFactory: const ChromiumEaseInOut(),
+    );
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return ListView(children: [
-      if (isLoading) const Padding(padding: EdgeInsets.all(20), child: Center(child: LoadingIndicatorM3E())),
-      ...suggestionQueries.map((q) => AdaptiveListTile(
-        onTap: () => onQueryTap(q),
+    return ListView(
+      controller: _scrollController,
+      children: [
+      if (widget.isLoading) const Padding(padding: EdgeInsets.all(20), child: Center(child: LoadingIndicatorM3E())),
+      ...widget.suggestionQueries.map((q) => AdaptiveListTile(
+        onTap: () => widget.onQueryTap(q),
         leading: Icon(Icons.search, size: 20, color: Colors.white.withValues(alpha: 0.4)),
         title: Text(q, style: const TextStyle(color: Colors.white, fontSize: 14)),
       )),
-      if (suggestionItems.isNotEmpty) ...[
+      if (widget.suggestionItems.isNotEmpty) ...[
         Padding(
           padding: const EdgeInsets.fromLTRB(20, 12, 20, 4),
           child: Text('Recommended', style: TextStyle(color: Colors.white.withValues(alpha: 0.6), fontSize: 13, fontWeight: FontWeight.w500)),
         ),
-        ...suggestionItems.map((item) => AdaptiveListTile(
-          onTap: () => onItemTap(item),
+        ...widget.suggestionItems.map((item) => AdaptiveListTile(
+          onTap: () => widget.onItemTap(item),
           leading: (item['thumbnails'] != null && (item['thumbnails'] as List).isNotEmpty)
               ? ClipRRect(
                   borderRadius: BorderRadius.circular(item['type'] == 'ARTIST' ? 20 : 4),
@@ -573,7 +619,7 @@ class _ErrorState extends StatelessWidget {
   }
 }
 
-class _ResultsList extends StatelessWidget {
+class _ResultsList extends StatefulWidget {
   final SearchState state;
   final ValueChanged<Map<String, dynamic>> onSongTap;
   final ValueChanged<Map<String, dynamic>> onAlbumTap;
@@ -586,34 +632,59 @@ class _ResultsList extends StatelessWidget {
   });
 
   @override
+  State<_ResultsList> createState() => _ResultsListState();
+}
+
+class _ResultsListState extends State<_ResultsList> {
+  late final AnimatedScrollController _scrollController;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController = AnimatedScrollController(
+      animationFactory: const ChromiumEaseInOut(),
+    );
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return ListView(padding: const EdgeInsets.symmetric(vertical: 4), children: _buildSections());
+    return ListView(
+      controller: _scrollController,
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      children: _buildSections(),
+    );
   }
 
   List<Widget> _buildSections() {
     final widgets = <Widget>[];
-    switch (state.selectedType) {
+    switch (widget.state.selectedType) {
       case SearchType.all:
-        _addSection(widgets, 'Artists', state.artists, (item) => _ArtistResultTile(item: item, onTap: () => onArtistTap(item)));
-        _addSection(widgets, 'Songs', state.songs, (item) => _SongResultTile(item: item, onTap: () => onSongTap(item)));
-        _addSection(widgets, 'Videos', state.videos, (item) => _SongResultTile(item: item, onTap: () => onSongTap(item)));
-        _addSection(widgets, 'Albums', state.albums, (item) => _AlbumResultTile(item: item, onTap: () => onAlbumTap(item)));
-        _addSection(widgets, 'Playlists', state.playlists, (item) => _PlaylistResultTile(item: item, onTap: () => onPlaylistTap(item)));
+        _addSection(widgets, 'Artists', widget.state.artists, (item) => _ArtistResultTile(item: item, onTap: () => widget.onArtistTap(item)));
+        _addSection(widgets, 'Songs', widget.state.songs, (item) => _SongResultTile(item: item, onTap: () => widget.onSongTap(item)));
+        _addSection(widgets, 'Videos', widget.state.videos, (item) => _SongResultTile(item: item, onTap: () => widget.onSongTap(item)));
+        _addSection(widgets, 'Albums', widget.state.albums, (item) => _AlbumResultTile(item: item, onTap: () => widget.onAlbumTap(item)));
+        _addSection(widgets, 'Playlists', widget.state.playlists, (item) => _PlaylistResultTile(item: item, onTap: () => widget.onPlaylistTap(item)));
         break;
       case SearchType.songs:
-        widgets.addAll(state.songs.map((item) => _SongResultTile(item: item, onTap: () => onSongTap(item))));
+        widgets.addAll(widget.state.songs.map((item) => _SongResultTile(item: item, onTap: () => widget.onSongTap(item))));
         break;
       case SearchType.albums:
-        widgets.addAll(state.albums.map((item) => _AlbumResultTile(item: item, onTap: () => onAlbumTap(item))));
+        widgets.addAll(widget.state.albums.map((item) => _AlbumResultTile(item: item, onTap: () => widget.onAlbumTap(item))));
         break;
       case SearchType.artists:
-        widgets.addAll(state.artists.map((item) => _ArtistResultTile(item: item, onTap: () => onArtistTap(item))));
+        widgets.addAll(widget.state.artists.map((item) => _ArtistResultTile(item: item, onTap: () => widget.onArtistTap(item))));
         break;
       case SearchType.playlists:
-        widgets.addAll(state.playlists.map((item) => _PlaylistResultTile(item: item, onTap: () => onPlaylistTap(item))));
+        widgets.addAll(widget.state.playlists.map((item) => _PlaylistResultTile(item: item, onTap: () => widget.onPlaylistTap(item))));
         break;
       case SearchType.videos:
-        widgets.addAll(state.videos.map((item) => _SongResultTile(item: item, onTap: () => onSongTap(item))));
+        widgets.addAll(widget.state.videos.map((item) => _SongResultTile(item: item, onTap: () => widget.onSongTap(item))));
         break;
     }
     return widgets;

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:loading_indicator_m3e/loading_indicator_m3e.dart';
+import 'package:scroll_animator/scroll_animator.dart';
 import 'package:Codah/screens/library/downloads/downloading/widgets/downloading_section_tile.dart';
 
 import '../../../../../generated/l10n.dart';
@@ -8,8 +9,29 @@ import 'cubit/downloading_cubit.dart';
 import 'widgets/downloading_song_tile.dart';
 
 
-class DownloadingPage extends StatelessWidget {
+class DownloadingPage extends StatefulWidget {
   const DownloadingPage({super.key});
+
+  @override
+  State<DownloadingPage> createState() => _DownloadingPageState();
+}
+
+class _DownloadingPageState extends State<DownloadingPage> {
+  late final AnimatedScrollController _scrollController;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController = AnimatedScrollController(
+      animationFactory: const ChromiumEaseInOut(),
+    );
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,6 +53,7 @@ class DownloadingPage extends StatelessWidget {
                 :final queued,
               ) =>
                 CustomScrollView(
+                  controller: _scrollController,
                   slivers: [
                     if (downloading.isNotEmpty) ...[
                       SliverToBoxAdapter(

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_swipe_action_cell/core/cell.dart';
 import 'package:loading_indicator_m3e/loading_indicator_m3e.dart';
+import 'package:scroll_animator/scroll_animator.dart';
 
 import '../../../../generated/l10n.dart';
 import '../../../../utils/bottom_modals.dart';
@@ -38,14 +39,36 @@ class FavouritesPage extends StatelessWidget {
   }
 }
 
-class _FavouritesBody extends StatelessWidget {
+class _FavouritesBody extends StatefulWidget {
   const _FavouritesBody({required this.songs});
 
   final List songs;
 
   @override
+  State<_FavouritesBody> createState() => _FavouritesBodyState();
+}
+
+class _FavouritesBodyState extends State<_FavouritesBody> {
+  late final AnimatedScrollController _scrollController;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController = AnimatedScrollController(
+      animationFactory: const ChromiumEaseInOut(),
+    );
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
+      controller: _scrollController,
       child: Center(
         child: Container(
           constraints: const BoxConstraints(maxWidth: 1000),
@@ -53,11 +76,11 @@ class _FavouritesBody extends StatelessWidget {
           child: Column(
             children: [
               MyPlayistHeader(
-                playlist: {'songs': songs},
+                playlist: {'songs': widget.songs},
               ),
               Column(
-                children: List.generate(songs.length, (index) {
-                  final song = songs[index];
+                children: List.generate(widget.songs.length, (index) {
+                  final song = widget.songs[index];
 
                   return Padding(
                     padding: const EdgeInsets.symmetric(vertical: 4),
@@ -84,7 +107,7 @@ class _FavouritesBody extends StatelessWidget {
                         ),
                       ],
                       child: LibraryTile(
-                        songs: songs,
+                        songs: widget.songs,
                         index: index,
                       ),
                     ),
