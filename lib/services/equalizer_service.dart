@@ -38,25 +38,35 @@ class EqualizerService {
   };
 
   NativePlayer? _nativePlayer;
-  bool _initialized = false;
   Timer? _debounceTimer;
   bool _isApplyingEQ = false;
+  String _lastAppliedAf = '';
 
   bool get isApplyingEQ => _isApplyingEQ;
 
   void _ensureNativePlayer() {
     if (_nativePlayer != null) return;
 
-    final platform = JustAudioPlatform.instance;
-    if (platform is JustAudioMediaKit) {
-      final mkPlayer = platform.getFirstMediaKitPlayer();
-      if (mkPlayer != null) {
-        final nativeP = mkPlayer.mediaKitPlayer.platform;
-        if (nativeP is NativePlayer) {
-          _nativePlayer = nativeP;
+    try {
+      final platform = JustAudioPlatform.instance;
+      if (platform is JustAudioMediaKit) {
+        final mkPlayer = platform.getFirstMediaKitPlayer();
+        if (mkPlayer != null) {
+          final mkp = mkPlayer.mediaKitPlayer;
+          final nativeP = mkp.platform;
+          if (nativeP is NativePlayer) {
+            _nativePlayer = nativeP;
+          }
         }
       }
+    } catch (e) {
+      debugPrint('Equalizer: failed to get NativePlayer: $e');
+      _nativePlayer = null;
     }
+  }
+
+  void _invalidateNativePlayer() {
+    _nativePlayer = null;
   }
 
   void applyEqualizerDebounced() {
@@ -68,21 +78,22 @@ class EqualizerService {
 
   Future<void> applyEqualizer() async {
     if (!Platform.isWindows) return;
-    _ensureNativePlayer();
-    if (_nativePlayer == null) return;
-
-    final settings = GetIt.I<SettingsManager>();
-
-    if (!settings.equalizerEnabled) {
-      await _removeEqualizerFilter();
-      return;
-    }
-
-    final gains = settings.equalizerBandsGain;
-    if (gains.length != bandCount) return;
 
     _isApplyingEQ = true;
     try {
+      _ensureNativePlayer();
+      if (_nativePlayer == null) return;
+
+      final settings = GetIt.I<SettingsManager>();
+
+      if (!settings.equalizerEnabled) {
+        await _removeEqualizerFilter();
+        return;
+      }
+
+      final gains = settings.equalizerBandsGain;
+      if (gains.length != bandCount) return;
+
       await _applyFilterChain(gains);
     } finally {
       _isApplyingEQ = false;
@@ -90,38 +101,62 @@ class EqualizerService {
   }
 
   Future<void> _applyFilterChain(List<double> gains) async {
-    if (_nativePlayer == null) return;
+    final afValue = _buildAfValue(gains);
+    if (afValue == _lastAppliedAf) return;
+    _lastAppliedAf = afValue;
 
+    debugPrint('Equalizer: setting af="$afValue"');
     try {
-      final eqParts = <String>[];
-      for (int i = 0; i < bandCount && i < gains.length; i++) {
-        final freq = bandFrequencies[i];
-        final gain = gains[i].clamp(minGain, maxGain);
-        if (gain != 0) {
-          eqParts.add('equalizer=f=$freq:t=q:w=1:g=${gain.toStringAsFixed(2)}');
-        }
-      }
-
-      String afValue;
-      if (eqParts.isEmpty) {
-        afValue = 'scaletempo:scale=1.00000000';
-      } else {
-        afValue = '${eqParts.join(',')},scaletempo:scale=1.00000000';
-      }
-
       await _nativePlayer!.setProperty('af', afValue);
     } catch (e) {
-      debugPrint('Equalizer: failed to apply filter chain: $e');
+      debugPrint('Equalizer: setProperty failed, refreshing reference: $e');
+      _invalidateNativePlayer();
+      _ensureNativePlayer();
+      if (_nativePlayer != null) {
+        try {
+          await _nativePlayer!.setProperty('af', afValue);
+        } catch (e2) {
+          debugPrint('Equalizer: retry failed: $e2');
+        }
+      }
     }
   }
 
-  Future<void> _removeEqualizerFilter() async {
-    if (_nativePlayer == null) return;
+  String _buildAfValue(List<double> gains) {
+    final eqParts = <String>[];
+    for (int i = 0; i < bandCount && i < gains.length; i++) {
+      final freq = bandFrequencies[i];
+      final gain = gains[i].clamp(minGain, maxGain);
+      if (gain != 0) {
+        eqParts.add('equalizer=$freq:q:1:${gain.toStringAsFixed(2)}');
+      }
+    }
 
+    if (eqParts.isEmpty) {
+      return 'scaletempo=scale=1.00000000';
+    }
+    return '${eqParts.join(',')},scaletempo=scale=1.00000000';
+  }
+
+  Future<void> _removeEqualizerFilter() async {
+    const resetAf = 'scaletempo=scale=1.00000000';
+    if (_lastAppliedAf == resetAf) return;
+    _lastAppliedAf = resetAf;
+
+    debugPrint('Equalizer: removing filter');
     try {
-      await _nativePlayer!.setProperty('af', 'scaletempo:scale=1.00000000');
+      await _nativePlayer!.setProperty('af', resetAf);
     } catch (e) {
-      debugPrint('Equalizer: failed to remove filter: $e');
+      debugPrint('Equalizer: setProperty failed, refreshing reference: $e');
+      _invalidateNativePlayer();
+      _ensureNativePlayer();
+      if (_nativePlayer != null) {
+        try {
+          await _nativePlayer!.setProperty('af', resetAf);
+        } catch (e2) {
+          debugPrint('Equalizer: retry failed: $e2');
+        }
+      }
     }
   }
 

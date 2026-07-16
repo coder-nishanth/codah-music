@@ -36,6 +36,11 @@ class MediaPlayer extends ChangeNotifier {
 
   bool autoFetching = false;
 
+  Timer? _loadingTimeoutTimer;
+  int _loadingRetryCount = 0;
+  static const Duration _loadingTimeout = Duration(seconds: 15);
+  String? _lastFailedVideoId;
+
 
   MediaPlayer() {
     _player = AudioPlayer();
@@ -98,6 +103,51 @@ class MediaPlayer extends ChangeNotifier {
   }
 
 
+  void _startLoadingTimeout(String videoId) {
+    _loadingTimeoutTimer?.cancel();
+    _loadingTimeoutTimer = Timer(_loadingTimeout, () {
+      _handleLoadingTimeout(videoId);
+    });
+  }
+
+  void _cancelLoadingTimeout() {
+    _loadingTimeoutTimer?.cancel();
+    _loadingTimeoutTimer = null;
+  }
+
+  void _handleLoadingTimeout(String videoId) async {
+    _loadingRetryCount++;
+    _lastFailedVideoId = videoId;
+
+    debugPrint('Loading timeout: retrying playback for $videoId (attempt $_loadingRetryCount)');
+    _sourceCache.remove(videoId);
+
+    final currentSong = _currentSongNotifier.value;
+    if (currentSong == null || currentSong.id != videoId) {
+      _loadingRetryCount = 0;
+      return;
+    }
+    final songData = currentSong.extras;
+    if (songData == null) {
+      _loadingRetryCount = 0;
+      return;
+    }
+
+    try {
+      await _player.stop();
+      await _player.clearAudioSources();
+
+      final source = await _getAudioSource(songData);
+      await _player.setAudioSource(source);
+      await _player.play();
+
+      _startLoadingTimeout(videoId);
+    } catch (e) {
+      debugPrint('Loading timeout retry failed: $e');
+      _startLoadingTimeout(videoId);
+    }
+  }
+
   void _listenToChangesInPlaylist() {
     _player.sequenceStream.listen((playlist) {
       final List<IndexedAudioSource> newList =
@@ -138,17 +188,32 @@ class MediaPlayer extends ChangeNotifier {
         if (!GetIt.I<EqualizerService>().isApplyingEQ) {
           _buttonState.value = ButtonState.loading;
         }
+        final currentVideoId = _currentSongNotifier.value?.id;
+        if (currentVideoId != null && _lastFailedVideoId != currentVideoId) {
+          _loadingRetryCount = 0;
+          _lastFailedVideoId = null;
+        }
+        if (currentVideoId != null) {
+          _startLoadingTimeout(currentVideoId);
+        }
       } else if (processingState == ProcessingState.ready) {
+        _cancelLoadingTimeout();
+        _loadingRetryCount = 0;
+        _lastFailedVideoId = null;
         _buttonState.value =
             isPlaying ? ButtonState.playing : ButtonState.paused;
         if (isPlaying && !GetIt.I<EqualizerService>().isApplyingEQ) {
           GetIt.I<EqualizerService>().applyEqualizer();
         }
       } else if (processingState == ProcessingState.completed) {
+        _cancelLoadingTimeout();
+        _loadingRetryCount = 0;
+        _lastFailedVideoId = null;
         _player.seek(Duration.zero);
         _player.pause();
         _buttonState.value = ButtonState.paused;
       } else {
+        _cancelLoadingTimeout();
         _buttonState.value = ButtonState.paused;
       }
     });
@@ -307,6 +372,10 @@ class MediaPlayer extends ChangeNotifier {
 
     final int requestId = DateTime.now().millisecondsSinceEpoch;
     _lastPlayRequestId = requestId;
+
+    _cancelLoadingTimeout();
+    _loadingRetryCount = 0;
+    _lastFailedVideoId = null;
 
     _originalPlaylist = [song];
 
@@ -568,6 +637,9 @@ class MediaPlayer extends ChangeNotifier {
   }
 
   Future<void> stop() async {
+    _cancelLoadingTimeout();
+    _loadingRetryCount = 0;
+    _lastFailedVideoId = null;
     await _player.stop();
     await _player.clearAudioSources();
     await _player.seek(Duration.zero, index: 0);

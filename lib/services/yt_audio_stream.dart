@@ -82,28 +82,40 @@ class YouTubeAudioSource extends StreamAudioSource {
 
   @override
   Future<StreamAudioResponse> request([int? start, int? end]) async {
-    try {
-      final streamInfo = await _getStreamInfo();
+    const int maxAttempts = 3;
+    for (int attempt = 0; attempt < maxAttempts; attempt++) {
+      try {
+        if (attempt > 0) {
+          _cachedStream = null;
+        }
 
-      start ??= 0;
-      end ??= (streamInfo.isThrottled
-          ? (end ?? (start + 10379935))
-          : streamInfo.totalBytes);
-      if (end > streamInfo.totalBytes) {
-        end = streamInfo.totalBytes;
+        final streamInfo = await _getStreamInfo();
+
+        start ??= 0;
+        end ??= (streamInfo.isThrottled
+            ? (end ?? (start + 10379935))
+            : streamInfo.totalBytes);
+        if (end > streamInfo.totalBytes) {
+          end = streamInfo.totalBytes;
+        }
+
+        final stream = await _downloadStream(streamInfo.url, start, end - 1);
+        return StreamAudioResponse(
+          sourceLength: streamInfo.totalBytes,
+          contentLength: end - start,
+          offset: start,
+          stream: stream,
+          contentType: streamInfo.mimeType,
+        );
+      } catch (e) {
+        if (attempt == maxAttempts - 1) {
+          throw Exception('Failed to load audio after $maxAttempts attempts: $e');
+        }
+        _cachedStream = null;
+        await Future.delayed(Duration(seconds: (attempt + 1) * 2));
       }
-
-      final stream = await _downloadStream(streamInfo.url, start, end - 1);
-      return StreamAudioResponse(
-        sourceLength: streamInfo.totalBytes,
-        contentLength: end - start,
-        offset: start,
-        stream: stream,
-        contentType: streamInfo.mimeType,
-      );
-    } catch (e) {
-      throw Exception('Failed to load audio: $e');
     }
+    throw Exception('Failed to load audio: max retries exceeded');
   }
 }
 
