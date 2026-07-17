@@ -33,7 +33,7 @@ void main() async {
   if (Platform.isWindows) {
     JustAudioMediaKit.ensureInitialized();
     JustAudioMediaKit.bufferSize = 8 * 1024 * 1024;
-    JustAudioMediaKit.title = 'CODAH MUSIC';
+    JustAudioMediaKit.title = 'Codah Music';
     JustAudioMediaKit.prefetchPlaylist = true;
     JustAudioMediaKit.pitch = true;
   }
@@ -101,7 +101,7 @@ class Codah extends StatelessWidget {
         LogicalKeySet(LogicalKeyboardKey.select): const ActivateIntent(),
       },
       child: MaterialApp.router(
-        title: 'CODAH MUSIC',
+        title: 'Codah Music',
         scrollBehavior: const SmoothScrollBehavior(),
         routerConfig: router,
         locale: Locale(context.watch<SettingsManager>().language['value']!),

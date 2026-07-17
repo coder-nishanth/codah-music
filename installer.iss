@@ -5,11 +5,11 @@ AppPublisher=Nishanth JP
 DefaultDirName={autopf}\CODAH MUSIC
 DefaultGroupName=CODAH MUSIC
 OutputDir=..\release
-OutputBaseFilename=codah-music-setup
+OutputBaseFilename=Codah Music v2.2.0 Setup
 Compression=lzma2
 SolidCompression=yes
 WizardStyle=modern
-;SetupIconFile=data\flutter_assets\icons\app_icon.ico
+SetupIconFile=icons\app_icon.ico
 UninstallDisplayIcon={app}\codah-music.exe
 ArchitecturesAllowed=x64
 ArchitecturesInstallIn64BitMode=x64
@@ -18,9 +18,9 @@ ArchitecturesInstallIn64BitMode=x64
 Name: "english"; MessagesFile: "compiler:Default.isl"
 
 [Files]
-Source: "build\windows\x64\runner\Debug\codah-music.exe"; DestDir: "{app}"; Flags: ignoreversion
-Source: "build\windows\x64\runner\Debug\*.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "build\windows\x64\runner\Debug\data\*"; DestDir: "{app}\data"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "build\windows\x64\runner\Release\codah-music.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "build\windows\x64\runner\Release\*.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "build\windows\x64\runner\Release\data\*"; DestDir: "{app}\data"; Flags: ignoreversion recursesubdirs createallsubdirs
 
 [Icons]
 Name: "{group}\CODAH MUSIC"; Filename: "{app}\codah-music.exe"
