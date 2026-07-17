@@ -4,6 +4,18 @@ All notable changes to CODAH MUSIC will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [2.2.0] - 2026-07-17
+
+### Fixed
+- Equalizer mpv filter syntax (correct positional parameters for equalizer and scaletempo)
+- Intermittent song loading failures with automatic retry on timeout
+- Loading retry no longer gives up — retries indefinitely until song plays
+- Equalizer reference invalidation after player stop/clear cycles
+
+### Improved
+- Switch toggle hover states in dark theme (no longer appears fully white)
+- Switch toggle animation smoothness
+
 ## [1.0.0] - 2025-07-11
 
 ### Added

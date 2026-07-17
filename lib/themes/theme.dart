@@ -86,6 +86,18 @@ class AppTheme {
       ),
       switchTheme: SwitchThemeData(
         overlayColor: WidgetStateProperty.all(Colors.transparent),
+        thumbColor: WidgetStateColor.resolveWith((states) {
+          if (states.contains(WidgetState.selected)) {
+            return Colors.black;
+          }
+          return Colors.grey.shade400;
+        }),
+        trackColor: WidgetStateColor.resolveWith((states) {
+          if (states.contains(WidgetState.selected)) {
+            return Colors.white;
+          }
+          return Colors.grey.shade700;
+        }),
       ),
       pageTransitionsTheme: PageTransitionsTheme(
         builders: Map<TargetPlatform, PageTransitionsBuilder>.fromIterable(
