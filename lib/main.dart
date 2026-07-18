@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:get_it/get_it.dart';
-import 'package:Codah/themes/theme.dart';
-import 'package:Codah/ytmusic/modals/yt_config.dart';
+import 'package:Coda/themes/theme.dart';
+import 'package:Coda/ytmusic/modals/yt_config.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:just_audio_media_kit/just_audio_media_kit.dart';
 import 'package:path_provider/path_provider.dart';
@@ -33,7 +33,7 @@ void main() async {
   if (Platform.isWindows) {
     JustAudioMediaKit.ensureInitialized();
     JustAudioMediaKit.bufferSize = 8 * 1024 * 1024;
-    JustAudioMediaKit.title = 'Codah Music';
+    JustAudioMediaKit.title = 'Coda Music';
     JustAudioMediaKit.prefetchPlaylist = true;
     JustAudioMediaKit.pitch = true;
   }
@@ -81,7 +81,7 @@ void main() async {
         ChangeNotifierProvider(create: (_) => mediaPlayer),
         ChangeNotifierProvider(create: (_) => libraryService),
       ],
-      child: const Codah(),
+      child: const Coda(),
     ),
   );
 
@@ -92,8 +92,8 @@ void main() async {
   }
 }
 
-class Codah extends StatelessWidget {
-  const Codah({super.key});
+class Coda extends StatelessWidget {
+  const Coda({super.key});
   @override
   Widget build(BuildContext context) {
     return Shortcuts(
@@ -101,7 +101,7 @@ class Codah extends StatelessWidget {
         LogicalKeySet(LogicalKeyboardKey.select): const ActivateIntent(),
       },
       child: MaterialApp.router(
-        title: 'Codah Music',
+        title: 'Coda Music',
         scrollBehavior: const SmoothScrollBehavior(),
         routerConfig: router,
         locale: Locale(context.watch<SettingsManager>().language['value']!),

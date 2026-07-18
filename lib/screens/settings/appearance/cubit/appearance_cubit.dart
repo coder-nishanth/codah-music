@@ -1,7 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
-import 'package:Codah/services/settings_manager.dart';
+import 'package:Coda/services/settings_manager.dart';
 
 part 'appearance_state.dart';
 

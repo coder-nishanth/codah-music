@@ -20,7 +20,7 @@ Future<Lyrics?> getLyricaLyrics({
 
     final response = await http.get(uri, headers: {
       'Accept': 'application/json',
-      'User-Agent': 'CodahMusic/1.0',
+      'User-Agent': 'CodaMusic/1.0',
     }).timeout(_timeout);
 
     if (response.statusCode != 200) return null;

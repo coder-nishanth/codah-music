@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:scroll_animator/scroll_animator.dart';
-import 'package:Codah/services/chart_model.dart';
-import 'package:Codah/services/charts_service.dart';
-import 'package:Codah/core/widgets/section_item.dart';
+import 'package:Coda/services/chart_model.dart';
+import 'package:Coda/services/charts_service.dart';
+import 'package:Coda/core/widgets/section_item.dart';
 import 'package:loading_indicator_m3e/loading_indicator_m3e.dart';
 
 

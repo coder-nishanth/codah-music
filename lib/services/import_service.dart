@@ -2,9 +2,9 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 import 'package:get_it/get_it.dart';
-import 'package:Codah/services/library.dart';
-import 'package:Codah/services/spotify_embed_scraper.dart';
-import 'package:Codah/ytmusic/ytmusic.dart';
+import 'package:Coda/services/library.dart';
+import 'package:Coda/services/spotify_embed_scraper.dart';
+import 'package:Coda/ytmusic/ytmusic.dart';
 
 class ImportState {
   final int total;

@@ -284,6 +284,7 @@ class _SearchBar extends StatelessWidget {
               GestureDetector(
                 onTap: () {
                   controller.clear();
+                  focusNode.requestFocus();
                   onChanged('');
                 },
                 child: Padding(

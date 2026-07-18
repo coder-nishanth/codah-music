@@ -50,7 +50,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Salvataggio dati riuscito al percorso",
     ),
     "Battery_Optimisation_message": MessageLookupByLibrary.simpleMessage(
-      "Clicca qui per disattivare l’ottimizzazione della batteria e permettere a Codah di funzionare correttamente",
+      "Clicca qui per disattivare l’ottimizzazione della batteria e permettere a Coda di funzionare correttamente",
     ),
     "Battery_Optimisation_title": MessageLookupByLibrary.simpleMessage(
       "Ottimizzazione batteria rilevata",
@@ -102,7 +102,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "Developer": MessageLookupByLibrary.simpleMessage("Sviluppatore"),
     "Donate": MessageLookupByLibrary.simpleMessage("Dona"),
     "Donate_Message": MessageLookupByLibrary.simpleMessage(
-      "Supporta lo sviluppo di Codah",
+      "Supporta lo sviluppo di Coda",
     ),
     "Done": MessageLookupByLibrary.simpleMessage("Fatto"),
     "Download": MessageLookupByLibrary.simpleMessage("Download"),
@@ -132,7 +132,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "FileNotFound": MessageLookupByLibrary.simpleMessage("File non trovato"),
     "Go_To_Downloads": MessageLookupByLibrary.simpleMessage("Vai a Download"),
     "Google_Account": MessageLookupByLibrary.simpleMessage("Account Google"),
-    "Codah": MessageLookupByLibrary.simpleMessage("Codah"),
+    "Coda": MessageLookupByLibrary.simpleMessage("Coda"),
     "High": MessageLookupByLibrary.simpleMessage("Alta"),
     "History": MessageLookupByLibrary.simpleMessage("Cronologia"),
     "Home": MessageLookupByLibrary.simpleMessage("Home"),
@@ -216,7 +216,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "Retry": MessageLookupByLibrary.simpleMessage("Riprova"),
     "Save": MessageLookupByLibrary.simpleMessage("Salva"),
     "Saved": MessageLookupByLibrary.simpleMessage("Salvati"),
-    "Search_Codah": MessageLookupByLibrary.simpleMessage("Cerca in Codah"),
+    "Search_Coda": MessageLookupByLibrary.simpleMessage("Cerca in Coda"),
     "Search_History_Deleted": MessageLookupByLibrary.simpleMessage(
       "Cronologia di ricerca eliminata",
     ),

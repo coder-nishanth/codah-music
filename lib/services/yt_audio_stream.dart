@@ -1,17 +1,16 @@
 import 'dart:async';
-import 'dart:collection';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:just_audio/just_audio.dart';
-import 'package:youtube_explode_dart/youtube_explode_dart.dart';
+
+import 'innertube_player.dart';
 
 class _CachedStream {
   final Uri url;
   final int totalBytes;
   final String mimeType;
-  final bool isThrottled;
-  _CachedStream({required this.url, required this.totalBytes, required this.mimeType, required this.isThrottled});
+  _CachedStream({required this.url, required this.totalBytes, required this.mimeType});
 }
 
 class YouTubeAudioSource extends StreamAudioSource {
@@ -35,49 +34,31 @@ class YouTubeAudioSource extends StreamAudioSource {
     if (_cachedStream != null) return _cachedStream!;
 
     int attempts = 0;
-    const int maxAttempts = 2;
+    const int maxAttempts = 3;
     while (attempts < maxAttempts) {
       attempts++;
       try {
-        final manifest = await ytExplode.videos.streams.getManifest(videoId,
-            requireWatchPage: true, ytClients: [YoutubeApiClient.androidVr]);
+        final result = await InnertubePlayer.instance.getStreamInfo(
+          videoId,
+          quality: quality,
+        );
 
-        Iterable<AudioOnlyStreamInfo> audioStreams = manifest.audioOnly;
-        audioStreams = audioStreams.sortByBitrate();
-        final bestAudio = quality == 'high'
-            ? audioStreams.lastOrNull
-            : audioStreams.firstOrNull;
-
-        if (bestAudio != null) {
+        if (result != null) {
           _cachedStream = _CachedStream(
-            url: bestAudio.url,
-            totalBytes: bestAudio.size.totalBytes,
-            mimeType: bestAudio.codec.mimeType,
-            isThrottled: bestAudio.isThrottled,
+            url: result.url,
+            totalBytes: result.totalBytes > 0 ? result.totalBytes : 10 * 1024 * 1024,
+            mimeType: result.mimeType,
           );
           return _cachedStream!;
         }
-
-        final muxedStreams = manifest.muxed..sort((a, b) => b.bitrate.compareTo(a.bitrate));
-        final bestMuxed = muxedStreams.isNotEmpty ? muxedStreams.first : null;
-
-        if (bestMuxed != null) {
-          _cachedStream = _CachedStream(
-            url: bestMuxed.url,
-            totalBytes: bestMuxed.size.totalBytes,
-            mimeType: bestMuxed.codec.mimeType,
-            isThrottled: bestMuxed.isThrottled,
-          );
-          return _cachedStream!;
-        }
-
-        throw Exception('No audio stream available for this video.');
       } catch (e) {
-        if (attempts >= maxAttempts) rethrow;
-        await Future.delayed(Duration(seconds: attempts * 2));
+        debugPrint('AudioSource: attempt $attempts failed for $videoId: $e');
+      }
+      if (attempts < maxAttempts) {
+        await Future.delayed(Duration(seconds: attempts));
       }
     }
-    throw Exception('Failed to get stream info after $maxAttempts attempts.');
+    throw Exception('Failed to get audio stream for $videoId after $maxAttempts attempts.');
   }
 
   @override
@@ -92,11 +73,16 @@ class YouTubeAudioSource extends StreamAudioSource {
         final streamInfo = await _getStreamInfo();
 
         start ??= 0;
-        end ??= (streamInfo.isThrottled
-            ? (end ?? (start + 10379935))
-            : streamInfo.totalBytes);
-        if (end > streamInfo.totalBytes) {
-          end = streamInfo.totalBytes;
+        if (streamInfo.totalBytes > 0) {
+          end ??= streamInfo.totalBytes;
+          if (end > streamInfo.totalBytes) {
+            end = streamInfo.totalBytes;
+          }
+        } else {
+          end ??= start + 10 * 1024 * 1024;
+        }
+        if (end <= start) {
+          end = start + 1;
         }
 
         final stream = await _downloadStream(streamInfo.url, start, end - 1);
@@ -108,6 +94,7 @@ class YouTubeAudioSource extends StreamAudioSource {
           contentType: streamInfo.mimeType,
         );
       } catch (e) {
+        debugPrint('AudioSource: request attempt ${attempt + 1} failed: $e');
         if (attempt == maxAttempts - 1) {
           throw Exception('Failed to load audio after $maxAttempts attempts: $e');
         }
@@ -118,8 +105,6 @@ class YouTubeAudioSource extends StreamAudioSource {
     throw Exception('Failed to load audio: max retries exceeded');
   }
 }
-
-final YoutubeExplode ytExplode = YoutubeExplode();
 
 Future<String> createAudioStreamServer() async {
   final server = await HttpServer.bind(InternetAddress.loopbackIPv4, 0);
@@ -134,10 +119,6 @@ Future<String> createAudioStreamServer() async {
 
   return url;
 }
-
-
-final Map<String, ({AudioOnlyStreamInfo info, DateTime expiry})>
-    _manifestCache = {};
 
 Future<void> handleAudioRequest(HttpRequest request) async {
   final response = request.response;
@@ -161,75 +142,36 @@ Future<void> handleAudioRequest(HttpRequest request) async {
   }
 
   try {
-    AudioOnlyStreamInfo? audioStreamInfo;
+    final result = await InnertubePlayer.instance.getStreamInfo(
+      videoId,
+      quality: quality,
+    );
 
-    if (_manifestCache.containsKey(videoId)) {
-      final cached = _manifestCache[videoId]!;
-      if (DateTime.now().isBefore(cached.expiry)) {
-        audioStreamInfo = cached.info;
-      } else {
-        _manifestCache.remove(videoId);
-      }
-    }
-
-    if (audioStreamInfo == null) {
-      final manifest = await ytExplode.videos.streamsClient.getManifest(videoId,
-          requireWatchPage: true, ytClients: [YoutubeApiClient.androidVr]);
-
-      Iterable<AudioOnlyStreamInfo> supportedStreams = manifest.audioOnly;
-      supportedStreams = supportedStreams.sortByBitrate();
-
-      audioStreamInfo = quality == 'high'
-          ? supportedStreams.lastOrNull
-          : supportedStreams.firstOrNull;
-
-      if (audioStreamInfo != null) {
-        _manifestCache[videoId] = (
-          info: audioStreamInfo,
-          expiry: DateTime.now().add(const Duration(hours: 1))
-        );
-      }
-    }
-
-    if (audioStreamInfo == null) {
+    if (result == null) {
       response.statusCode = HttpStatus.internalServerError;
       response.write('No audio stream available for video $videoId.');
       await response.close();
       return;
     }
 
-    final totalLength = audioStreamInfo.size.totalBytes;
-
+    final totalLength = result.totalBytes;
 
     (int start, int end)? parseRange(String rangeHeader, int totalLength) {
       if (!rangeHeader.startsWith('bytes=')) return null;
-
       final parts = rangeHeader.substring(6).split('-');
       if (parts.length != 2) return null;
-
-      final startStr = parts[0];
-      final endStr = parts[1];
-
-      final start = int.tryParse(startStr) ?? 0;
-
-      final end = endStr.isEmpty ? totalLength - 1 : int.tryParse(endStr);
-
-      if (end == null ||
-          end >= totalLength ||
-          start >= totalLength ||
-          start > end) {
-        return null;
-      }
-
+      final start = int.tryParse(parts[0]) ?? 0;
+      final end = parts[1].isEmpty ? totalLength - 1 : int.tryParse(parts[1]);
+      if (end == null || end >= totalLength || start >= totalLength || start > end) return null;
       return (start, end);
     }
 
     int start = 0;
-    int end = totalLength - 1;
+    int end = totalLength > 0 ? totalLength - 1 : 10 * 1024 * 1024;
     bool isPartial = false;
 
     final rangeHeader = request.headers.value(HttpHeaders.rangeHeader);
-    if (rangeHeader != null) {
+    if (rangeHeader != null && totalLength > 0) {
       final range = parseRange(rangeHeader, totalLength);
       if (range != null) {
         start = range.$1;
@@ -238,16 +180,13 @@ Future<void> handleAudioRequest(HttpRequest request) async {
       }
     }
 
-    final stream = await _downloadStream(audioStreamInfo.url, start, end);
-
-    final mimeType = audioStreamInfo.codec.mimeType;
+    final stream = await _downloadStream(result.url, start, end);
 
     response.statusCode = isPartial ? HttpStatus.partialContent : HttpStatus.ok;
     response.headers.set(HttpHeaders.acceptRangesHeader, 'bytes');
-    response.headers.contentType = ContentType.parse(mimeType);
-    if (isPartial) {
-      response.headers.set(
-          HttpHeaders.contentRangeHeader, 'bytes $start-$end/$totalLength');
+    response.headers.contentType = ContentType.parse(result.mimeType);
+    if (isPartial && totalLength > 0) {
+      response.headers.set(HttpHeaders.contentRangeHeader, 'bytes $start-$end/$totalLength');
     }
     response.bufferOutput = false;
 
@@ -284,35 +223,30 @@ Future<AudioSource> getDirectUrlAudioSource(
     }
   }
 
-  try {
-    final manifest = await ytExplode.videos.streamsClient.getManifest(videoId,
-        requireWatchPage: true, ytClients: [YoutubeApiClient.androidVr]);
-    Iterable<AudioOnlyStreamInfo> supportedStreams = manifest.audioOnly;
-    supportedStreams = supportedStreams.sortByBitrate();
+  final result = await InnertubePlayer.instance.getStreamInfo(
+    videoId,
+    quality: quality,
+  );
 
-    final audioStream = quality == 'high'
-        ? supportedStreams.lastOrNull
-        : supportedStreams.firstOrNull;
-
-    if (audioStream == null) {
-      throw Exception('No audio stream available for this video.');
-    }
-
-    _urlCache[videoId] = (
-      url: audioStream.url.toString(),
-      expiry: DateTime.now().add(const Duration(hours: 1))
-    );
-
-    return AudioSource.uri(audioStream.url, tag: tag);
-  } catch (e) {
-    rethrow;
+  if (result == null) {
+    throw Exception('No audio stream available for video $videoId.');
   }
+
+  _urlCache[videoId] = (
+    url: result.url.toString(),
+    expiry: DateTime.now().add(const Duration(hours: 1))
+  );
+
+  return AudioSource.uri(result.url, tag: tag);
 }
 
 Future<Stream<List<int>>> _downloadStream(Uri url, int start, int end) async {
   final client = HttpClient();
   final request = await client.getUrl(url);
-  request.headers.add(HttpHeaders.rangeHeader, "bytes=$start-$end");
+  request.headers.add(HttpHeaders.rangeHeader, 'bytes=$start-$end');
+  request.headers.add('User-Agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:140.0) Gecko/20100101 Firefox/140.0');
+  request.headers.add('Origin', 'https://music.youtube.com');
+  request.headers.add('Referer', 'https://music.youtube.com/');
   final response = await request.close();
   return response;
 }

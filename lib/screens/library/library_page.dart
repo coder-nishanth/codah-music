@@ -7,9 +7,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:loading_indicator_m3e/loading_indicator_m3e.dart';
 import 'package:scroll_animator/scroll_animator.dart';
-import 'package:Codah/core/utils/service_locator.dart';
-import 'package:Codah/utils/internet_guard.dart';
-import 'package:Codah/utils/playlist_thumbnail.dart';
+import 'package:Coda/core/utils/service_locator.dart';
+import 'package:Coda/utils/internet_guard.dart';
+import 'package:Coda/utils/playlist_thumbnail.dart';
 
 
 import '../../../../generated/l10n.dart';

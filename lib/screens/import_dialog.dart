@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:loading_indicator_m3e/loading_indicator_m3e.dart';
-import 'package:Codah/services/import_service.dart';
-import 'package:Codah/themes/colors.dart';
+import 'package:Coda/services/import_service.dart';
+import 'package:Coda/themes/colors.dart';
 
 class ImportDialog extends StatefulWidget {
   final Stream<ImportState> stream;

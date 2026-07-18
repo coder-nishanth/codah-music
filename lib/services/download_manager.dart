@@ -5,17 +5,16 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
-import 'package:Codah/ytmusic/ytmusic.dart';
+import 'package:Coda/ytmusic/ytmusic.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:http/http.dart';
-import 'package:youtube_explode_dart/youtube_explode_dart.dart';
+import 'innertube_player.dart';
 
 import 'file_storage.dart';
 import 'settings_manager.dart';
 import 'stream_client.dart';
 
 Box _box = Hive.box('DOWNLOADS');
-YoutubeExplode ytExplode = YoutubeExplode();
 
 class DownloadManager {
   Client client = Client();
@@ -180,11 +179,11 @@ class DownloadManager {
         throw Exception('Storage permissions not granted.');
       }
 
-      AudioOnlyStreamInfo audioSource = await _getSongInfo(song['videoId'],
+      InnertubeStreamInfo audioSource = await _getSongInfo(song['videoId'],
           quality:
               GetIt.I<SettingsManager>().downloadQuality.name.toLowerCase());
 
-      int total = audioSource.size.totalBytes;
+      int total = audioSource.totalBytes;
       BytesBuilder received = BytesBuilder();
 
       Stream<List<int>> stream =
@@ -315,20 +314,12 @@ class DownloadManager {
     }
   }
 
-  Future<AudioOnlyStreamInfo> _getSongInfo(String videoId,
+  Future<InnertubeStreamInfo> _getSongInfo(String videoId,
       {String quality = 'high'}) async {
-    try {
-      StreamManifest manifest = await ytExplode.videos.streamsClient
-          .getManifest(videoId,
-              requireWatchPage: true, ytClients: [YoutubeApiClient.androidVr]);
-      List<AudioOnlyStreamInfo> streamInfos = manifest.audioOnly
-          .where((a) => a.container == StreamContainer.mp4)
-          .sortByBitrate()
-          .reversed
-          .toList();
-      return quality == 'low' ? streamInfos.first : streamInfos.last;
-    } catch (e) {
-      rethrow;
+    final result = await InnertubePlayer.instance.getStreamInfo(videoId, quality: quality);
+    if (result == null) {
+      throw Exception('No audio stream available for $videoId');
     }
+    return result;
   }
 }

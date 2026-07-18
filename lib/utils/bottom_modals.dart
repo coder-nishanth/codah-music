@@ -9,11 +9,11 @@ import 'package:loading_indicator_m3e/loading_indicator_m3e.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
-import 'package:Codah/utils/playlist_thumbnail.dart';
+import 'package:Coda/utils/playlist_thumbnail.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:provider/provider.dart';
 
-import 'package:Codah/services/import_service.dart';
+import 'package:Coda/services/import_service.dart';
 
 import '../generated/l10n.dart';
 import '../services/bottom_message.dart';

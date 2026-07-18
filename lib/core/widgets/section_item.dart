@@ -9,7 +9,7 @@ import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:loading_indicator_m3e/loading_indicator_m3e.dart';
 import 'package:scroll_animator/scroll_animator.dart';
-import 'package:Codah/ytmusic/ytmusic.dart';
+import 'package:Coda/ytmusic/ytmusic.dart';
 
 import '../../generated/l10n.dart';
 import '../../services/bottom_message.dart';

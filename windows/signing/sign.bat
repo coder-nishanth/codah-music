@@ -2,8 +2,8 @@
 setlocal
 
 set "SIGNTOOL=C:\Program Files (x86)\Windows Kits\10\bin\10.0.22621.0\x64\signtool.exe"
-set "PFX=%~dp0codah-music.pfx"
-set "PASSWORD=codahmusic2026"
+set "PFX=%~dp0coda-music.pfx"
+set "PASSWORD=CodaMusic2026"
 set "RELEASE_DIR=%~dp0..\..\..\build\windows\x64\runner\Release"
 
 echo Signing all executables in %RELEASE_DIR%...

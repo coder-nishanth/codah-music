@@ -1,4 +1,4 @@
-import 'package:Codah/ytmusic/client.dart';
+import 'package:Coda/ytmusic/client.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 import '../helpers.dart';

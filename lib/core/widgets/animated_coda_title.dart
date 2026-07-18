@@ -1,23 +1,23 @@
 import 'package:flutter/material.dart';
 
-class AnimatedCodahTitle extends StatefulWidget {
+class AnimatedCodaTitle extends StatefulWidget {
   final double fontSize;
   final double letterSpacing;
 
-  const AnimatedCodahTitle({
+  const AnimatedCodaTitle({
     super.key,
     this.fontSize = 15,
     this.letterSpacing = 1.2,
   });
 
   @override
-  State<AnimatedCodahTitle> createState() => _AnimatedCodahTitleState();
+  State<AnimatedCodaTitle> createState() => _AnimatedCodaTitleState();
 }
 
-class _AnimatedCodahTitleState extends State<AnimatedCodahTitle>
+class _AnimatedCodaTitleState extends State<AnimatedCodaTitle>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
-  static const _text = 'CODAH MUSIC';
+  static const _text = 'CODA MUSIC';
 
   @override
   void initState() {

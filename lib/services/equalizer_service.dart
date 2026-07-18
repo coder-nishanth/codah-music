@@ -65,8 +65,14 @@ class EqualizerService {
     }
   }
 
+  void invalidateCache() {
+    _lastAppliedAf = '';
+    _invalidateNativePlayer();
+  }
+
   void _invalidateNativePlayer() {
     _nativePlayer = null;
+    _lastAppliedAf = '';
   }
 
   void applyEqualizerDebounced() {
@@ -170,6 +176,11 @@ class EqualizerService {
     final settings = GetIt.I<SettingsManager>();
     settings.equalizerEnabled = enabled;
     await applyEqualizer();
+  }
+
+  void onSongChanged() {
+    _lastAppliedAf = '';
+    applyEqualizer();
   }
 
   Future<void> applyPreset(String presetName) async {

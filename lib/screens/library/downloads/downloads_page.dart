@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:loading_indicator_m3e/loading_indicator_m3e.dart';
 import 'package:scroll_animator/scroll_animator.dart';
-import 'package:Codah/services/download_manager.dart';
+import 'package:Coda/services/download_manager.dart';
 
 import '../../../../generated/l10n.dart';
 import '../../../../themes/colors.dart';

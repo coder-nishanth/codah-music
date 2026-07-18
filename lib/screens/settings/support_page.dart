@@ -4,7 +4,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:scroll_animator/scroll_animator.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:Codah/services/bottom_message.dart';
+import 'package:Coda/services/bottom_message.dart';
 
 class SupportPage extends StatefulWidget {
   const SupportPage({super.key});
@@ -115,7 +115,7 @@ class _SupportPageState extends State<SupportPage> {
                 ),
                 const SizedBox(height: 48),
                 Text(
-                  'Made with passion \u2022 CODAH MUSIC',
+                  'Made with passion \u2022 Coda Music',
                   style: TextStyle(
                     fontSize: 12,
                     color: Colors.white.withValues(alpha: 0.7),

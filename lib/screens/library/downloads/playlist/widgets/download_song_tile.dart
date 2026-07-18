@@ -1,13 +1,13 @@
 import 'package:expandable_text/expandable_text.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
-import 'package:Codah/generated/l10n.dart';
-import 'package:Codah/services/download_manager.dart';
-import 'package:Codah/services/media_player.dart';
-import 'package:Codah/utils/adaptive_widgets/listtile.dart';
-import 'package:Codah/utils/bottom_modals.dart';
-import 'package:Codah/utils/extensions.dart';
-import 'package:Codah/utils/song_thumbnail.dart';
+import 'package:Coda/generated/l10n.dart';
+import 'package:Coda/services/download_manager.dart';
+import 'package:Coda/services/media_player.dart';
+import 'package:Coda/utils/adaptive_widgets/listtile.dart';
+import 'package:Coda/utils/bottom_modals.dart';
+import 'package:Coda/utils/extensions.dart';
+import 'package:Coda/utils/song_thumbnail.dart';
 
 class DownloadedSongTile extends StatelessWidget {
   const DownloadedSongTile({required this.song, super.key});

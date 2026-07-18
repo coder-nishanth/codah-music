@@ -1,5 +1,5 @@
 import 'package:bloc/bloc.dart';
-import 'package:Codah/ytmusic/ytmusic.dart';
+import 'package:Coda/ytmusic/ytmusic.dart';
 import 'package:hive/hive.dart';
 
 part 'search_state.dart';

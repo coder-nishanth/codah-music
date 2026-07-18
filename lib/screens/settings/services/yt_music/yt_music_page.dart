@@ -4,10 +4,10 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:scroll_animator/scroll_animator.dart';
-import 'package:Codah/generated/l10n.dart';
-import 'package:Codah/screens/settings/widgets/setting_item.dart';
-import 'package:Codah/themes/text_styles.dart';
-import 'package:Codah/utils/bottom_modals.dart';
+import 'package:Coda/generated/l10n.dart';
+import 'package:Coda/screens/settings/widgets/setting_item.dart';
+import 'package:Coda/themes/text_styles.dart';
+import 'package:Coda/utils/bottom_modals.dart';
 
 import 'cubit/ytmusic_cubit.dart';
 

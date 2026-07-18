@@ -5,10 +5,10 @@ import 'package:expandable_text/expandable_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
-import 'package:Codah/core/utils/service_locator.dart';
-import 'package:Codah/screens/browse/cubit/browse_cubit.dart';
-import 'package:Codah/core/widgets/section_item.dart';
-import 'package:Codah/utils/internet_guard.dart';
+import 'package:Coda/core/utils/service_locator.dart';
+import 'package:Coda/screens/browse/cubit/browse_cubit.dart';
+import 'package:Coda/core/widgets/section_item.dart';
+import 'package:Coda/utils/internet_guard.dart';
 import 'package:loading_indicator_m3e/loading_indicator_m3e.dart';
 import 'package:scroll_animator/scroll_animator.dart';
 

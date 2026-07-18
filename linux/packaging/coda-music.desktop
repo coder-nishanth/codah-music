@@ -1,8 +1,8 @@
 [Desktop Entry]
 Type=Application
-Name=CODAH MUSIC
+Name=CODA MUSIC
 Comment=Music player
-Exec=codah-music
-Icon=codah-music
+Exec=coda-music
+Icon=coda-music
 Categories=AudioVideo;Audio;Music;Player;
-StartupWMClass=codah-music
+StartupWMClass=coda-music

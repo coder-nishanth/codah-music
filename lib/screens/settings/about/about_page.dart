@@ -3,7 +3,7 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:scroll_animator/scroll_animator.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../../../core/widgets/animated_codah_title.dart';
+import '../../../core/widgets/animated_coda_title.dart';
 
 
 class AboutPage extends StatefulWidget {
@@ -53,7 +53,7 @@ class _AboutPageState extends State<AboutPage> {
               ClipRRect(
                 borderRadius: BorderRadius.circular(16),
                 child: Image.asset(
-                  'icons/Codah_nobg.png',
+                  'icons/Coda_nobg.png',
                   width: 120,
                   height: 120,
                   fit: BoxFit.contain,
@@ -61,7 +61,7 @@ class _AboutPageState extends State<AboutPage> {
               ),
               const SizedBox(height: 24),
               
-              const AnimatedCodahTitle(fontSize: 28, letterSpacing: 2.0),
+              const AnimatedCodaTitle(fontSize: 28, letterSpacing: 2.0),
               const SizedBox(height: 8),
               
               Text(

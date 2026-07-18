@@ -27,7 +27,7 @@ class CommonHeader extends StatelessWidget {
             ),
             const SizedBox(width: 8),
             Text(
-              S.of(context).Search_Codah,
+              S.of(context).Search_Coda,
               style: TextStyle(
                 color: Colors.white.withValues(alpha: 0.5),
                 fontSize: 15,

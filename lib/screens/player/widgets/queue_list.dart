@@ -1,8 +1,8 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
-import 'package:Codah/services/media_player.dart';
-import 'package:Codah/utils/song_thumbnail.dart';
+import 'package:Coda/services/media_player.dart';
+import 'package:Coda/utils/song_thumbnail.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:just_audio_background/just_audio_background.dart';
 

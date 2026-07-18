@@ -3,17 +3,17 @@ import 'dart:io';
 
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
-import 'package:Codah/services/update_service/models/update_info.dart';
-import 'package:Codah/services/update_service/widgets/update_checking.dart';
-import 'package:Codah/services/update_service/widgets/update_dialog.dart';
+import 'package:Coda/services/update_service/models/update_info.dart';
+import 'package:Coda/services/update_service/widgets/update_checking.dart';
+import 'package:Coda/services/update_service/widgets/update_dialog.dart';
 import 'package:http/http.dart' as http;
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:pub_semver/pub_semver.dart';
-import 'package:Codah/services/bottom_message.dart';
+import 'package:Coda/services/bottom_message.dart';
 
 class UpdateService {
   static const String owner = 'coder-nishanth';
-  static const String repo = 'codah-music';
+  static const String repo = 'coda-music';
 
   static Future<UpdateInfo?> checkForUpdate() async {
     try {
@@ -22,7 +22,7 @@ class UpdateService {
 
       final timestamp = DateTime.now().millisecondsSinceEpoch;
       final Uri uri = Uri.parse(
-        'https://raw.githubusercontent.com/coder-nishanth/codah-music/main/desktop_update.json?t=$timestamp',
+        'https://raw.githubusercontent.com/coder-nishanth/coda-music/main/desktop_update.json?t=$timestamp',
       );
 
       final response = await http.get(uri);
@@ -50,9 +50,9 @@ class UpdateService {
         return UpdateInfo(
           version: remoteVersion,
           name: 'New Update Available',
-          body: 'A new version of CODAH MUSIC is available.',
+          body: 'A new version of Coda Music is available.',
           publishedAt: '',
-          downloadUrl: 'https://codahmusic.onrender.com/',
+          downloadUrl: 'https://CodaMusic.onrender.com/',
         );
       }
       

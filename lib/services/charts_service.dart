@@ -4,7 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:html/parser.dart' show parse;
 import 'package:html/dom.dart';
-import 'package:Codah/services/chart_model.dart';
+import 'package:Coda/services/chart_model.dart';
 
 class ChartsService {
   static const String HOT_100 = 'https://www.billboard.com/charts/hot-100/';

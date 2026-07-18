@@ -1,8 +1,8 @@
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
-import 'package:Codah/ytmusic/helpers.dart';
-import 'package:Codah/ytmusic/modals/yt_config.dart';
+import 'package:Coda/ytmusic/helpers.dart';
+import 'package:Coda/ytmusic/modals/yt_config.dart';
 import 'package:http/http.dart';
 
 class YTClient {

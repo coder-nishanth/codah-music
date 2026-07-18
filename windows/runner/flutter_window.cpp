@@ -67,7 +67,7 @@ bool FlutterWindow::OnCreate() {
 
   // Register method channel for window operations
   channel_ = std::make_unique<flutter::MethodChannel<flutter::EncodableValue>>(
-      flutter_controller_->engine()->messenger(), "codah_music/window",
+      flutter_controller_->engine()->messenger(), "coda_music/window",
       &flutter::StandardMethodCodec::GetInstance());
   channel_->SetMethodCallHandler(HandleMethodCall);
 

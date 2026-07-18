@@ -2,10 +2,10 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:expandable_text/expandable_text.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
-import 'package:Codah/generated/l10n.dart';
-import 'package:Codah/services/download_manager.dart';
-import 'package:Codah/utils/adaptive_widgets/listtile.dart';
-import 'package:Codah/utils/extensions.dart';
+import 'package:Coda/generated/l10n.dart';
+import 'package:Coda/services/download_manager.dart';
+import 'package:Coda/utils/adaptive_widgets/listtile.dart';
+import 'package:Coda/utils/extensions.dart';
 
 class DownloadingSongTile extends StatelessWidget {
   const DownloadingSongTile({required this.song, super.key});

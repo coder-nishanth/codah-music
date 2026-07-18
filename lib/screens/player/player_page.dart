@@ -1,10 +1,10 @@
-import 'package:Codah/core/widgets/squiggly_progress_bar.dart';
+import 'package:Coda/core/widgets/squiggly_progress_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:loading_indicator_m3e/loading_indicator_m3e.dart';
-import 'package:Codah/utils/song_thumbnail.dart';
+import 'package:Coda/utils/song_thumbnail.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:just_audio_background/just_audio_background.dart';

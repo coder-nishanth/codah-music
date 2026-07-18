@@ -1,7 +1,8 @@
 import 'dart:async';
 
 import 'package:http/http.dart' as http;
-import 'package:youtube_explode_dart/youtube_explode_dart.dart';
+
+import 'innertube_player.dart';
 
 class AudioStreamClient {
   final http.Client _httpClient = http.Client();
@@ -22,12 +23,12 @@ class AudioStreamClient {
     'upgrade-insecure-requests': '1',
   };
 
-  Stream<List<int>> getAudioStream(streamInfo,
+  Stream<List<int>> getAudioStream(InnertubeStreamInfo streamInfo,
           {required int start, required int end}) =>
       _getStream(streamInfo, streamClient: this, start: start, end: end);
 
   Stream<List<int>> _getStream(
-    StreamInfo streamInfo, {
+    InnertubeStreamInfo streamInfo, {
     Map<String, String> headers = const {},
     bool validate = true,
     required int start,
@@ -156,3 +157,20 @@ class AudioStreamClient {
     return _httpClient.send(request);
   }
 }
+
+class RequestLimitExceededException implements Exception {
+  final http.BaseResponse response;
+  RequestLimitExceededException.httpRequest(this.response);
+}
+
+class TransientFailureException implements Exception {
+  final http.BaseResponse response;
+  TransientFailureException.httpRequest(this.response);
+}
+
+class FatalFailureException implements Exception {
+  final http.BaseResponse response;
+  FatalFailureException.httpRequest(this.response);
+}
+
+class HttpClientClosedException implements Exception {}

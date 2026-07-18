@@ -1,7 +1,7 @@
 import 'dart:core';
 import 'dart:math';
 
-import 'package:Codah/ytmusic/client.dart';
+import 'package:Coda/ytmusic/client.dart';
 
 import '../helpers.dart';
 import 'utils.dart';

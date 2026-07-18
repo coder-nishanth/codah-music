@@ -1,9 +1,9 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
-import 'package:Codah/ytmusic/ytmusic.dart';
-import 'package:Codah/services/charts_service.dart';
-import 'package:Codah/services/chart_model.dart';
+import 'package:Coda/ytmusic/ytmusic.dart';
+import 'package:Coda/services/charts_service.dart';
+import 'package:Coda/services/chart_model.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:meta/meta.dart';
 part 'home_state.dart';

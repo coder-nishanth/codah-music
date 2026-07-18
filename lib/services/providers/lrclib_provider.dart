@@ -152,7 +152,7 @@ Future<List<_Track>> _queryWithParams({
     });
     final response = await http.get(uri, headers: {
       'Accept': 'application/json',
-      'User-Agent': 'CodahMusic/1.0',
+      'User-Agent': 'CodaMusic/1.0',
     }).timeout(_timeout);
     if (response.statusCode != 200) return [];
     final list = json.decode(utf8.decode(response.bodyBytes)) as List;

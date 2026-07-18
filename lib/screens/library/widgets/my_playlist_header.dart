@@ -6,11 +6,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:get_it/get_it.dart';
-import 'package:Codah/generated/l10n.dart';
-import 'package:Codah/services/media_player.dart';
-import 'package:Codah/themes/colors.dart';
-import 'package:Codah/utils/adaptive_widgets/buttons.dart';
-import 'package:Codah/utils/extensions.dart';
+import 'package:Coda/generated/l10n.dart';
+import 'package:Coda/services/media_player.dart';
+import 'package:Coda/themes/colors.dart';
+import 'package:Coda/utils/adaptive_widgets/buttons.dart';
+import 'package:Coda/utils/extensions.dart';
 
 class MyPlayistHeader extends StatelessWidget {
   const MyPlayistHeader({

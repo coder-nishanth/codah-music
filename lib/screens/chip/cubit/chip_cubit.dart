@@ -1,5 +1,5 @@
 import 'package:bloc/bloc.dart';
-import 'package:Codah/ytmusic/ytmusic.dart';
+import 'package:Coda/ytmusic/ytmusic.dart';
 import 'package:meta/meta.dart';
 
 part 'chip_state.dart';

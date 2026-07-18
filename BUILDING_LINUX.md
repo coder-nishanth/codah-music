@@ -1,6 +1,6 @@
-# Building Linux Packages for CODAH MUSIC
+# Building Linux Packages for CODA MUSIC
 
-This guide explains how to build Linux distribution packages (DEB, AppImage, RPM) for CODAH MUSIC Desktop.
+This guide explains how to build Linux distribution packages (DEB, AppImage, RPM) for CODA MUSIC Desktop.
 
 ## Platform Limitation ⚠️
 
@@ -32,7 +32,7 @@ flutter pub global activate flutter_distributor
 ### Build All Packages
 ```bash
 # Navigate to project directory
-cd /path/to/Codah-Music-Desktop
+cd /path/to/Coda-Music-Desktop
 
 # Install dependencies
 flutter pub get
@@ -108,9 +108,9 @@ flutter_distributor release --name dev
 
 Once built, distribute the packages:
 
-- **DEB**: Users install with `sudo dpkg -i Codah-*.deb`
-- **AppImage**: Users make executable and run: `chmod +x Codah-*.AppImage && ./Codah-*.AppImage`
-- **RPM**: Users install with `sudo rpm -i Codah-*.rpm`
+- **DEB**: Users install with `sudo dpkg -i Coda-*.deb`
+- **AppImage**: Users make executable and run: `chmod +x Coda-*.AppImage && ./Coda-*.AppImage`
+- **RPM**: Users install with `sudo rpm -i Coda-*.rpm`
 
 ## Current Status
 

@@ -6,7 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../core/widgets/animated_codah_title.dart';
+import '../../core/widgets/animated_coda_title.dart';
 import '../../generated/l10n.dart';
 import '../../services/bottom_message.dart';
 import '../../services/media_player.dart';
@@ -206,7 +206,7 @@ class _AppShellState extends State<AppShell> {
                         child: Row(
                           children: [
                             SizedBox(width: 16),
-                            AnimatedCodahTitle(),
+                            AnimatedCodaTitle(),
                             Spacer(),
                             _MacOSTrafficLights(),
                             SizedBox(width: 16),

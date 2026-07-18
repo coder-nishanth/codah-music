@@ -27,7 +27,7 @@ class FileStorage {
     Directory directory = Directory("dir");
     if (Platform.isWindows) {
       directory =
-          Directory(path.join((await getDownloadsDirectory())!.path, 'Codah'));
+          Directory(path.join((await getDownloadsDirectory())!.path, 'Coda'));
     } else {
       directory = await getApplicationDocumentsDirectory();
     }
@@ -46,7 +46,7 @@ class FileStorage {
     Directory directory = Directory("dir");
     if (Platform.isWindows) {
       directory =
-          Directory(path.join((await getDownloadsDirectory())!.path, 'Codah'));
+          Directory(path.join((await getDownloadsDirectory())!.path, 'Coda'));
     } else {
       directory = await getApplicationDocumentsDirectory();
     }
@@ -132,7 +132,7 @@ class FileStorage {
     final file = picker.files[0].xFile;
     String data = await file.readAsString();
     Map backup = jsonDecode(data);
-    if (backup['name'] != 'Codah' && backup['type'] != 'backup') {
+    if (backup['name'] != 'Coda' && backup['type'] != 'backup') {
       return false;
     }
     Map? settings = backup['data']?['settings'];
